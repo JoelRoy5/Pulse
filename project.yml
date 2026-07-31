@@ -73,6 +73,7 @@ targets:
       path: PulseWatch/Resources/Info.plist
       properties:
         WKApplication: true
+        WKCompanionAppBundleIdentifier: com.joelroy.pulse
         NSHealthShareUsageDescription: "Pulse reads your health data on Apple Watch to deliver contextual scripture to your wrist."
   PulseWatchWidgets:
     type: app-extension

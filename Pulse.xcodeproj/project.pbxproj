@@ -12,13 +12,18 @@
 		3A8F65C6B42C3D6AE0118D32 /* PulseWatchApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = F76E0B0971A3D5FFE79D25DD /* PulseWatchApp.swift */; };
 		3C2325F3D5E37522A7B82A03 /* MockHealthProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = A407568C5689F0F6FD2FEC9A /* MockHealthProvider.swift */; };
 		45A99CE20E14662637AA8D84 /* PulseWatch.app in Embed Watch Content */ = {isa = PBXBuildFile; fileRef = 658BC99EE552C7E68CBA5EB8 /* PulseWatch.app */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
+		5647EB4F9B143A99D0BB77FC /* VerseCache.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1E0CFBDDC4B6C4C6F19905F6 /* VerseCache.swift */; };
 		616B1E15A99B07B4D65A228F /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 82CA4B8BDC045C16F231C4E3 /* Assets.xcassets */; };
 		6F8E2CCEBE48A5FA07DEDB0E /* PulseShared in Frameworks */ = {isa = PBXBuildFile; productRef = 6739340A4C8FE95D8C5694BE /* PulseShared */; };
 		7739364B0145E07B71DC6FBA /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 684C717B6F893FC2FA946CD4 /* Assets.xcassets */; };
+		8040CE25D98384C6828816C2 /* DeliveryScheduler.swift in Sources */ = {isa = PBXBuildFile; fileRef = 282AC598C18A98F698CFAD2E /* DeliveryScheduler.swift */; };
+		81E6C11A1FE2FE2C8126D95A /* ScriptureEngine.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8955765F322AB6B8869FBBD2 /* ScriptureEngine.swift */; };
 		84A2F60B3521417E25F1CEB8 /* AppConfig.swift in Sources */ = {isa = PBXBuildFile; fileRef = E7059FABA65645A103CAF056 /* AppConfig.swift */; };
 		857E8E850DF155A4D22DB125 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 6F083BA414BA913FD2B9FA6D /* Assets.xcassets */; };
 		8C516DA412FFF75038F61FF3 /* PulseSchema.swift in Sources */ = {isa = PBXBuildFile; fileRef = 935401AC9AF178CA8A14AB97 /* PulseSchema.swift */; };
+		9E7FC8D4372D7D6477B1E1CE /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = B7045A0EAF2A362DBDC67DCA /* AppDelegate.swift */; };
 		A5C54ADE0C5514A00DA4DCFA /* HealthEngine.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5FCEE7A5CD3B4DDFF21B1DEF /* HealthEngine.swift */; };
+		A9F3479015B3DD98808FCAB4 /* NotificationService.swift in Sources */ = {isa = PBXBuildFile; fileRef = DD88FD056C666BFB9ADEFDBC /* NotificationService.swift */; };
 		B01C22C285F9E458C70B993F /* PulseShared in Frameworks */ = {isa = PBXBuildFile; productRef = A4B6B95425B67549673F84A3 /* PulseShared */; };
 		B20FA01CD469A0B7AD4DB784 /* ModelContainer+Setup.swift in Sources */ = {isa = PBXBuildFile; fileRef = FF94ABC9A97854F7CC080CE4 /* ModelContainer+Setup.swift */; };
 		B5112710A03EDCF3F387EF00 /* PulseComplications.swift in Sources */ = {isa = PBXBuildFile; fileRef = 765F7C1351C0FA1232BF3188 /* PulseComplications.swift */; };
@@ -75,7 +80,9 @@
 		0405A3882AE55FA28CB4FEA7 /* PulseWatchWidgets.appex */ = {isa = PBXFileReference; explicitFileType = "wrapper.app-extension"; includeInIndex = 0; path = PulseWatchWidgets.appex; sourceTree = BUILT_PRODUCTS_DIR; };
 		0AEE9CD05DD0A6FAA15E6014 /* PulseApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PulseApp.swift; sourceTree = "<group>"; };
 		13FEF2D2118D74C3572DF349 /* Pulse.app */ = {isa = PBXFileReference; includeInIndex = 0; lastKnownFileType = wrapper.application; path = Pulse.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		1E0CFBDDC4B6C4C6F19905F6 /* VerseCache.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VerseCache.swift; sourceTree = "<group>"; };
 		25C9B0047CCEBB272191C917 /* HealthDataProviding.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HealthDataProviding.swift; sourceTree = "<group>"; };
+		282AC598C18A98F698CFAD2E /* DeliveryScheduler.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DeliveryScheduler.swift; sourceTree = "<group>"; };
 		5FCEE7A5CD3B4DDFF21B1DEF /* HealthEngine.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HealthEngine.swift; sourceTree = "<group>"; };
 		5FCFC8C1E9A3B989961B020B /* Pulse.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = Pulse.entitlements; sourceTree = "<group>"; };
 		658BC99EE552C7E68CBA5EB8 /* PulseWatch.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = PulseWatch.app; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -85,10 +92,13 @@
 		82CA4B8BDC045C16F231C4E3 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		849515D6521FB9971926BCA3 /* Release.xcconfig */ = {isa = PBXFileReference; lastKnownFileType = text.xcconfig; path = Release.xcconfig; sourceTree = "<group>"; };
 		894578127626DAF4E24944F4 /* MetricCollector.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MetricCollector.swift; sourceTree = "<group>"; };
+		8955765F322AB6B8869FBBD2 /* ScriptureEngine.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ScriptureEngine.swift; sourceTree = "<group>"; };
 		935401AC9AF178CA8A14AB97 /* PulseSchema.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PulseSchema.swift; sourceTree = "<group>"; };
 		9B3A3BC945381B2E11B96FA8 /* PulseWatch.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = PulseWatch.entitlements; sourceTree = "<group>"; };
 		A407568C5689F0F6FD2FEC9A /* MockHealthProvider.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MockHealthProvider.swift; sourceTree = "<group>"; };
 		B3941E64DF15AE175EA3A9CC /* Debug.xcconfig */ = {isa = PBXFileReference; lastKnownFileType = text.xcconfig; path = Debug.xcconfig; sourceTree = "<group>"; };
+		B7045A0EAF2A362DBDC67DCA /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
+		DD88FD056C666BFB9ADEFDBC /* NotificationService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NotificationService.swift; sourceTree = "<group>"; };
 		E2B5FBC3DA7A32B44A484727 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist; path = Info.plist; sourceTree = "<group>"; };
 		E3DB0ED9C9FB9510602FD2FD /* PulseShared */ = {isa = PBXFileReference; lastKnownFileType = folder; name = PulseShared; path = PulseShared; sourceTree = SOURCE_ROOT; };
 		E7059FABA65645A103CAF056 /* AppConfig.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppConfig.swift; sourceTree = "<group>"; };
@@ -130,6 +140,7 @@
 			children = (
 				33832105E669CEFFA78A1B73 /* Health */,
 				2FAB7FD1C04A37EC2B7D16E4 /* Persistence */,
+				2F6ED793E3D4995A13821E43 /* Scripture */,
 			);
 			path = Core;
 			sourceTree = "<group>";
@@ -139,6 +150,7 @@
 			children = (
 				38F29541A06B8A159C0EFF06 /* App */,
 				0DBDBE9D62FC59B0A976D043 /* Core */,
+				7B2DACA61F39E7B50B11EBE2 /* Notifications */,
 				F7EE12501EB7201D317BF279 /* Resources */,
 			);
 			path = Pulse;
@@ -152,6 +164,16 @@
 				0405A3882AE55FA28CB4FEA7 /* PulseWatchWidgets.appex */,
 			);
 			name = Products;
+			sourceTree = "<group>";
+		};
+		2F6ED793E3D4995A13821E43 /* Scripture */ = {
+			isa = PBXGroup;
+			children = (
+				282AC598C18A98F698CFAD2E /* DeliveryScheduler.swift */,
+				8955765F322AB6B8869FBBD2 /* ScriptureEngine.swift */,
+				1E0CFBDDC4B6C4C6F19905F6 /* VerseCache.swift */,
+			);
+			path = Scripture;
 			sourceTree = "<group>";
 		};
 		2FAB7FD1C04A37EC2B7D16E4 /* Persistence */ = {
@@ -178,6 +200,7 @@
 			isa = PBXGroup;
 			children = (
 				E7059FABA65645A103CAF056 /* AppConfig.swift */,
+				B7045A0EAF2A362DBDC67DCA /* AppDelegate.swift */,
 				0AEE9CD05DD0A6FAA15E6014 /* PulseApp.swift */,
 			);
 			path = App;
@@ -219,6 +242,14 @@
 				9D2E4F0FBA3338F6D2620C5B /* PulseWatchWidgets */,
 				1FEE830988994786371D8E45 /* Products */,
 			);
+			sourceTree = "<group>";
+		};
+		7B2DACA61F39E7B50B11EBE2 /* Notifications */ = {
+			isa = PBXGroup;
+			children = (
+				DD88FD056C666BFB9ADEFDBC /* NotificationService.swift */,
+			);
+			path = Notifications;
 			sourceTree = "<group>";
 		};
 		804718858774CF6562046B1F /* Config */ = {
@@ -431,13 +462,18 @@
 			buildActionMask = 2147483647;
 			files = (
 				84A2F60B3521417E25F1CEB8 /* AppConfig.swift in Sources */,
+				9E7FC8D4372D7D6477B1E1CE /* AppDelegate.swift in Sources */,
+				8040CE25D98384C6828816C2 /* DeliveryScheduler.swift in Sources */,
 				C802F2996F9DC7F8B40490A7 /* HealthDataProviding.swift in Sources */,
 				A5C54ADE0C5514A00DA4DCFA /* HealthEngine.swift in Sources */,
 				F022C85557F91AB1142744FE /* MetricCollector.swift in Sources */,
 				3C2325F3D5E37522A7B82A03 /* MockHealthProvider.swift in Sources */,
 				B20FA01CD469A0B7AD4DB784 /* ModelContainer+Setup.swift in Sources */,
+				A9F3479015B3DD98808FCAB4 /* NotificationService.swift in Sources */,
 				3486367464537B6192F7C2AF /* PulseApp.swift in Sources */,
 				8C516DA412FFF75038F61FF3 /* PulseSchema.swift in Sources */,
+				81E6C11A1FE2FE2C8126D95A /* ScriptureEngine.swift in Sources */,
+				5647EB4F9B143A99D0BB77FC /* VerseCache.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
