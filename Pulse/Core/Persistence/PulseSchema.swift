@@ -23,12 +23,12 @@ final class VerseDelivery {
     var stateBodyText: String
 
     // Health metrics at delivery (stored for history context)
-    var heartRateAtDelivery: Double?
-    var hrvAtDelivery: Double?
-    var restingHRAtDelivery: Double?
-    var oxygenAtDelivery: Double?
-    var sleepEfficiencyAtDelivery: Double?
-    var deepSleepAtDelivery: Double?
+    var heartRateAtDelivery: Double?         // bpm
+    var hrvAtDelivery: Double?               // ms (SDNN)
+    var restingHRAtDelivery: Double?         // bpm
+    var oxygenAtDelivery: Double?            // fraction 0–1
+    var sleepEfficiencyAtDelivery: Double?   // fraction 0–1
+    var deepSleepAtDelivery: Double?         // minutes
     var stepCountAtDelivery: Int?
     var wasPostWorkout: Bool
     var workoutTypeAtDelivery: String?

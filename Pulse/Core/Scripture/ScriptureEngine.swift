@@ -82,14 +82,14 @@ final class ScriptureEngine {
     @discardableResult
     func deliverFirstVerse() async -> VerseDelivery {
         let result = makeSyntheticResult()
-        return await runPipeline(result: result, skipScheduler: true)
+        return await runPipeline(result: result)
     }
 
     // MARK: - Core Pipeline
 
     /// Runs the full pipeline. Returns the persisted `VerseDelivery`.
     @discardableResult
-    private func runPipeline(result: ClassificationResult, skipScheduler: Bool = false) async -> VerseDelivery {
+    private func runPipeline(result: ClassificationResult) async -> VerseDelivery {
         isLoading = true
         defer { isLoading = false }
 
@@ -242,8 +242,7 @@ final class ScriptureEngine {
         delivery.restingHRAtDelivery = snapshot.restingHeartRate
         delivery.oxygenAtDelivery = snapshot.oxygenSaturation
         delivery.sleepEfficiencyAtDelivery = snapshot.sleepEfficiency
-        // deepSleepMinutes stored as hours for schema compatibility (divide by 60)
-        delivery.deepSleepAtDelivery = snapshot.deepSleepMinutes.map { $0 / 60.0 }
+        delivery.deepSleepAtDelivery = snapshot.deepSleepMinutes // minutes; see PulseSchema.swift
         delivery.stepCountAtDelivery = snapshot.stepCount
         delivery.glooRationale = rationale
         delivery.workoutTypeAtDelivery = snapshot.lastWorkoutType

@@ -118,6 +118,20 @@ final class VerseCache {
         return deliveries.map(\.verseReference)
     }
 
+    // MARK: - User Preferences
+
+    /// Returns `UserPreferences.maxDailyVerses` from the store, or
+    /// `DeliveryRules.defaultMaxDailyDeliveries` when no preferences row exists.
+    func fetchMaxDailyVerses() -> Int {
+        let descriptor = FetchDescriptor<UserPreferences>(
+            predicate: #Predicate { $0.id == 1 }
+        )
+        if let prefs = try? context.fetch(descriptor).first {
+            return prefs.maxDailyVerses
+        }
+        return DeliveryRules.defaultMaxDailyDeliveries
+    }
+
     // MARK: - LRU Eviction
 
     private func evictIfNeeded() {

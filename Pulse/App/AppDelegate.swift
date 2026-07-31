@@ -42,9 +42,16 @@ final class AppDelegate: NSObject, UIApplicationDelegate {
         }
 
         Task { @MainActor in
+            // AppBridge.healthEngine is nil on a cold background launch (the SwiftUI
+            // .task that sets it has not yet run). In that case report failure so the
+            // system can retry; we still reschedule above so the next window is set.
+            guard let engine = AppBridge.shared.healthEngine else {
+                logger.warning("BGProcessingTask: healthEngine nil (cold-launch) — reporting failure")
+                task.setTaskCompleted(success: false)
+                return
+            }
             // Refresh health data → triggers onClassification → ScriptureEngine pipeline
-            // Access shared engine instances stored in PulseApp via a static bridge.
-            await AppBridge.shared.healthEngine?.refresh()
+            await engine.refresh()
             task.setTaskCompleted(success: true)
             logger.info("BGProcessingTask completed")
         }

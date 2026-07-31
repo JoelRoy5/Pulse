@@ -22,8 +22,9 @@ final class DeliveryScheduler {
     ///
     /// Reads `UserPreferences.maxDailyVerses` from the cache's model context to honour
     /// the user's daily limit setting. Falls back to `DeliveryRules.defaultMaxDailyDeliveries`
-    /// when no preferences row exists.
-    func shouldDeliver(for result: ClassificationResult, maxDailyVerses: Int = DeliveryRules.defaultMaxDailyDeliveries) -> Bool {
+    /// when no preferences row exists (<=0 values are handled downstream by the rules engine).
+    func shouldDeliver(for result: ClassificationResult) -> Bool {
+        let maxDailyVerses = cache.fetchMaxDailyVerses()
         let todayCount = cache.todayDeliveryCount()
         let lastDelivery = cache.lastDelivery()
         let lastSameState = cache.lastDelivery(for: result.state)
