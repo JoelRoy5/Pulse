@@ -100,9 +100,19 @@ final class WatchSessionManager: NSObject {
             logger.info("requestLatestVerse: session not reachable — skipping")
             return
         }
-        let request: [String: Any] = ["type": "request_latest_verse"]
+        let request: [String: Any] = [
+            "type": WatchMessage.MessageType.requestLatestVerse.rawValue
+        ]
         await withCheckedContinuation { continuation in
-            session.sendMessage(request, replyHandler: { _ in
+            session.sendMessage(request, replyHandler: { reply in
+                // Apply the returned verse payload through the standard receive path
+                // so it is persisted and watchState is updated consistently.
+                if let payload = WatchMessage.VerseDeliveryPayload.from(reply) {
+                    self.receiveVerse(payload)
+                    logger.info("requestLatestVerse: applied reply verse \(payload.verseReference, privacy: .public)")
+                } else {
+                    logger.info("requestLatestVerse: reply contained no verse payload")
+                }
                 continuation.resume()
             }, errorHandler: { error in
                 logger.warning("requestLatestVerse failed: \(error.localizedDescription, privacy: .public)")
@@ -144,15 +154,16 @@ final class WatchSessionManager: NSObject {
     private func receiveVerse(_ payload: WatchMessage.VerseDeliveryPayload) {
         logger.info("receiveVerse: \(payload.verseReference, privacy: .public)")
 
-        // Update observable state on main thread
+        // Persist to App Group FIRST (synchronous file I/O on delegate queue)
+        // so that the subsequent @MainActor Task observes the appended entry.
+        dataStore.save(current: payload)
+        dataStore.appendHistory(payload)
+
+        // Update observable state on main thread after persistence is complete
         Task { @MainActor in
             self.watchState.currentVerse = payload
             self.watchState.history = self.dataStore.loadHistory()
         }
-
-        // Persist to App Group for widget
-        dataStore.save(current: payload)
-        dataStore.appendHistory(payload)
 
         // Haptic feedback
         WKInterfaceDevice.current().play(.notification)

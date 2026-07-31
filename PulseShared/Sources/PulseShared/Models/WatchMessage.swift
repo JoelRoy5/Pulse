@@ -6,6 +6,7 @@ public enum WatchMessage {
         case healthSummary = "health_summary"
         case verseReaction = "verse_reaction"
         case settingsUpdate = "settings_update"
+        case requestLatestVerse = "request_latest_verse"
     }
 
     public protocol WatchPayload: Codable {

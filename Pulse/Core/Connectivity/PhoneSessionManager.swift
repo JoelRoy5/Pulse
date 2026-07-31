@@ -112,17 +112,79 @@ final class PhoneSessionManager: NSObject {
         logger.info("sendHealthSummary: dispatched for state \(state.rawValue, privacy: .public)")
     }
 
-    // MARK: - Handle Incoming Reaction
+    // MARK: - Handle Incoming Messages
 
-    private func handleIncomingMessage(_ message: [String: Any]) {
-        guard
-            let typeRaw = message["type"] as? String,
-            typeRaw == WatchMessage.MessageType.verseReaction.rawValue,
-            let reaction = WatchMessage.ReactionPayload.from(message)
-        else { return }
+    /// Routes an incoming WC message. When `replyHandler` is provided (i.e. the
+    /// message arrived via `session(_:didReceiveMessage:replyHandler:)`), this method
+    /// is responsible for calling it exactly once — even asynchronously when a
+    /// MainActor fetch is required.
+    private func handleIncomingMessage(
+        _ message: [String: Any],
+        replyHandler: (([String: Any]) -> Void)? = nil
+    ) {
+        guard let typeRaw = message["type"] as? String,
+              let type = WatchMessage.MessageType(rawValue: typeRaw) else {
+            replyHandler?([:])
+            return
+        }
 
-        logger.info("Received reaction \(reaction.reactionRaw, privacy: .public) for delivery \(reaction.deliveryID, privacy: .public)")
-        persistReaction(reaction)
+        switch type {
+        case .verseReaction:
+            guard let reaction = WatchMessage.ReactionPayload.from(message) else {
+                replyHandler?([:])
+                return
+            }
+            logger.info("Received reaction \(reaction.reactionRaw, privacy: .public) for delivery \(reaction.deliveryID, privacy: .public)")
+            persistReaction(reaction)
+            replyHandler?([:])
+
+        case .requestLatestVerse:
+            logger.info("Received request_latest_verse from watch")
+            // Fetching the latest verse requires MainActor (AppBridge + mainContext).
+            // If a replyHandler was supplied, call it after the fetch; otherwise fire-and-forget.
+            Task { @MainActor in
+                let dict = self.latestVersePayloadDict()
+                replyHandler?(dict ?? [:])
+            }
+
+        default:
+            replyHandler?([:])
+        }
+    }
+
+    /// Fetches the most recently delivered VerseDelivery and returns its payload
+    /// dictionary for replying to the watch's background-refresh request.
+    /// Must be called on the MainActor (uses AppBridge.shared and mainContext).
+    @MainActor
+    private func latestVersePayloadDict() -> [String: Any]? {
+        guard let container = AppBridge.shared.modelContainer else {
+            logger.error("latestVersePayloadDict: AppBridge.modelContainer is nil")
+            return nil
+        }
+        let context = container.mainContext
+        var descriptor = FetchDescriptor<VerseDelivery>(
+            sortBy: [SortDescriptor(\.deliveredAt, order: .reverse)]
+        )
+        descriptor.fetchLimit = 1
+        guard let delivery = (try? context.fetch(descriptor))?.first else {
+            logger.info("latestVersePayloadDict: no VerseDelivery found")
+            return nil
+        }
+
+        let state = delivery.biometricState
+        let payload = WatchMessage.VerseDeliveryPayload(
+            deliveryID:              delivery.id.uuidString,
+            verseText:               delivery.verseText,
+            verseReference:          delivery.verseReference,
+            translationAbbreviation: delivery.translationAbbreviation,
+            stateRaw:                delivery.biometricStateRaw,
+            stateDisplayName:        state?.displayName  ?? delivery.biometricStateRaw,
+            stateEmoji:              state?.emoji        ?? "✨",
+            stateBodyText:           delivery.stateBodyText,
+            primaryColor:            state?.primaryColorHex ?? "#C9A96E",
+            timestamp:               delivery.deliveredAt.timeIntervalSince1970
+        )
+        return payload.dictionary(type: .verseDelivery)
     }
 
     private func persistReaction(_ reaction: WatchMessage.ReactionPayload) {
@@ -136,18 +198,26 @@ final class PhoneSessionManager: NSObject {
             }
 
             let context = container.mainContext
-            let descriptor = FetchDescriptor<VerseDelivery>()
-            guard let deliveries = try? context.fetch(descriptor) else { return }
-
-            guard let delivery = deliveries.first(where: { $0.id.uuidString == deliveryIDString }) else {
+            guard let uuid = UUID(uuidString: deliveryIDString) else {
+                logger.warning("persistReaction: invalid UUID string \(deliveryIDString, privacy: .public)")
+                return
+            }
+            let descriptor = FetchDescriptor<VerseDelivery>(
+                predicate: #Predicate { $0.id == uuid }
+            )
+            guard let delivery = (try? context.fetch(descriptor))?.first else {
                 logger.warning("persistReaction: no VerseDelivery found for id \(deliveryIDString, privacy: .public)")
                 return
             }
 
             delivery.userReaction = VerseReaction(rawValue: reactionRaw)
             delivery.engagedAt    = Date()
-            try? context.save()
-            logger.info("persistReaction: updated delivery \(deliveryIDString, privacy: .public) → \(reactionRaw, privacy: .public)")
+            do {
+                try context.save()
+                logger.info("persistReaction: updated delivery \(deliveryIDString, privacy: .public) → \(reactionRaw, privacy: .public)")
+            } catch {
+                logger.error("persistReaction: save failed — \(error.localizedDescription, privacy: .public)")
+            }
         }
     }
 }
@@ -188,8 +258,9 @@ extension PhoneSessionManager: WCSessionDelegate {
         didReceiveMessage message: [String: Any],
         replyHandler: @escaping ([String: Any]) -> Void
     ) {
-        handleIncomingMessage(message)
-        replyHandler([:])
+        // replyHandler is forwarded into handleIncomingMessage so it can be called
+        // asynchronously when a MainActor fetch is required (e.g. requestLatestVerse).
+        handleIncomingMessage(message, replyHandler: replyHandler)
     }
 
     // Guaranteed-delivery messages (transferUserInfo)
