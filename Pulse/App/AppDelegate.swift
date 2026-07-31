@@ -1,6 +1,7 @@
 import UIKit
 import BackgroundTasks
 import UserNotifications
+import SwiftData
 import os.log
 
 private let logger = Logger(subsystem: "com.joelroy.pulse", category: "AppDelegate")
@@ -89,4 +90,8 @@ final class AppBridge {
     private init() {}
 
     weak var healthEngine: HealthEngine?
+
+    /// Set by `PulseApp` so that `PhoneSessionManager` can write to SwiftData
+    /// without creating a second `ModelContainer`.
+    var modelContainer: ModelContainer?
 }

@@ -70,10 +70,26 @@ struct PulseApp: App {
                     healthEngine.onClassification = { [se = scriptureEngine] result in
                         await se.processStateChange(result)
                     }
+                    // Wire onDelivery so PhoneSessionManager relays verses to the watch
+                    scriptureEngine.onDelivery = { delivery in
+                        PhoneSessionManager.shared.sendVerse(delivery)
+                    }
                     // Register AppBridge so AppDelegate can trigger refresh
                     AppBridge.shared.healthEngine = healthEngine
+                    AppBridge.shared.modelContainer = container
+                    // Activate WatchConnectivity
+                    PhoneSessionManager.shared.activate()
                     // Schedule background task
                     AppDelegate.scheduleHealthCheckTask()
+                    // Auto-deliver when launched with -PulseAutoDeliver YES
+                    // (run before notification permission prompt so it is not blocked)
+                    let args = ProcessInfo.processInfo.arguments
+                    if let idx = args.firstIndex(of: "-PulseAutoDeliver"),
+                       idx + 1 < args.count,
+                       args[idx + 1] == "YES" {
+                        logger.info("PulseAutoDeliver: triggering deliverFirstVerse()")
+                        _ = await scriptureEngine.deliverFirstVerse()
+                    }
                     // Request notification permissions
                     _ = await NotificationService.shared.requestAuthorization()
                 }
