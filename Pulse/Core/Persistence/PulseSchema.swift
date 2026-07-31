@@ -1,0 +1,156 @@
+import Foundation
+import SwiftData
+import PulseShared
+
+// MARK: - VerseDelivery
+
+@Model
+final class VerseDelivery {
+    @Attribute(.unique)
+    var id: UUID
+
+    // Verse content
+    var verseID: String
+    var verseReference: String
+    var verseText: String
+    var translationAbbreviation: String
+    var verseTheme: String
+    var themeDisplayName: String
+
+    // State at delivery
+    var biometricStateRaw: String
+    var stateConfidence: Double
+    var stateBodyText: String
+
+    // Health metrics at delivery (stored for history context)
+    var heartRateAtDelivery: Double?
+    var hrvAtDelivery: Double?
+    var restingHRAtDelivery: Double?
+    var oxygenAtDelivery: Double?
+    var sleepEfficiencyAtDelivery: Double?
+    var deepSleepAtDelivery: Double?
+    var stepCountAtDelivery: Int?
+    var wasPostWorkout: Bool
+    var workoutTypeAtDelivery: String?
+
+    // Delivery metadata
+    var deliveredAt: Date
+    var deliveryMethod: String
+
+    // User engagement
+    var userReactionRaw: String?
+    var engagedAt: Date?
+    var sharedAt: Date?
+    var savedAt: Date?
+
+    // AI metadata
+    var glooRationale: String?
+    var isOfflineFallback: Bool
+
+    init(
+        id: UUID = UUID(),
+        verseID: String,
+        verseReference: String,
+        verseText: String,
+        translationAbbreviation: String,
+        verseTheme: String,
+        themeDisplayName: String,
+        biometricStateRaw: String,
+        stateConfidence: Double,
+        stateBodyText: String,
+        deliveredAt: Date = .now,
+        deliveryMethod: String = "notification",
+        wasPostWorkout: Bool = false,
+        isOfflineFallback: Bool = false
+    ) {
+        self.id = id
+        self.verseID = verseID
+        self.verseReference = verseReference
+        self.verseText = verseText
+        self.translationAbbreviation = translationAbbreviation
+        self.verseTheme = verseTheme
+        self.themeDisplayName = themeDisplayName
+        self.biometricStateRaw = biometricStateRaw
+        self.stateConfidence = stateConfidence
+        self.stateBodyText = stateBodyText
+        self.deliveredAt = deliveredAt
+        self.deliveryMethod = deliveryMethod
+        self.wasPostWorkout = wasPostWorkout
+        self.isOfflineFallback = isOfflineFallback
+    }
+
+    // Computed helpers
+    var biometricState: BiometricState? {
+        BiometricState(rawValue: biometricStateRaw)
+    }
+
+    var userReaction: VerseReaction? {
+        get { userReactionRaw.flatMap(VerseReaction.init(rawValue:)) }
+        set { userReactionRaw = newValue?.rawValue }
+    }
+}
+
+// MARK: - CachedVerse
+
+@Model
+final class CachedVerse {
+    @Attribute(.unique)
+    var cacheKey: String
+    var verseID: String
+    var reference: String
+    var text: String
+    var translationAbbreviation: String
+    var copyright: String
+    var chapterURLString: String?
+    var cachedAt: Date
+    var accessCount: Int
+    var lastAccessedAt: Date
+
+    init(verse: BibleVerse) {
+        self.cacheKey = "\(verse.reference)_\(verse.translationAbbreviation)"
+        self.verseID = verse.id
+        self.reference = verse.reference
+        self.text = verse.text
+        self.translationAbbreviation = verse.translationAbbreviation
+        self.copyright = verse.copyright
+        self.chapterURLString = verse.chapterURLString
+        self.cachedAt = .now
+        self.accessCount = 0
+        self.lastAccessedAt = .now
+    }
+}
+
+// MARK: - UserPreferences
+
+@Model
+final class UserPreferences {
+    @Attribute(.unique)
+    var id: Int = 1
+
+    // Translation — dynamic YouVersion IDs (coordinator amendment: replaces preferredTranslationRaw + BibleTranslationID bridge)
+    var preferredBibleID: Int = 3034             // BSB by default
+    var preferredBibleAbbreviation: String = "BSB"
+
+    var displayName: String = ""
+    var hasCompletedOnboarding: Bool = false
+    var maxDailyVerses: Int = 5
+    var quietHoursStart: Int = 22
+    var quietHoursEnd: Int = 6
+    var enableEmergencyOverride: Bool = true
+    var notificationStyle: String = "full"
+    var includeVerseOfDay: Bool = true
+    var preferredThemes: [String] = []
+
+    // Health metric toggles
+    var useHeartRate: Bool = true
+    var useHRV: Bool = true
+    var useSleep: Bool = true
+    var useOxygen: Bool = true
+    var useRespiration: Bool = true
+    var useBodyTemp: Bool = false
+    var useActivity: Bool = true
+    var useVO2Max: Bool = true
+    var useMindfulness: Bool = true
+
+    init() {}
+}
