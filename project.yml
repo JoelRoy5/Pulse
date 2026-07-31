@@ -1,0 +1,94 @@
+name: Pulse
+options:
+  bundleIdPrefix: com.joelroy
+  deploymentTarget:
+    iOS: "17.0"
+    watchOS: "10.0"
+  createIntermediateGroups: true
+configFiles:
+  Debug: Config/Debug.xcconfig
+  Release: Config/Release.xcconfig
+settings:
+  base:
+    DEVELOPMENT_TEAM: APQT8U28NL
+    CODE_SIGN_STYLE: Automatic
+    SWIFT_VERSION: "5.0"
+    CURRENT_PROJECT_VERSION: 1
+    MARKETING_VERSION: 1.0
+packages:
+  PulseShared:
+    path: PulseShared
+targets:
+  Pulse:
+    type: application
+    platform: iOS
+    sources: [Pulse]
+    settings:
+      base:
+        PRODUCT_BUNDLE_IDENTIFIER: com.joelroy.pulse
+    dependencies:
+      - package: PulseShared
+      - target: PulseWatch
+        embed: true
+    entitlements:
+      path: Pulse/Resources/Pulse.entitlements
+      properties:
+        com.apple.developer.healthkit: true
+        com.apple.developer.healthkit.background-delivery: true
+        com.apple.security.application-groups: [group.com.joelroy.pulse]
+    info:
+      path: Pulse/Resources/Info.plist
+      properties:
+        UILaunchScreen: {}
+        NSHealthShareUsageDescription: "Pulse reads your health data to find scripture that meets your current physical and emotional state. This data stays on your device."
+        NSHealthUpdateUsageDescription: "Pulse can save mindfulness sessions to your Health app after Scripture-inspired breathing exercises."
+        BGTaskSchedulerPermittedIdentifiers:
+          - com.joelroy.pulse.health-check
+          - com.joelroy.pulse.verse-refresh
+        UIBackgroundModes: [fetch, processing]
+        GlooClientID: $(GLOO_CLIENT_ID)
+        GlooClientSecret: $(GLOO_CLIENT_SECRET)
+        YouVersionAppKey: $(YOUVERSION_APP_KEY)
+        CFBundleURLTypes:
+          - CFBundleURLName: com.joelroy.pulse
+            CFBundleURLSchemes: [pulse]
+  PulseWatch:
+    type: application
+    platform: watchOS
+    sources: [PulseWatch]
+    dependencies:
+      - package: PulseShared
+      - target: PulseWatchWidgets
+        embed: true
+    settings:
+      base:
+        PRODUCT_BUNDLE_IDENTIFIER: com.joelroy.pulse.watchkitapp
+        INFOPLIST_KEY_WKCompanionAppBundleIdentifier: com.joelroy.pulse
+    entitlements:
+      path: PulseWatch/Resources/PulseWatch.entitlements
+      properties:
+        com.apple.developer.healthkit: true
+        com.apple.security.application-groups: [group.com.joelroy.pulse]
+    info:
+      path: PulseWatch/Resources/Info.plist
+      properties:
+        WKApplication: true
+        NSHealthShareUsageDescription: "Pulse reads your health data on Apple Watch to deliver contextual scripture to your wrist."
+  PulseWatchWidgets:
+    type: app-extension
+    platform: watchOS
+    sources: [PulseWatchWidgets]
+    dependencies:
+      - package: PulseShared
+    settings:
+      base:
+        PRODUCT_BUNDLE_IDENTIFIER: com.joelroy.pulse.watchkitapp.widgets
+    entitlements:
+      path: PulseWatchWidgets/Resources/PulseWatchWidgets.entitlements
+      properties:
+        com.apple.security.application-groups: [group.com.joelroy.pulse]
+    info:
+      path: PulseWatchWidgets/Resources/Info.plist
+      properties:
+        NSExtension:
+          NSExtensionPointIdentifier: com.apple.widgetkit-extension

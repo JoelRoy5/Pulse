@@ -1,1 +1,8 @@
 .DS_Store
+Config/Debug.xcconfig
+Config/Release.xcconfig
+*.xcuserdata
+xcuserdata/
+DerivedData/
+build/
+.build/

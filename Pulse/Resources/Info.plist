@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>BGTaskSchedulerPermittedIdentifiers</key>
+	<array>
+		<string>com.joelroy.pulse.health-check</string>
+		<string>com.joelroy.pulse.verse-refresh</string>
+	</array>
+	<key>CFBundleDevelopmentRegion</key>
+	<string>$(DEVELOPMENT_LANGUAGE)</string>
+	<key>CFBundleExecutable</key>
+	<string>$(EXECUTABLE_NAME)</string>
+	<key>CFBundleIdentifier</key>
+	<string>$(PRODUCT_BUNDLE_IDENTIFIER)</string>
+	<key>CFBundleInfoDictionaryVersion</key>
+	<string>6.0</string>
+	<key>CFBundleName</key>
+	<string>$(PRODUCT_NAME)</string>
+	<key>CFBundlePackageType</key>
+	<string>APPL</string>
+	<key>CFBundleShortVersionString</key>
+	<string>1.0</string>
+	<key>CFBundleURLTypes</key>
+	<array>
+		<dict>
+			<key>CFBundleURLName</key>
+			<string>com.joelroy.pulse</string>
+			<key>CFBundleURLSchemes</key>
+			<array>
+				<string>pulse</string>
+			</array>
+		</dict>
+	</array>
+	<key>CFBundleVersion</key>
+	<string>1</string>
+	<key>GlooClientID</key>
+	<string>$(GLOO_CLIENT_ID)</string>
+	<key>GlooClientSecret</key>
+	<string>$(GLOO_CLIENT_SECRET)</string>
+	<key>NSHealthShareUsageDescription</key>
+	<string>Pulse reads your health data to find scripture that meets your current physical and emotional state. This data stays on your device.</string>
+	<key>NSHealthUpdateUsageDescription</key>
+	<string>Pulse can save mindfulness sessions to your Health app after Scripture-inspired breathing exercises.</string>
+	<key>UIBackgroundModes</key>
+	<array>
+		<string>fetch</string>
+		<string>processing</string>
+	</array>
+	<key>UILaunchScreen</key>
+	<dict/>
+	<key>YouVersionAppKey</key>
+	<string>$(YOUVERSION_APP_KEY)</string>
+</dict>
+</plist>
