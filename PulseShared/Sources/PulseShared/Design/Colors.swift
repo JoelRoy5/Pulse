@@ -22,16 +22,16 @@ extension Color {
     }
 
     // Primary Brand
-    static let psDeepNavy    = Color(hex: "#0A0E1A")  // App background
-    static let psNavy        = Color(hex: "#111827")  // Card backgrounds
-    static let psAccent      = Color(hex: "#C9A96E")  // Gold — primary interactive
-    static let psAccentLight = Color(hex: "#E8C98A")  // Lighter gold for text
-    static let psCream       = Color(hex: "#F5F0E8")  // Verse card background
-    static let psWhite       = Color(hex: "#FAFAFA")  // Primary text on dark
-    static let psGrayMuted   = Color(hex: "#6B7280")  // Secondary text
+    public static let psDeepNavy    = Color(hex: "#0A0E1A")  // App background
+    public static let psNavy        = Color(hex: "#111827")  // Card backgrounds
+    public static let psAccent      = Color(hex: "#C9A96E")  // Gold — primary interactive
+    public static let psAccentLight = Color(hex: "#E8C98A")  // Lighter gold for text
+    public static let psCream       = Color(hex: "#F5F0E8")  // Verse card background
+    public static let psWhite       = Color(hex: "#FAFAFA")  // Primary text on dark
+    public static let psGrayMuted   = Color(hex: "#6B7280")  // Secondary text
 
     // Semantic Colors
-    static let psSuccess     = Color(hex: "#34D399")  // Good health metric
-    static let psWarning     = Color(hex: "#FBBF24")  // Fair health metric
-    static let psAlert       = Color(hex: "#F87171")  // Poor health metric
+    public static let psSuccess     = Color(hex: "#34D399")  // Good health metric
+    public static let psWarning     = Color(hex: "#FBBF24")  // Fair health metric
+    public static let psAlert       = Color(hex: "#F87171")  // Poor health metric
 }
