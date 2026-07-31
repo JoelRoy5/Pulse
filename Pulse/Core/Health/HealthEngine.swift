@@ -116,17 +116,29 @@ final class HealthEngine {
 
         // Sleep — immediate trigger
         let sleepType = HKCategoryType(.sleepAnalysis)
-        healthStore.enableBackgroundDelivery(for: sleepType, frequency: .immediate) { success, error in
+        healthStore.enableBackgroundDelivery(for: sleepType, frequency: .immediate) { [weak self] success, error in
             if let error {
                 logger.warning("Sleep background delivery failed: \(error.localizedDescription, privacy: .public)")
+                return
+            }
+            if success {
+                Task { @MainActor [weak self] in
+                    self?.setupObserverQuery(for: sleepType)
+                }
             }
         }
 
         // Workout — immediate trigger on completion
         let workoutType = HKObjectType.workoutType()
-        healthStore.enableBackgroundDelivery(for: workoutType, frequency: .immediate) { success, error in
+        healthStore.enableBackgroundDelivery(for: workoutType, frequency: .immediate) { [weak self] success, error in
             if let error {
                 logger.warning("Workout background delivery failed: \(error.localizedDescription, privacy: .public)")
+                return
+            }
+            if success {
+                Task { @MainActor [weak self] in
+                    self?.setupObserverQuery(for: workoutType)
+                }
             }
         }
     }
