@@ -54,7 +54,7 @@ public struct SleepAnalyzer {
 
         if !awakeSamples.isEmpty {
             // Find the latest sample's end date to determine the "wake day"
-            let latestSampleEnd = samples.max(by: { $0.end < $1.end })?.end ?? Date()
+            guard let latestSampleEnd = samples.map(\.end).max() else { return nil }
             let wakeDayMidnight = calendar.startOfDay(for: latestSampleEnd)
 
             for sample in awakeSamples {
