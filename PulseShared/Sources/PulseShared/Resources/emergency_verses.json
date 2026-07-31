@@ -1,0 +1,62 @@
+{
+  "energized_post_workout": {
+    "reference": "Philippians 4:13",
+    "text": "I can do all this through him who gives me strength.",
+    "translation": "NIV"
+  },
+  "stressed_anxious": {
+    "reference": "John 14:27",
+    "text": "Peace I leave with you; my peace I give you. I do not give to you as the world gives. Do not let your hearts be troubled and do not be afraid.",
+    "translation": "NIV"
+  },
+  "exhausted_depleted": {
+    "reference": "Matthew 11:28",
+    "text": "Come to me, all you who are weary and burdened, and I will give you rest.",
+    "translation": "NIV"
+  },
+  "deep_rest_recovered": {
+    "reference": "Lamentations 3:22-23",
+    "text": "Because of the Lord's great love we are not consumed, for his compassions never fail. They are new every morning; great is your faithfulness.",
+    "translation": "NIV"
+  },
+  "peaceful_steady": {
+    "reference": "Psalm 23:2-3",
+    "text": "He makes me lie down in green pastures, he leads me beside quiet waters, he refreshes my soul.",
+    "translation": "NIV"
+  },
+  "morning_awakening": {
+    "reference": "Psalm 118:24",
+    "text": "This is the day the Lord has made; let us rejoice and be glad in it.",
+    "translation": "NIV"
+  },
+  "evening_winding_down": {
+    "reference": "Psalm 4:8",
+    "text": "In peace I will lie down and sleep, for you alone, Lord, make me dwell in safety.",
+    "translation": "NIV"
+  },
+  "active_engaged": {
+    "reference": "Colossians 3:23",
+    "text": "Whatever you do, work at it with all your heart, as working for the Lord, not for human masters.",
+    "translation": "NIV"
+  },
+  "sad_withdrawn": {
+    "reference": "Psalm 34:18",
+    "text": "The Lord is close to the brokenhearted and saves those who are crushed in spirit.",
+    "translation": "NIV"
+  },
+  "sick_unwell": {
+    "reference": "Psalm 103:2-3",
+    "text": "Praise the Lord, my soul, and forget not all his benefits — who forgives all your sins and heals all your diseases.",
+    "translation": "NIV"
+  },
+  "peak_performance": {
+    "reference": "Isaiah 40:31",
+    "text": "But those who hope in the Lord will renew their strength. They will soar on wings like eagles; they will run and not grow weary, they will walk and not be faint.",
+    "translation": "NIV"
+  },
+  "spiritual_alert": {
+    "reference": "Isaiah 26:3",
+    "text": "You will keep in perfect peace those whose minds are steadfast, because they trust in you.",
+    "translation": "NIV"
+  }
+}
