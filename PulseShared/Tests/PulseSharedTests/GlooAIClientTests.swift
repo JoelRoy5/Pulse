@@ -58,7 +58,7 @@ final class GlooAIClientTests: XCTestCase {
             timeOfDay: .evening,
             confidence: 0.91,
             recentStates: [.peacefulSteady],
-            translation: .NIV,
+            translationAbbreviation: "BSB",
             preferredThemes: ["rest_renewal"],
             avoidRepeats: ["Psalm 46:10"]
         )
@@ -158,6 +158,34 @@ final class GlooAIClientTests: XCTestCase {
             XCTAssertEqual(status, 500)
         } catch {
             XCTFail("Expected .requestFailed(500), got \(error)")
+        }
+    }
+
+    // MARK: - Token Auth Failure
+
+    func testTokenAuthFailureThrowsAuthFailed() async {
+        // Token endpoint returns 401 → selectVerse must throw .authFailed
+        StubURLProtocol.requestHandler = { request in
+            XCTAssertTrue(request.url?.path.contains("oauth2/token") == true,
+                          "Should hit token endpoint first")
+            let anyURL = URL(string: "https://example.com")!
+            return (makeHTTPResponse(url: anyURL, status: 401), Data())
+        }
+
+        let client = GlooAIClient(clientID: "bad-id", clientSecret: "bad-secret", session: stubbedSession())
+        let context = VerseSelectionContext(
+            state: .peacefulSteady,
+            timeOfDay: .morning,
+            confidence: 0.8
+        )
+
+        do {
+            _ = try await client.selectVerse(for: context)
+            XCTFail("Expected authFailed but got no error")
+        } catch ScriptureAPIError.authFailed {
+            // Expected
+        } catch {
+            XCTFail("Expected .authFailed, got \(error)")
         }
     }
 

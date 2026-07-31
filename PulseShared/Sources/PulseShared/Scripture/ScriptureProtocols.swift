@@ -9,7 +9,11 @@ public struct VerseSelectionContext: Sendable {
     public var timeOfDay: TimeOfDay
     public var confidence: Double
     public var recentStates: [BiometricState]
-    public var translation: BibleTranslationID
+    /// Abbreviation string of the preferred Bible translation (e.g. "BSB", "ESV").
+    /// Defaults to DefaultBible.abbreviation ("BSB"), which is confirmed accessible
+    /// via the YouVersion app key. Stored as a plain String rather than BibleTranslationID
+    /// to avoid implying that numeric IDs here are suitable for API fetching.
+    public var translationAbbreviation: String
     public var preferredThemes: [String]
     public var avoidRepeats: [String]
 
@@ -18,7 +22,7 @@ public struct VerseSelectionContext: Sendable {
         timeOfDay: TimeOfDay,
         confidence: Double,
         recentStates: [BiometricState] = [],
-        translation: BibleTranslationID = .NIV,
+        translationAbbreviation: String = DefaultBible.abbreviation,
         preferredThemes: [String] = [],
         avoidRepeats: [String] = []
     ) {
@@ -26,7 +30,7 @@ public struct VerseSelectionContext: Sendable {
         self.timeOfDay = timeOfDay
         self.confidence = confidence
         self.recentStates = recentStates
-        self.translation = translation
+        self.translationAbbreviation = translationAbbreviation
         self.preferredThemes = preferredThemes
         self.avoidRepeats = avoidRepeats
     }

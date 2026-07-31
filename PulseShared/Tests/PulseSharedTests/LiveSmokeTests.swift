@@ -86,7 +86,7 @@ final class LiveSmokeTests: XCTestCase {
             timeOfDay: TimeOfDay(date: Date()),
             confidence: 0.88,
             recentStates: [.peacefulSteady],
-            translation: .NIV,
+            translationAbbreviation: DefaultBible.abbreviation,
             preferredThemes: ["rest_renewal"],
             avoidRepeats: []
         )

@@ -223,7 +223,7 @@ theme_display_name (string), rationale (string), alternates (array of strings).
             timeOfDay: context.timeOfDay.rawValue,
             confidence: context.confidence,
             recentStates: context.recentStates.map(\.rawValue),
-            translationAbbreviation: context.translation.abbreviation,
+            translationAbbreviation: context.translationAbbreviation,
             preferredThemes: context.preferredThemes,
             avoidRepeats: context.avoidRepeats
         )
