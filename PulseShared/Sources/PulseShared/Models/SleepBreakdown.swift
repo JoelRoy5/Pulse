@@ -17,6 +17,31 @@ public struct SleepBreakdown: Codable, Sendable {
         return totalSleepMinutes / inBedMinutes
     }
 
+    public var quality: Quality {
+        // veryPoor: < 4 hours (< 240 minutes)
+        if totalSleepMinutes < 240 {
+            return .veryPoor
+        }
+        // excellent: efficiency > 0.9 AND deepSleepMinutes > 90 AND remMinutes > 90
+        if efficiency > 0.9 && deepSleepMinutes > 90 && remMinutes > 90 {
+            return .excellent
+        }
+        // good: efficiency > 0.8 AND deepSleepMinutes > 60
+        if efficiency > 0.8 && deepSleepMinutes > 60 {
+            return .good
+        }
+        // fair: efficiency > 0.7 AND totalSleepMinutes >= 300
+        if efficiency > 0.7 && totalSleepMinutes >= 300 {
+            return .fair
+        }
+        // poor: efficiency <= 0.7 OR totalSleepMinutes < 300
+        return .poor
+    }
+
+    public enum Quality: String, Codable, Sendable {
+        case excellent, good, fair, poor, veryPoor
+    }
+
     public init(
         inBedMinutes: Double,
         totalSleepMinutes: Double,

@@ -29,6 +29,8 @@ final class HealthSnapshotTests: XCTestCase {
         XCTAssertEqual(s.sleepQuality, .good)
         s.sleepEfficiency = 0.75; s.totalSleepMinutes = 320
         XCTAssertEqual(s.sleepQuality, .fair)
+        s.sleepEfficiency = 0.75; s.totalSleepMinutes = 250
+        XCTAssertEqual(s.sleepQuality, .poor)
         s.sleepEfficiency = 0.9; s.totalSleepMinutes = 200
         XCTAssertEqual(s.sleepQuality, .veryPoor)
     }
@@ -51,6 +53,43 @@ final class HealthSnapshotTests: XCTestCase {
         XCTAssertEqual(dict["type"] as? String, "verse_delivery")
         let decoded = WatchMessage.VerseDeliveryPayload.from(dict)
         XCTAssertEqual(decoded?.verseReference, "Matthew 11:28")
+    }
+
+    func testSleepBreakdownQualityBands() {
+        // excellent: efficiency > 0.9 AND deepSleepMinutes > 90 AND remMinutes > 90
+        var sb = SleepBreakdown(
+            inBedMinutes: 500, totalSleepMinutes: 480, deepSleepMinutes: 120,
+            remMinutes: 120, lightSleepMinutes: 240, awakeMinutes: 20,
+            lateNightWakeMinutes: 5, sleepOnsetMinutes: 10)
+        XCTAssertEqual(sb.quality, .excellent)
+
+        // good: efficiency > 0.8 AND deepSleepMinutes > 60
+        sb = SleepBreakdown(
+            inBedMinutes: 450, totalSleepMinutes: 380, deepSleepMinutes: 80,
+            remMinutes: 60, lightSleepMinutes: 240, awakeMinutes: 20,
+            lateNightWakeMinutes: 5, sleepOnsetMinutes: 10)
+        XCTAssertEqual(sb.quality, .good)
+
+        // fair: efficiency > 0.7 AND totalSleepMinutes >= 300
+        sb = SleepBreakdown(
+            inBedMinutes: 420, totalSleepMinutes: 310, deepSleepMinutes: 50,
+            remMinutes: 50, lightSleepMinutes: 210, awakeMinutes: 20,
+            lateNightWakeMinutes: 5, sleepOnsetMinutes: 10)
+        XCTAssertEqual(sb.quality, .fair)
+
+        // poor: efficiency <= 0.7 OR totalSleepMinutes < 300
+        sb = SleepBreakdown(
+            inBedMinutes: 400, totalSleepMinutes: 250, deepSleepMinutes: 40,
+            remMinutes: 40, lightSleepMinutes: 170, awakeMinutes: 30,
+            lateNightWakeMinutes: 10, sleepOnsetMinutes: 15)
+        XCTAssertEqual(sb.quality, .poor)
+
+        // veryPoor: totalSleepMinutes < 240
+        sb = SleepBreakdown(
+            inBedMinutes: 300, totalSleepMinutes: 200, deepSleepMinutes: 30,
+            remMinutes: 30, lightSleepMinutes: 140, awakeMinutes: 50,
+            lateNightWakeMinutes: 20, sleepOnsetMinutes: 20)
+        XCTAssertEqual(sb.quality, .veryPoor)
     }
 }
 

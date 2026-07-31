@@ -8,7 +8,12 @@ public enum WatchMessage {
         case settingsUpdate = "settings_update"
     }
 
-    public struct VerseDeliveryPayload: Codable, Sendable {
+    public protocol WatchPayload: Codable {
+        func dictionary(type: MessageType) -> [String: Any]
+        static func from(_ dict: [String: Any]) -> Self?
+    }
+
+    public struct VerseDeliveryPayload: WatchPayload, Sendable {
         public let deliveryID: String
         public let verseText: String
         public let verseReference: String
@@ -43,27 +48,9 @@ public enum WatchMessage {
             self.primaryColor = primaryColor
             self.timestamp = timestamp
         }
-
-        public func dictionary(type: MessageType) -> [String: Any] {
-            let encoder = JSONEncoder()
-            guard let data = try? encoder.encode(self),
-                  var dict = try? JSONSerialization.jsonObject(with: data) as? [String: Any] else {
-                return [:]
-            }
-            dict["type"] = type.rawValue
-            return dict
-        }
-
-        public static func from(_ dict: [String: Any]) -> Self? {
-            guard let data = try? JSONSerialization.data(withJSONObject: dict) else {
-                return nil
-            }
-            let decoder = JSONDecoder()
-            return try? decoder.decode(Self.self, from: data)
-        }
     }
 
-    public struct HealthSummaryPayload: Codable, Sendable {
+    public struct HealthSummaryPayload: WatchPayload, Sendable {
         public let heartRate: Double?
         public let hrv: Double?
         public let oxygenSaturation: Double?
@@ -89,27 +76,9 @@ public enum WatchMessage {
             self.stateRaw = stateRaw
             self.lastUpdated = lastUpdated
         }
-
-        public func dictionary(type: MessageType) -> [String: Any] {
-            let encoder = JSONEncoder()
-            guard let data = try? encoder.encode(self),
-                  var dict = try? JSONSerialization.jsonObject(with: data) as? [String: Any] else {
-                return [:]
-            }
-            dict["type"] = type.rawValue
-            return dict
-        }
-
-        public static func from(_ dict: [String: Any]) -> Self? {
-            guard let data = try? JSONSerialization.data(withJSONObject: dict) else {
-                return nil
-            }
-            let decoder = JSONDecoder()
-            return try? decoder.decode(Self.self, from: data)
-        }
     }
 
-    public struct ReactionPayload: Codable, Sendable {
+    public struct ReactionPayload: WatchPayload, Sendable {
         public let deliveryID: String
         public let reactionRaw: String
         public let timestamp: Double
@@ -123,23 +92,25 @@ public enum WatchMessage {
             self.reactionRaw = reactionRaw
             self.timestamp = timestamp
         }
+    }
+}
 
-        public func dictionary(type: MessageType) -> [String: Any] {
-            let encoder = JSONEncoder()
-            guard let data = try? encoder.encode(self),
-                  var dict = try? JSONSerialization.jsonObject(with: data) as? [String: Any] else {
-                return [:]
-            }
-            dict["type"] = type.rawValue
-            return dict
+extension WatchMessage.WatchPayload {
+    public func dictionary(type: WatchMessage.MessageType) -> [String: Any] {
+        let encoder = JSONEncoder()
+        guard let data = try? encoder.encode(self),
+              var dict = try? JSONSerialization.jsonObject(with: data) as? [String: Any] else {
+            return [:]
         }
+        dict["type"] = type.rawValue
+        return dict
+    }
 
-        public static func from(_ dict: [String: Any]) -> Self? {
-            guard let data = try? JSONSerialization.data(withJSONObject: dict) else {
-                return nil
-            }
-            let decoder = JSONDecoder()
-            return try? decoder.decode(Self.self, from: data)
+    public static func from(_ dict: [String: Any]) -> Self? {
+        guard let data = try? JSONSerialization.data(withJSONObject: dict) else {
+            return nil
         }
+        let decoder = JSONDecoder()
+        return try? decoder.decode(Self.self, from: data)
     }
 }
