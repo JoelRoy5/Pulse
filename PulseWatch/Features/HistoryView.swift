@@ -139,6 +139,9 @@ private struct VerseDetailSheet: View {
                     .font(.system(size: 11))
                     .foregroundStyle(.white.opacity(0.5))
 
+                // Vitals line: ♥ bpm / HRV ms / Sleep % — omitted when all nil
+                vitalsLine
+
                 Divider().overlay(.white.opacity(0.2))
 
                 // Verse text
@@ -160,5 +163,60 @@ private struct VerseDetailSheet: View {
             (BiometricState(rawValue: verse.stateRaw)?.gradient) ??
             LinearGradient(colors: [Color.psDeepNavy], startPoint: .top, endPoint: .bottom)
         )
+    }
+
+    @ViewBuilder
+    private var vitalsLine: some View {
+        let chips = vitalsChips
+        if !chips.isEmpty {
+            HStack(spacing: 6) {
+                ForEach(chips, id: \.label) { chip in
+                    VitalsChip(icon: chip.icon, value: chip.value, label: chip.label)
+                }
+            }
+        }
+    }
+
+    private struct VitalsChipData {
+        let icon: String
+        let value: String
+        let label: String
+    }
+
+    private var vitalsChips: [VitalsChipData] {
+        var chips: [VitalsChipData] = []
+        if let hr = verse.heartRate {
+            chips.append(VitalsChipData(icon: "♥", value: String(format: "%.0f", hr), label: "bpm"))
+        }
+        if let hrv = verse.hrv {
+            chips.append(VitalsChipData(icon: "〜", value: String(format: "%.0f", hrv), label: "hrv"))
+        }
+        if let sleep = verse.sleepEfficiency {
+            chips.append(VitalsChipData(icon: "🌙", value: String(format: "%.0f%%", sleep * 100), label: "sleep"))
+        }
+        return chips
+    }
+}
+
+private struct VitalsChip: View {
+    let icon: String
+    let value: String
+    let label: String
+
+    var body: some View {
+        HStack(spacing: 2) {
+            Text(icon)
+                .font(.system(size: 9))
+            Text(value)
+                .font(.system(size: 10, weight: .semibold, design: .monospaced))
+                .foregroundStyle(.white)
+            Text(label)
+                .font(.system(size: 9))
+                .foregroundStyle(.white.opacity(0.6))
+        }
+        .padding(.horizontal, 5)
+        .padding(.vertical, 2)
+        .background(.white.opacity(0.12))
+        .clipShape(Capsule())
     }
 }

@@ -66,7 +66,10 @@ final class PhoneSessionManager: NSObject {
             stateEmoji:              stateEmoji,
             stateBodyText:           delivery.stateBodyText,
             primaryColor:            primaryColor,
-            timestamp:               delivery.deliveredAt.timeIntervalSince1970
+            timestamp:               delivery.deliveredAt.timeIntervalSince1970,
+            heartRate:               delivery.heartRateAtDelivery,
+            hrv:                     delivery.hrvAtDelivery,
+            sleepEfficiency:         delivery.sleepEfficiencyAtDelivery
         )
 
         let dict = payload.dictionary(type: .verseDelivery)
@@ -182,7 +185,10 @@ final class PhoneSessionManager: NSObject {
             stateEmoji:              state?.emoji        ?? "✨",
             stateBodyText:           delivery.stateBodyText,
             primaryColor:            state?.primaryColorHex ?? "#C9A96E",
-            timestamp:               delivery.deliveredAt.timeIntervalSince1970
+            timestamp:               delivery.deliveredAt.timeIntervalSince1970,
+            heartRate:               delivery.heartRateAtDelivery,
+            hrv:                     delivery.hrvAtDelivery,
+            sleepEfficiency:         delivery.sleepEfficiencyAtDelivery
         )
         return payload.dictionary(type: .verseDelivery)
     }

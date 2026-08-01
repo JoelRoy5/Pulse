@@ -27,6 +27,12 @@ public enum WatchMessage {
         public let primaryColor: String
         public let timestamp: Double
 
+        // Optional vitals captured at delivery time — nil when unavailable.
+        // These fields are optional so that old JSON (without them) decodes cleanly.
+        public let heartRate: Double?       // bpm
+        public let hrv: Double?             // ms SDNN
+        public let sleepEfficiency: Double? // fraction 0-1
+
         public init(
             deliveryID: String,
             verseText: String,
@@ -37,7 +43,10 @@ public enum WatchMessage {
             stateEmoji: String,
             stateBodyText: String,
             primaryColor: String,
-            timestamp: Double
+            timestamp: Double,
+            heartRate: Double? = nil,
+            hrv: Double? = nil,
+            sleepEfficiency: Double? = nil
         ) {
             self.deliveryID = deliveryID
             self.verseText = verseText
@@ -49,6 +58,9 @@ public enum WatchMessage {
             self.stateBodyText = stateBodyText
             self.primaryColor = primaryColor
             self.timestamp = timestamp
+            self.heartRate = heartRate
+            self.hrv = hrv
+            self.sleepEfficiency = sleepEfficiency
         }
     }
 

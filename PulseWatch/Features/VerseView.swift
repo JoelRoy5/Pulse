@@ -73,7 +73,7 @@ private struct FullVerseView: View {
                     if !reduceMotion {
                         breatheOpacity = 1.0
                     } else {
-                        breatheOpacity = 1.0
+                        breatheOpacity = 0.85
                     }
                 }
 
@@ -150,7 +150,7 @@ private struct FullVerseView: View {
         HStack(spacing: 3) {
             Text(verse.stateEmoji)
                 .font(.system(size: 10))
-            Text(verse.stateDisplayName.uppercased())
+            Text((BiometricState(rawValue: verse.stateRaw)?.abbreviation ?? verse.stateDisplayName).uppercased())
                 .font(.system(size: 9, weight: .semibold, design: .rounded))
                 .lineLimit(1)
         }

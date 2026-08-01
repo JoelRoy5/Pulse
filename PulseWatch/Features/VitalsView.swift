@@ -37,8 +37,14 @@ struct VitalsView: View {
                         }
                     }
                 } label: {
-                    Image(systemName: engine.isFetching ? "arrow.clockwise" : "arrow.clockwise")
-                        .font(.system(size: 12))
+                    if engine.isFetching {
+                        ProgressView()
+                            .progressViewStyle(.circular)
+                            .frame(width: 12, height: 12)
+                    } else {
+                        Image(systemName: "arrow.clockwise")
+                            .font(.system(size: 12))
+                    }
                 }
                 .disabled(engine.isFetching)
             }

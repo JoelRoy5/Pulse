@@ -33,17 +33,13 @@ final class WatchHealthEngine: ObservableObject {
     private let store = HKHealthStore()
 
     private static let readTypes: Set<HKObjectType> = {
-        var types = Set<HKObjectType>()
         let identifiers: [HKQuantityTypeIdentifier] = [
             .heartRate,
             .heartRateVariabilitySDNN,
             .oxygenSaturation,
             .stepCount
         ]
-        for id in identifiers {
-            types.insert(HKObjectType.quantityType(forIdentifier: id)!)
-        }
-        return types
+        return Set(identifiers.compactMap { HKObjectType.quantityType(forIdentifier: $0) })
     }()
 
     private init() {}

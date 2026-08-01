@@ -34,19 +34,19 @@ struct RectangularComplicationView: View {
                         .font(.system(size: 10))
                     Text((biometricState?.abbreviation ?? verse.stateDisplayName).uppercased())
                         .font(.system(size: 10, weight: .semibold))
-                        .foregroundStyle(.secondary)
+                        .foregroundStyle(.white.opacity(0.6))
                 }
 
                 // 2-line serif excerpt ~50 chars
                 Text(verse.verseText.verseExcerpt(maxChars: 50))
                     .font(.system(size: 12, design: .serif))
                     .lineLimit(2)
-                    .foregroundStyle(.primary)
+                    .foregroundStyle(.white)
 
                 // Reference
                 Text(verse.verseReference)
                     .font(.system(size: 10))
-                    .foregroundStyle(.secondary)
+                    .foregroundStyle(.white.opacity(0.6))
             }
             .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .leading)
         } else {
@@ -58,9 +58,10 @@ struct RectangularComplicationView: View {
         VStack(spacing: 4) {
             Image(systemName: "heart.text.square")
                 .font(.system(size: 18))
+                .foregroundStyle(.white)
             Text("Pulse")
                 .font(.caption2)
-                .foregroundStyle(.secondary)
+                .foregroundStyle(.white.opacity(0.6))
         }
         .frame(maxWidth: .infinity, maxHeight: .infinity)
     }
