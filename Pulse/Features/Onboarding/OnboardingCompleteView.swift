@@ -9,6 +9,8 @@ struct OnboardingCompleteView: View {
     @State private var showVerseCard = false
     @State private var showTagline = false
 
+    @Environment(\.accessibilityReduceMotion) private var reduceMotion
+
     var body: some View {
         ZStack {
             Color.black.ignoresSafeArea()
@@ -27,7 +29,7 @@ struct OnboardingCompleteView: View {
                     .multilineTextAlignment(.center)
                     .padding(.horizontal, PSSpacing.screenHorizontal)
 
-                // Verse card — slides up after 1.5s pause
+                // Verse card — slides up (or fades in when reduce motion) after 1.5s pause
                 if showVerseCard, let delivery = vm.firstVerse {
                     PSCard(style: .standard) {
                         VStack(alignment: .leading, spacing: PSSpacing.md) {
@@ -45,7 +47,7 @@ struct OnboardingCompleteView: View {
                         }
                     }
                     .padding(.horizontal, PSSpacing.screenHorizontal)
-                    .transition(.psSlideUp)
+                    .transition(reduceMotion ? .opacity : .psSlideUp)
                 } else if showVerseCard {
                     // Fallback if verse not yet set (race condition guard)
                     PSCard(style: .standard) {
@@ -55,7 +57,7 @@ struct OnboardingCompleteView: View {
                             .padding()
                     }
                     .padding(.horizontal, PSSpacing.screenHorizontal)
-                    .transition(.psSlideUp)
+                    .transition(reduceMotion ? .opacity : .psSlideUp)
                 }
 
                 // Tagline
@@ -76,23 +78,24 @@ struct OnboardingCompleteView: View {
                     }
                     .padding(.horizontal, PSSpacing.screenHorizontal)
                     .padding(.bottom, PSSpacing.xxl)
-                    .transition(.psSlideUp)
+                    .transition(reduceMotion ? .opacity : .psSlideUp)
                 }
             }
         }
-        .onAppear {
-            // 1.5s pause then slide up verse card + success haptic
-            DispatchQueue.main.asyncAfter(deadline: .now() + 1.5) {
-                let generator = UINotificationFeedbackGenerator()
-                generator.prepare()
-                withAnimation(.psCardSpring) {
-                    showVerseCard = true
-                }
-                generator.notificationOccurred(.success)
-                // Tagline fades in after card appears
-                withAnimation(.easeIn(duration: 0.8).delay(0.4)) {
-                    showTagline = true
-                }
+        .task {
+            // 1.5s pause (or no pause when reduce motion), then show verse card + success haptic
+            if !reduceMotion {
+                try? await Task.sleep(for: .seconds(1.5))
+            }
+            let generator = UINotificationFeedbackGenerator()
+            generator.prepare()
+            withAnimation(reduceMotion ? .easeIn(duration: 0.3) : .psCardSpring) {
+                showVerseCard = true
+            }
+            generator.notificationOccurred(.success)
+            // Tagline fades in after card appears
+            withAnimation(.easeIn(duration: 0.8).delay(reduceMotion ? 0 : 0.4)) {
+                showTagline = true
             }
         }
     }

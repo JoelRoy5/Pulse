@@ -76,6 +76,7 @@ struct TranslationPickerView: View {
                             .lineLimit(1)
                     }
                 }
+                .frame(minHeight: 44)
                 Spacer()
                 if isSelected {
                     Image(systemName: "checkmark.circle.fill")

@@ -15,13 +15,13 @@ final class OnboardingViewModel {
     // MARK: - State
 
     var step: Step
-    var availableTranslations: [BibleVersion] = []
+    private(set) var availableTranslations: [BibleVersion] = []
     var selectedTranslation: BibleVersion = BibleVersion(
         id: DefaultBible.id,
         abbreviation: DefaultBible.abbreviation,
         title: DefaultBible.title
     )
-    var previewVerseCache: [Int: String] = [:]
+    private(set) var previewVerseCache: [Int: String] = [:]
     var previewVerseText: String?
     var isLoadingPreview: Bool = false
     var permissionsLimited: Bool = false
@@ -119,6 +119,9 @@ final class OnboardingViewModel {
         prefs.preferredBibleAbbreviation = selectedTranslation.abbreviation
         prefs.hasCompletedOnboarding = true
         try? modelContext.save()
+
+        // Reconfigure ScriptureEngine in-session so the first verse honors the picked translation
+        scriptureEngine.reconfigure(bibleID: selectedTranslation.id, abbreviation: selectedTranslation.abbreviation)
 
         // Request first verse — always returns a delivery (fallback chain handles failures)
         let delivery = await scriptureEngine.deliverFirstVerse()

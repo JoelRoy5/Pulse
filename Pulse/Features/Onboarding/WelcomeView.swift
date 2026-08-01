@@ -10,6 +10,8 @@ struct WelcomeView: View {
     @State private var showRow3 = false
     @State private var showTagline = false
 
+    @Environment(\.accessibilityReduceMotion) private var reduceMotion
+
     var body: some View {
         ZStack {
             // Background gradient: deep navy → rich purple
@@ -35,11 +37,10 @@ struct WelcomeView: View {
                     .multilineTextAlignment(.center)
                     .padding(.horizontal, PSSpacing.screenHorizontal)
                     .opacity(showTagline ? 1 : 0)
-                    .offset(y: showTagline ? 0 : 12)
 
                 Spacer().frame(height: PSSpacing.xxl)
 
-                // 3 feature rows — staggered fade-in
+                // 3 feature rows — staggered fade-in (collapsed to instant opacity when reduce motion is on)
                 VStack(alignment: .leading, spacing: PSSpacing.lg) {
                     featureRow(emoji: "♥", text: "Reads your heartbeat", visible: showRow1)
                     featureRow(emoji: "🌙", text: "Watches while you sleep", visible: showRow2)
@@ -58,10 +59,18 @@ struct WelcomeView: View {
             }
         }
         .onAppear {
-            withAnimation(.easeOut(duration: 0.6)) { showTagline = true }
-            withAnimation(.easeOut(duration: 0.5).delay(0.3)) { showRow1 = true }
-            withAnimation(.easeOut(duration: 0.5).delay(0.5)) { showRow2 = true }
-            withAnimation(.easeOut(duration: 0.5).delay(0.7)) { showRow3 = true }
+            if reduceMotion {
+                // Collapse stagger: all items appear immediately, no offsets
+                showTagline = true
+                showRow1 = true
+                showRow2 = true
+                showRow3 = true
+            } else {
+                withAnimation(.easeOut(duration: 0.6)) { showTagline = true }
+                withAnimation(.easeOut(duration: 0.5).delay(0.3)) { showRow1 = true }
+                withAnimation(.easeOut(duration: 0.5).delay(0.5)) { showRow2 = true }
+                withAnimation(.easeOut(duration: 0.5).delay(0.7)) { showRow3 = true }
+            }
         }
     }
 
@@ -74,6 +83,7 @@ struct WelcomeView: View {
                 .foregroundStyle(Color.psWhite)
         }
         .opacity(visible ? 1 : 0)
-        .offset(x: visible ? 0 : -20)
+        // Only apply slide offset when reduce motion is off
+        .offset(x: reduceMotion ? 0 : (visible ? 0 : -20))
     }
 }

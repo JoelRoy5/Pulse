@@ -133,8 +133,8 @@ struct PulseApp: App {
                     logger.info("PulseAutoDeliver: triggering deliverFirstVerse()")
                     _ = await scriptureEngine.deliverFirstVerse()
                 }
-                // Request notification permissions
-                _ = await NotificationService.shared.requestAuthorization()
+                // NOTE: Notification authorization is requested by OnboardingViewModel.grantPermissions()
+                // during onboarding. Do NOT add a top-level call here — it causes a double-prompt.
             }
         }
         .modelContainer(container)

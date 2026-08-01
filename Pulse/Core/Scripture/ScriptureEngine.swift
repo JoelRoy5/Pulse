@@ -42,8 +42,9 @@ final class ScriptureEngine {
     private let notificationService: NotificationService
 
     /// Preferred bible ID (YouVersion numeric) — sourced from `UserPreferences`.
-    private let preferredBibleID: Int
-    private let preferredBibleAbbreviation: String
+    /// Updated in-session via `reconfigure(bibleID:abbreviation:)` after onboarding.
+    private var preferredBibleID: Int
+    private var preferredBibleAbbreviation: String
 
     // MARK: - Init
 
@@ -83,6 +84,15 @@ final class ScriptureEngine {
     func deliverFirstVerse() async -> VerseDelivery {
         let result = makeSyntheticResult()
         return await runPipeline(result: result)
+    }
+
+    /// Updates the active bible translation used for all subsequent fetch calls.
+    /// Called by `OnboardingViewModel.finish()` after the user picks a translation,
+    /// so the first verse delivered in-session uses the chosen bible.
+    func reconfigure(bibleID: Int, abbreviation: String) {
+        preferredBibleID = bibleID
+        preferredBibleAbbreviation = abbreviation
+        logger.info("ScriptureEngine reconfigured: \(abbreviation, privacy: .public) (id=\(bibleID, privacy: .public))")
     }
 
     // MARK: - Core Pipeline
