@@ -54,6 +54,18 @@ struct HomeView: View {
             ScrollView {
                 VStack(alignment: .leading, spacing: PSSpacing.md) {
 
+                    // 0. Header
+                    VStack(alignment: .leading, spacing: 2) {
+                        Text("Pulse")
+                            .font(PSFont.label(size: 28, weight: .bold))
+                            .foregroundStyle(Color.psAccent)
+                        Text(Date.now.formatted(.dateTime.weekday(.wide).month().day()))
+                            .font(PSFont.label(size: 14))
+                            .foregroundStyle(Color.psGrayMuted)
+                    }
+                    .frame(maxWidth: .infinity, alignment: .leading)
+                    .padding(.top, PSSpacing.sm)
+
                     // 1. State Banner Card
                     if let state = currentState {
                         StateBannerCard(
@@ -91,11 +103,6 @@ struct HomeView: View {
             }
             .background(Color.psDeepNavy.ignoresSafeArea())
             .navigationBarTitleDisplayMode(.inline)
-            .toolbar {
-                ToolbarItem(placement: .navigationBarLeading) {
-                    topBarLeading
-                }
-            }
             .refreshable {
                 await healthEngine.refresh()
             }
@@ -177,18 +184,6 @@ struct HomeView: View {
         }
     }
 
-    // MARK: - Top Bar
-
-    private var topBarLeading: some View {
-        VStack(alignment: .leading, spacing: 0) {
-            Text("Pulse")
-                .font(PSFont.label(size: 22, weight: .bold))
-                .foregroundStyle(Color.psAccent)
-            Text(Date.now.formatted(.dateTime.weekday(.wide).month().day()))
-                .font(PSFont.label(size: 13))
-                .foregroundStyle(Color.psGrayMuted)
-        }
-    }
 }
 
 // MARK: - Helpers
