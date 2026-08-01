@@ -92,3 +92,8 @@ Simulators used: iPhone 16 Pro Max (5B1A485B, iOS 18.2, paired) + Apple Watch Se
 **20/20 acceptance items: PASS** (2 sub-items pending physical device verification for on-device behavior that cannot be fully exercised in simulator).
 
 Live API calls confirmed: Gloo AI Studio chose Matthew 11:28 (NIV) for `exhausted_depleted`, Psalm 94:19 for `stressed_anxious`, Isaiah 40:31 for `energized_post_workout`, 1 Corinthians 6:19-20 for a second `energized_post_workout` delivery.
+
+## Device verification (2026-07-31, Joel's hardware)
+- iPhone 17 Pro (iOS 26.0.1): signed install via devicectl succeeded (team APQT8U28NL, automatic provisioning). Onboarding completed on-device: HealthKit permission sheet shown and granted, notifications granted, translation picked, personalized first verse delivered. Confirmed by Joel.
+- Apple Watch Series 8 (watchOS 26.2, paired): watch app OTA install initiated from iPhone Watch app; on-watch verse view + complication placement pending Joel's manual check (OTA install latency). Not blocking: watch UI verified on paired simulators (docs/screenshots/watch-*.png).
+- Kaggle rules page (https://www.kaggle.com/competitions/scripture-in-new-frontiers) is JS-rendered and not readable programmatically from this environment; Joel to verify deadline + submission format manually in a browser.
