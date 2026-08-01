@@ -17,18 +17,34 @@ public struct DeliveryContext: Sendable {
     public var lastSameStateDeliveryAt: Date?
     public var maxDailyDeliveries: Int   // 0 or less means "use default"
 
+    /// Optional custom quiet-hours window (hour of day, 0–23).
+    /// When nil, falls back to the built-in `DeliveryRules.nightSilenceHours` (0...5).
+    /// Supports wrap-around ranges (e.g. start=22, end=6 means 22:00–06:00).
+    public var quietHoursStart: Int?
+    public var quietHoursEnd: Int?
+
+    /// When false, urgency-state override of cooldowns is disabled even for high-urgency states.
+    /// Defaults to true (existing behaviour preserved).
+    public var allowUrgencyOverride: Bool
+
     public init(
         now: Date = .now,
         todayDeliveryCount: Int = 0,
         lastDeliveryAt: Date? = nil,
         lastSameStateDeliveryAt: Date? = nil,
-        maxDailyDeliveries: Int = 5
+        maxDailyDeliveries: Int = 5,
+        quietHoursStart: Int? = nil,
+        quietHoursEnd: Int? = nil,
+        allowUrgencyOverride: Bool = true
     ) {
         self.now = now
         self.todayDeliveryCount = todayDeliveryCount
         self.lastDeliveryAt = lastDeliveryAt
         self.lastSameStateDeliveryAt = lastSameStateDeliveryAt
         self.maxDailyDeliveries = maxDailyDeliveries
+        self.quietHoursStart = quietHoursStart
+        self.quietHoursEnd = quietHoursEnd
+        self.allowUrgencyOverride = allowUrgencyOverride
     }
 }
 
@@ -50,12 +66,23 @@ public struct DeliveryRulesEngine {
         context: DeliveryContext,
         calendar: Calendar = .current
     ) -> DeliveryDecision {
-        // Rule 1: Night silence (0-5) - except spiritualAlert
+        // Rule 1: Night silence — except spiritualAlert.
+        // Uses custom quiet hours (quietHoursStart/End) when present; otherwise built-in 0...5.
         let hour = calendar.component(.hour, from: context.now)
-        if DeliveryRules.nightSilenceHours.contains(hour) {
-            if result.state != .spiritualAlert {
-                return DeliveryDecision(approved: false, reason: "night_silence")
+        let inQuietHours: Bool
+        if let start = context.quietHoursStart, let end = context.quietHoursEnd {
+            if start <= end {
+                // Simple contiguous range, e.g. 0...5
+                inQuietHours = hour >= start && hour < end
+            } else {
+                // Wrap-around range, e.g. 22...6 (22:00 through 05:59)
+                inQuietHours = hour >= start || hour < end
             }
+        } else {
+            inQuietHours = DeliveryRules.nightSilenceHours.contains(hour)
+        }
+        if inQuietHours && result.state != .spiritualAlert {
+            return DeliveryDecision(approved: false, reason: "night_silence")
         }
 
         // Rule 2: Data completeness check
@@ -76,8 +103,10 @@ public struct DeliveryRulesEngine {
             return DeliveryDecision(approved: false, reason: "daily_limit")
         }
 
-        // Check for urgency override conditions
-        let isUrgent = result.state.deliveryUrgency == .high && result.confidence > DeliveryRules.urgencyOverrideConfidence
+        // Check for urgency override conditions (requires allowUrgencyOverride flag)
+        let isUrgent = context.allowUrgencyOverride
+            && result.state.deliveryUrgency == .high
+            && result.confidence > DeliveryRules.urgencyOverrideConfidence
 
         // Rule 5: Global cooldown (2 hours)
         if let lastDelivery = context.lastDeliveryAt {

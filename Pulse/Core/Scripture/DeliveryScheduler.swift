@@ -20,11 +20,12 @@ final class DeliveryScheduler {
 
     /// Returns `true` if the rules engine approves delivery for the given classification.
     ///
-    /// Reads `UserPreferences.maxDailyVerses` from the cache's model context to honour
-    /// the user's daily limit setting. Falls back to `DeliveryRules.defaultMaxDailyDeliveries`
-    /// when no preferences row exists (<=0 values are handled downstream by the rules engine).
+    /// Reads `UserPreferences` from the cache's model context to honour:
+    ///   - `maxDailyVerses`        → daily delivery cap
+    ///   - `quietHoursStart/End`   → custom quiet-hours window
+    ///   - `enableEmergencyOverride` → whether urgent states can bypass cooldowns
     func shouldDeliver(for result: ClassificationResult) -> Bool {
-        let maxDailyVerses = cache.fetchMaxDailyVerses()
+        let prefs = cache.fetchUserPreferences()
         let todayCount = cache.todayDeliveryCount()
         let lastDelivery = cache.lastDelivery()
         let lastSameState = cache.lastDelivery(for: result.state)
@@ -34,7 +35,10 @@ final class DeliveryScheduler {
             todayDeliveryCount: todayCount,
             lastDeliveryAt: lastDelivery?.deliveredAt,
             lastSameStateDeliveryAt: lastSameState?.deliveredAt,
-            maxDailyDeliveries: maxDailyVerses
+            maxDailyDeliveries: prefs.maxDailyVerses,
+            quietHoursStart: prefs.quietHoursStart,
+            quietHoursEnd: prefs.quietHoursEnd,
+            allowUrgencyOverride: prefs.enableEmergencyOverride
         )
 
         let decision = rulesEngine.shouldDeliver(for: result, context: ctx)

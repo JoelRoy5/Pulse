@@ -57,4 +57,80 @@ final class DeliveryRulesEngineTests: XCTestCase {
         let night = DeliveryContext(now: at(hour: 2))
         XCTAssertFalse(engine.shouldDeliver(for: urgent, context: night).approved)
     }
+
+    // MARK: - Custom Quiet Hours
+
+    func testCustomQuietHoursBlocksWithinRange() {
+        // Custom range 22...6 (wrap-around): hour 23 should be blocked
+        var ctx = DeliveryContext(now: at(hour: 23))
+        ctx.quietHoursStart = 22
+        ctx.quietHoursEnd = 6
+        XCTAssertFalse(engine.shouldDeliver(for: result(.peacefulSteady, confidence: 0.9), context: ctx).approved)
+        XCTAssertEqual(engine.shouldDeliver(for: result(.peacefulSteady, confidence: 0.9), context: ctx).reason, "night_silence")
+    }
+
+    func testCustomQuietHoursAllowsOutsideRange() {
+        // Custom range 22...6: hour 12 should be allowed
+        var ctx = DeliveryContext(now: at(hour: 12))
+        ctx.quietHoursStart = 22
+        ctx.quietHoursEnd = 6
+        XCTAssertTrue(engine.shouldDeliver(for: result(.peacefulSteady, confidence: 0.9), context: ctx).approved)
+    }
+
+    func testCustomQuietHoursWrapAroundMidnight() {
+        // Custom range 22...6: hour 0 (midnight) is inside the wrap-around range → blocked
+        var ctx = DeliveryContext(now: at(hour: 0))
+        ctx.quietHoursStart = 22
+        ctx.quietHoursEnd = 6
+        XCTAssertFalse(engine.shouldDeliver(for: result(.peacefulSteady, confidence: 0.9), context: ctx).approved)
+
+        // hour 5 is still inside 22...6 → blocked
+        var ctx5 = DeliveryContext(now: at(hour: 5))
+        ctx5.quietHoursStart = 22
+        ctx5.quietHoursEnd = 6
+        XCTAssertFalse(engine.shouldDeliver(for: result(.peacefulSteady, confidence: 0.9), context: ctx5).approved)
+
+        // hour 7 is outside 22...6 → allowed
+        var ctx7 = DeliveryContext(now: at(hour: 7))
+        ctx7.quietHoursStart = 22
+        ctx7.quietHoursEnd = 6
+        XCTAssertTrue(engine.shouldDeliver(for: result(.peacefulSteady, confidence: 0.9), context: ctx7).approved)
+    }
+
+    func testCustomQuietHoursSpiritualAlertExempt() {
+        // spiritualAlert is exempt even within custom quiet hours
+        var ctx = DeliveryContext(now: at(hour: 23))
+        ctx.quietHoursStart = 22
+        ctx.quietHoursEnd = 6
+        XCTAssertTrue(engine.shouldDeliver(for: result(.spiritualAlert, confidence: 0.9), context: ctx).approved)
+    }
+
+    func testNilQuietHoursUseBuiltInDefault() {
+        // nil quietHoursStart/End falls back to built-in 0...5 range
+        let ctx = DeliveryContext(now: at(hour: 3))   // hour 3 is within 0...5
+        // quietHoursStart/End not set (nil) → default behavior
+        XCTAssertFalse(engine.shouldDeliver(for: result(.peacefulSteady, confidence: 0.9), context: ctx).approved)
+
+        let ctx10 = DeliveryContext(now: at(hour: 10)) // hour 10 outside 0...5
+        XCTAssertTrue(engine.shouldDeliver(for: result(.peacefulSteady, confidence: 0.9), context: ctx10).approved)
+    }
+
+    // MARK: - allowUrgencyOverride
+
+    func testUrgencyOverrideDisabledPreventsOverride() {
+        // When allowUrgencyOverride is false, urgent states can no longer bypass cooldown
+        var ctx = DeliveryContext(now: at(hour: 10))
+        ctx.lastDeliveryAt = at(hour: 9, minute: 30)
+        ctx.allowUrgencyOverride = false
+        let urgent = result(.stressedAnxious, confidence: 0.9)
+        XCTAssertEqual(engine.shouldDeliver(for: urgent, context: ctx).reason, "cooldown")
+    }
+
+    func testUrgencyOverrideEnabledByDefault() {
+        // allowUrgencyOverride defaults to true → existing behavior preserved
+        var ctx = DeliveryContext(now: at(hour: 10))
+        ctx.lastDeliveryAt = at(hour: 9, minute: 30)
+        let urgent = result(.stressedAnxious, confidence: 0.9)
+        XCTAssertEqual(engine.shouldDeliver(for: urgent, context: ctx).reason, "approved_urgent")
+    }
 }

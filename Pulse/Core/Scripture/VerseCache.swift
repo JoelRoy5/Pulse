@@ -123,13 +123,26 @@ final class VerseCache {
     /// Returns `UserPreferences.maxDailyVerses` from the store, or
     /// `DeliveryRules.defaultMaxDailyDeliveries` when no preferences row exists.
     func fetchMaxDailyVerses() -> Int {
+        fetchUserPreferences().maxDailyVerses
+    }
+
+    /// Returns a lightweight snapshot of all delivery-relevant `UserPreferences` fields.
+    /// Falls back to defaults when no preferences row exists.
+    func fetchUserPreferences() -> CachedUserPreferences {
         let descriptor = FetchDescriptor<UserPreferences>(
             predicate: #Predicate { $0.id == 1 }
         )
         if let prefs = try? context.fetch(descriptor).first {
-            return prefs.maxDailyVerses
+            return CachedUserPreferences(
+                maxDailyVerses: prefs.maxDailyVerses,
+                quietHoursStart: prefs.quietHoursStart,
+                quietHoursEnd: prefs.quietHoursEnd,
+                enableEmergencyOverride: prefs.enableEmergencyOverride,
+                notificationStyle: prefs.notificationStyle,
+                preferredThemes: prefs.preferredThemes
+            )
         }
-        return DeliveryRules.defaultMaxDailyDeliveries
+        return CachedUserPreferences()
     }
 
     // MARK: - LRU Eviction
@@ -148,4 +161,17 @@ final class VerseCache {
         try? context.save()
         logger.debug("LRU eviction: removed \(excess) verse(s) from cache")
     }
+}
+
+// MARK: - CachedUserPreferences
+
+/// Plain-value snapshot of delivery-relevant fields from `UserPreferences`.
+/// Avoids passing the SwiftData model across actor contexts.
+struct CachedUserPreferences {
+    var maxDailyVerses: Int = DeliveryRules.defaultMaxDailyDeliveries
+    var quietHoursStart: Int = 22
+    var quietHoursEnd: Int = 6
+    var enableEmergencyOverride: Bool = true
+    var notificationStyle: String = "full"
+    var preferredThemes: [String] = []
 }

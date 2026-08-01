@@ -139,13 +139,14 @@ final class ScriptureEngine {
 
     private func fetchGlooSelection(for result: ClassificationResult) async throws -> VerseSelection {
         let recentRefs = cache.recentReferences(limit: 10)
+        let prefs = cache.fetchUserPreferences()
         let context = VerseSelectionContext(
             state: result.state,
             timeOfDay: TimeOfDay(date: .now),
             confidence: result.confidence,
             recentStates: [],
             translationAbbreviation: preferredBibleAbbreviation,
-            preferredThemes: [],
+            preferredThemes: prefs.preferredThemes,
             avoidRepeats: recentRefs
         )
         return try await verseSelector.selectVerse(for: context)
@@ -269,14 +270,15 @@ final class ScriptureEngine {
         // Notify Watch (Task 11 hook)
         onDelivery?(delivery)
 
-        // Local notification
-        await notificationService.scheduleVerseNotification(delivery)
+        // Local notification — pass notificationStyle preference through
+        let notificationStyle = cache.fetchUserPreferences().notificationStyle
+        await notificationService.scheduleVerseNotification(delivery, style: notificationStyle)
 
         // Widget / complication update
         WidgetKit.WidgetCenter.shared.reloadAllTimelines()
 
         logger.info(
-            "Delivered: \(delivery.verseReference, privacy: .public) [\(delivery.isOfflineFallback ? "offline" : "live", privacy: .public)]"
+            "Delivered: \(delivery.verseReference, privacy: .public) [\(delivery.isOfflineFallback ? "offline" : "live", privacy: .public)] style=\(notificationStyle, privacy: .public)"
         )
     }
 

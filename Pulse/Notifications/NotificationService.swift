@@ -47,14 +47,20 @@ final class NotificationService: NSObject {
     // MARK: - Scheduling
 
     /// Schedules a local notification for a verse delivery.
-    /// Title varies by biometric state category (post-workout / morning / standard).
-    func scheduleVerseNotification(_ delivery: VerseDelivery) async {
+    ///
+    /// - Parameters:
+    ///   - delivery: The verse delivery to notify about.
+    ///   - style: Controls notification content format:
+    ///       - `"title_only"` → title banner only, no body text.
+    ///       - `"with_reference"` → title + verse reference as subtitle; no verse body.
+    ///       - `"full"` (default) → title + reference + excerpt of verse text.
+    func scheduleVerseNotification(_ delivery: VerseDelivery, style: String = "full") async {
         let content = UNMutableNotificationContent()
         content.sound = .default
         content.categoryIdentifier = "verse_notification"
         content.userInfo = ["deliveryID": delivery.id.uuidString]
 
-        // Title template per state
+        // Title template per state (shared across all styles)
         if let state = delivery.biometricState {
             switch state {
             case .energizedPostWorkout:
@@ -68,8 +74,17 @@ final class NotificationService: NSObject {
             content.title = "\u{1F30A} A word for you right now"
         }
 
-        content.subtitle = "Tap to read the full verse"
-        content.body = "\"\(delivery.verseText.excerpt())\" \u{2014} \(delivery.verseReference)"
+        // Body template controlled by notificationStyle preference
+        switch style {
+        case "title_only":
+            // Banner only — no subtitle or body
+            break
+        case "with_reference":
+            content.subtitle = delivery.verseReference
+        default: // "full"
+            content.subtitle = "Tap to read the full verse"
+            content.body = "\"\(delivery.verseText.excerpt())\" \u{2014} \(delivery.verseReference)"
+        }
 
         // Fire immediately (trigger = nil means deliver right away)
         let request = UNNotificationRequest(
@@ -80,7 +95,7 @@ final class NotificationService: NSObject {
 
         do {
             try await center.add(request)
-            logger.info("Scheduled notification for delivery: \(delivery.id, privacy: .public)")
+            logger.info("Scheduled notification for delivery: \(delivery.id, privacy: .public) style=\(style, privacy: .public)")
         } catch {
             logger.error("Failed to schedule notification: \(error.localizedDescription, privacy: .public)")
         }
