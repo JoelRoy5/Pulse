@@ -3,10 +3,10 @@ import PulseShared
 
 struct PSButton: View {
     let title: String
-    let style: ButtonStyle
+    let style: Style
     let action: () -> Void
 
-    enum ButtonStyle {
+    enum Style {
         case primary    // gold capsule with dark navy text
         case secondary  // stroked capsule
     }

@@ -18,7 +18,7 @@ struct PulseRing: View {
 
             // Inner solid ring
             Circle()
-                .fill(color.opacity(0.2))
+                .fill(color.opacity(opacity * 0.33))
                 .scaleEffect(scale * 0.7)
         }
         .onAppear {

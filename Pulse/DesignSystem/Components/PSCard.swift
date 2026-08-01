@@ -34,8 +34,8 @@ struct PSCard<Content: View>: View {
         case .state(let state):
             state.gradient
         case .transparent:
-            Color.clear
-                .background(.ultraThinMaterial)
+            Rectangle()
+                .fill(.ultraThinMaterial)
         }
     }
 }
