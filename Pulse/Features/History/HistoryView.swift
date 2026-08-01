@@ -20,6 +20,16 @@ struct HistoryView: View {
     @State private var shareDelivery: VerseDelivery?
     @State private var showingStateMenu = false
 
+    // -PulseShowHistoryDetail YES — auto-present detail for most recent delivery on appear
+    private let showDetailOnAppear: Bool = {
+        let args = ProcessInfo.processInfo.arguments
+        if let idx = args.firstIndex(of: "-PulseShowHistoryDetail"),
+           idx + 1 < args.count {
+            return args[idx + 1].uppercased() == "YES"
+        }
+        return false
+    }()
+
     private var preferredBibleID: Int {
         preferences.first?.preferredBibleID ?? 3034
     }
@@ -45,6 +55,11 @@ struct HistoryView: View {
             if viewModel == nil {
                 viewModel = HistoryViewModel(context: modelContext)
             }
+            // -PulseShowHistoryDetail YES: auto-present detail for the most recent delivery
+            if showDetailOnAppear, selectedDelivery == nil, let first = allDeliveries.first {
+                try? await Task.sleep(for: .milliseconds(500))
+                selectedDelivery = first
+            }
         }
         .sheet(item: $selectedDelivery) { delivery in
             HistoryDetailView(
@@ -55,8 +70,10 @@ struct HistoryView: View {
                 },
                 onShare: {
                     selectedDelivery = nil
-                    // slight delay so detail sheet can dismiss before share appears
-                    DispatchQueue.main.asyncAfter(deadline: .now() + 0.3) {
+                    // Brief delay so the detail sheet can dismiss before the share sheet appears.
+                    // Using Task.sleep instead of DispatchQueue.main.asyncAfter.
+                    Task {
+                        try? await Task.sleep(for: .milliseconds(300))
                         shareDelivery = delivery
                     }
                 }
@@ -104,8 +121,8 @@ struct HistoryView: View {
                         Section {
                             ForEach(bucket.items) { delivery in
                                 HistoryRowView(delivery: delivery) {
+                                    // sharedAt is stamped by ShareCardView.onPresented — don't pre-stamp here
                                     shareDelivery = delivery
-                                    viewModel?.markShared(delivery)
                                 }
                                 .listRowBackground(Color.psNavy)
                                 .listRowInsets(.init(

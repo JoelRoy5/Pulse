@@ -15,6 +15,10 @@ enum ShareCardVariant: String, CaseIterable, Identifiable {
 // Presents a swipeable TabView(.page) of two Phase-1 card variants.
 // Verse text, reference · translation, Pulse wordmark, optional state context line.
 // Export via ShareLink with ImageRenderer at scale 3 (~1080×1350).
+//
+// ShareCardCanvas consumes a ShareCardSnapshot (a plain Sendable struct) rather
+// than the VerseDelivery @Model directly, so the model never crosses a
+// concurrency boundary during rendering.
 
 struct ShareCardView: View {
     let delivery: VerseDelivery
@@ -32,9 +36,14 @@ struct ShareCardView: View {
     @State private var includeStateContext: Bool = false
     @State private var renderedImage: UIImage? = nil
     @State private var isRendering = false
+    @State private var containerWidth: CGFloat = 0
 
     @Environment(\.accessibilityReduceMotion) private var reduceMotion
     @Environment(\.dismiss) private var dismiss
+
+    // Snapshot is built once on the MainActor (where we already are in SwiftUI)
+    // and passed to the canvas / renderer — no @Model crossing concurrency.
+    private var snapshot: ShareCardSnapshot { ShareCardSnapshot(from: delivery) }
 
     var body: some View {
         NavigationStack {
@@ -43,11 +52,11 @@ struct ShareCardView: View {
 
                 VStack(spacing: PSSpacing.lg) {
 
-                    // Swipeable card preview
+                    // Swipeable card preview — height derived from container width (no UIScreen)
                     TabView(selection: $selectedVariant) {
                         ForEach(ShareCardVariant.allCases) { variant in
                             ShareCardCanvas(
-                                delivery: delivery,
+                                snapshot: snapshot,
                                 variant: variant,
                                 includeStateContext: includeStateContext
                             )
@@ -56,9 +65,17 @@ struct ShareCardView: View {
                     }
                     .tabViewStyle(.page(indexDisplayMode: .automatic))
                     .animation(reduceMotion ? .none : .easeInOut(duration: 0.25), value: selectedVariant)
-                    .frame(height: cardHeight)
+                    .frame(height: containerWidth > 0 ? containerWidth * 0.85 * (1350.0 / 1080.0) : 300)
                     .clipShape(RoundedRectangle(cornerRadius: PSRadius.card))
                     .psCardShadow()
+                    // Measure available width via a background GeometryReader
+                    .background(
+                        GeometryReader { geo in
+                            Color.clear
+                                .onAppear { containerWidth = geo.size.width }
+                                .onChange(of: geo.size.width) { _, w in containerWidth = w }
+                        }
+                    )
 
                     // Variant name label
                     Text(selectedVariant.rawValue)
@@ -71,7 +88,7 @@ struct ShareCardView: View {
                             Text("Include state context")
                                 .font(PSFont.label(size: 15, weight: .medium))
                                 .foregroundStyle(Color.psWhite)
-                            Text("Adds \"Delivered during: \(delivery.biometricState?.displayName ?? "")\"")
+                            Text("Adds \"Delivered during: \(snapshot.stateName)\"")
                                 .font(PSFont.label(size: 12))
                                 .foregroundStyle(Color.psGrayMuted)
                         }
@@ -84,7 +101,7 @@ struct ShareCardView: View {
                         ShareLink(
                             item: Image(uiImage: image),
                             preview: SharePreview(
-                                "\(delivery.verseReference) · Pulse",
+                                "\(snapshot.verseReference) · Pulse",
                                 image: Image(uiImage: image)
                             )
                         ) {
@@ -152,21 +169,20 @@ struct ShareCardView: View {
         }
     }
 
-    // MARK: - Computed
-
-    private var cardHeight: CGFloat {
-        UIScreen.main.bounds.width * 0.85 * (1350.0 / 1080.0)
-    }
-
     // MARK: - Render
 
     private func renderCard() {
         isRendering = true
+        // Capture a Sendable snapshot on the MainActor here, then pass it into
+        // the async render so the @Model never crosses a concurrency boundary.
+        let snap = snapshot
+        let variant = selectedVariant
+        let includeCtx = includeStateContext
         Task {
             let image = await ShareCardRenderer.render(
-                delivery: delivery,
-                variant: selectedVariant,
-                includeStateContext: includeStateContext
+                snapshot: snap,
+                variant: variant,
+                includeStateContext: includeCtx
             )
             renderedImage = image
             isRendering = false
@@ -177,15 +193,12 @@ struct ShareCardView: View {
 // MARK: - ShareCardCanvas
 //
 // The actual card layout — used both for preview and for ImageRenderer export.
+// Consumes a ShareCardSnapshot (Sendable) rather than VerseDelivery @Model.
 
 struct ShareCardCanvas: View {
-    let delivery: VerseDelivery
+    let snapshot: ShareCardSnapshot
     let variant: ShareCardVariant
     let includeStateContext: Bool
-
-    private var state: BiometricState {
-        delivery.biometricState ?? .peacefulSteady
-    }
 
     // Design values per variant
     private var backgroundColor: Color {
@@ -244,7 +257,7 @@ struct ShareCardCanvas: View {
                     .padding(.horizontal, 32)
 
                 // Verse text
-                Text(delivery.verseText)
+                Text(snapshot.verseText)
                     .font(.system(size: 24, weight: .regular, design: .serif))
                     .foregroundStyle(verseTextColor)
                     .lineSpacing(8)
@@ -262,7 +275,7 @@ struct ShareCardCanvas: View {
                 Spacer().frame(height: 16)
 
                 // Reference · Translation
-                Text("— \(delivery.verseReference)  ·  \(delivery.translationAbbreviation)")
+                Text("— \(snapshot.verseReference)  ·  \(snapshot.translationAbbreviation)")
                     .font(.system(size: 14, weight: .medium, design: .serif))
                     .foregroundStyle(referenceColor)
                     .padding(.horizontal, 32)
@@ -270,7 +283,7 @@ struct ShareCardCanvas: View {
                 // Optional state context line
                 if includeStateContext {
                     Spacer().frame(height: 8)
-                    Text("Delivered during: \(state.displayName)")
+                    Text("Delivered during: \(snapshot.stateName)")
                         .font(.system(size: 12, weight: .regular, design: .rounded))
                         .foregroundStyle(referenceColor.opacity(0.75))
                         .padding(.horizontal, 32)

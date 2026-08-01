@@ -128,7 +128,8 @@ struct HomeView: View {
                     },
                     onShare: {
                         showingDetail = false
-                        DispatchQueue.main.asyncAfter(deadline: .now() + 0.3) {
+                        Task {
+                            try? await Task.sleep(for: .milliseconds(300))
                             shareCardDelivery = delivery
                         }
                     }

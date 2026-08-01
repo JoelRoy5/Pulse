@@ -54,13 +54,12 @@ struct MainTabView: View {
                 .tag(Tab.settings)
         }
         .tint(Color.psAccent)
-        .onAppear {
+        .task {
             // -PulseShowShare YES: auto-present share card for latest delivery
             if showShareOnAppear, let delivery = allDeliveries.first {
                 showShareOnAppear = false
-                DispatchQueue.main.asyncAfter(deadline: .now() + 0.6) {
-                    shareCardDelivery = delivery
-                }
+                try? await Task.sleep(for: .milliseconds(600))
+                shareCardDelivery = delivery
             }
         }
         .sheet(item: $shareCardDelivery) { delivery in

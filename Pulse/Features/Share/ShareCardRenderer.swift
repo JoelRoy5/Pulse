@@ -1,21 +1,65 @@
 import SwiftUI
 import PulseShared
 
+// MARK: - ShareCardSnapshot
+//
+// A lightweight Sendable value type capturing only the fields needed to render
+// a share card. Built on the MainActor from a VerseDelivery @Model so the
+// model object never crosses a concurrency boundary.
+
+struct ShareCardSnapshot: Sendable {
+    let verseText: String
+    let verseReference: String
+    let translationAbbreviation: String
+    let stateName: String        // e.g. "Exhausted & Depleted"
+    let stateEmoji: String       // e.g. "😔"
+    let contextLine: String      // stateBodyText
+    let isOfflineFallback: Bool
+
+    @MainActor
+    init(from delivery: VerseDelivery) {
+        self.verseText = delivery.verseText
+        self.verseReference = delivery.verseReference
+        self.translationAbbreviation = delivery.translationAbbreviation
+        let state = delivery.biometricState ?? .peacefulSteady
+        self.stateName = state.displayName
+        self.stateEmoji = state.emoji
+        self.contextLine = delivery.stateBodyText
+        self.isOfflineFallback = delivery.isOfflineFallback
+    }
+}
+
 // MARK: - ShareCardRenderer
 //
 // Renders a ShareCardCanvas to a UIImage using ImageRenderer at display scale 3
 // targeting approximately 1080×1350 pixels.
+//
+// The render function accepts a pre-built ShareCardSnapshot (a plain Sendable
+// struct) rather than the VerseDelivery @Model, so no SwiftData model crosses
+// a concurrency boundary.
 
 enum ShareCardRenderer {
 
+    /// Build a snapshot from a delivery on the MainActor, then render the card.
+    @MainActor
     static func render(
         delivery: VerseDelivery,
         variant: ShareCardVariant,
         includeStateContext: Bool
     ) async -> UIImage {
+        let snapshot = ShareCardSnapshot(from: delivery)
+        return await render(snapshot: snapshot, variant: variant, includeStateContext: includeStateContext)
+    }
+
+    /// Render from a pre-built snapshot — safe to call from any isolation.
+    static func render(
+        snapshot: ShareCardSnapshot,
+        variant: ShareCardVariant,
+        includeStateContext: Bool
+    ) async -> UIImage {
         await MainActor.run {
             let canvas = ShareCardCanvas(
-                delivery: delivery,
+                snapshot: snapshot,
                 variant: variant,
                 includeStateContext: includeStateContext
             )
@@ -32,9 +76,10 @@ enum ShareCardRenderer {
     /// Called in debug builds via -PulseSaveShareDebug YES.
     @MainActor
     static func saveNightVariantDebug(delivery: VerseDelivery) {
+        let snapshot = ShareCardSnapshot(from: delivery)
         let image = ImageRenderer(
             content: ShareCardCanvas(
-                delivery: delivery,
+                snapshot: snapshot,
                 variant: .night,
                 includeStateContext: false
             )
@@ -43,7 +88,6 @@ enum ShareCardRenderer {
         image.scale = 3.0
         if let uiImage = image.uiImage,
            let data = uiImage.pngData() {
-            // Save to Documents (accessible via simctl) and /tmp (works on macOS, not simulator sandbox)
             let docs = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask).first
             if let docsURL = docs {
                 try? data.write(to: docsURL.appendingPathComponent("task16-share-night.png"))
@@ -54,9 +98,10 @@ enum ShareCardRenderer {
     /// Saves the Classic variant to the app's Documents directory for retrieval.
     @MainActor
     static func saveClassicVariantDebug(delivery: VerseDelivery) {
+        let snapshot = ShareCardSnapshot(from: delivery)
         let image = ImageRenderer(
             content: ShareCardCanvas(
-                delivery: delivery,
+                snapshot: snapshot,
                 variant: .classic,
                 includeStateContext: false
             )
