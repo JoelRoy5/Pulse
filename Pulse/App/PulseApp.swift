@@ -78,6 +78,14 @@ struct PulseApp: App {
                 try? context.save()
             }
         }
+
+        // -PulseSkipOnboarding YES — bypass onboarding for UI testing / task verification
+        if let idx = args.firstIndex(of: "-PulseSkipOnboarding"),
+           idx + 1 < args.count,
+           args[idx + 1].uppercased() == "YES" {
+            completed = true
+        }
+
         _hasCompletedOnboarding = State(initialValue: completed)
 
         // -PulseOnboardingStep <welcome|permissions|translation|complete>
