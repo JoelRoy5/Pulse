@@ -31,10 +31,17 @@ final class HomeViewModel {
         case .loved:
             delivery.engagedAt = .now
         case .saved:
+            delivery.engagedAt = .now
             delivery.savedAt = .now
         case .shared:
+            delivery.engagedAt = .now
             delivery.sharedAt = .now
-        default:
+        case .dismissed:
+            // Dismissed: record engagement but do not overwrite a more positive timestamp
+            if delivery.engagedAt == nil {
+                delivery.engagedAt = .now
+            }
+        case .prayed:
             delivery.engagedAt = .now
         }
         do {

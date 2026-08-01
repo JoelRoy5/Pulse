@@ -51,12 +51,16 @@ private struct RecentVerseCard: View {
         delivery.biometricState ?? .peacefulSteady
     }
 
-    private var dateLabel: String {
+    private static let dateFormatter: DateFormatter = {
         let formatter = DateFormatter()
         formatter.doesRelativeDateFormatting = true
         formatter.dateStyle = .short
         formatter.timeStyle = .none
-        return formatter.string(from: delivery.deliveredAt)
+        return formatter
+    }()
+
+    private var dateLabel: String {
+        Self.dateFormatter.string(from: delivery.deliveredAt)
     }
 
     var body: some View {

@@ -6,19 +6,21 @@ struct VerseTextView: View {
     let reference: String
     let translation: String
     var fontSize: CGFloat = 22
+    var textColor: Color = .psWhite
+    var accentColor: Color = .psAccentLight
 
     var body: some View {
         VStack(alignment: .leading, spacing: PSSpacing.sm) {
             // Opening quote mark (decorative)
             Text("\u{201C}")
                 .font(PSFont.verseText(size: fontSize * 2))
-                .foregroundStyle(Color.psAccent.opacity(0.3))
+                .foregroundStyle(accentColor.opacity(0.3))
                 .offset(x: -8, y: 8)
 
             // Verse text
             Text(text)
                 .font(PSFont.verseText(size: fontSize))
-                .foregroundStyle(Color.psWhite)
+                .foregroundStyle(textColor)
                 .lineSpacing(6)
                 .fixedSize(horizontal: false, vertical: true)
 
@@ -27,7 +29,7 @@ struct VerseTextView: View {
                 Spacer()
                 Text("— \(reference)  ·  \(translation)")
                     .font(PSFont.label(size: 13, weight: .medium))
-                    .foregroundStyle(Color.psAccentLight)
+                    .foregroundStyle(accentColor)
             }
         }
     }

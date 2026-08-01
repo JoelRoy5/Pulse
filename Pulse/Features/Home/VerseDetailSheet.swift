@@ -37,18 +37,20 @@ struct VerseDetailSheet: View {
                 // Small state banner
                 SmallStateBanner(state: state, confidence: delivery.stateConfidence)
 
-                // Verse text (22pt serif)
-                PSCard(style: .state(state)) {
+                // Verse text (22pt serif) — cream/paper aesthetic per spec
+                PSCard(style: .verse) {
                     VStack(alignment: .leading, spacing: PSSpacing.sm) {
                         VerseTextView(
                             text: delivery.verseText,
                             reference: delivery.verseReference,
                             translation: delivery.translationAbbreviation,
-                            fontSize: 22
+                            fontSize: 22,
+                            textColor: .psDeepNavy,
+                            accentColor: .psAccent
                         )
 
                         if delivery.isOfflineFallback {
-                            OfflineBadge()
+                            OfflineBadge(textColor: .psDeepNavy)
                         }
                     }
                 }
@@ -94,13 +96,12 @@ private struct SmallStateBanner: View {
     let confidence: Double
 
     var body: some View {
-        HStack {
-            StateChip(state: state, showConfidence: true, confidence: confidence)
-            Spacer()
+        PSCard(style: .state(state)) {
+            HStack {
+                StateChip(state: state, showConfidence: true, confidence: confidence)
+                Spacer()
+            }
         }
-        .padding(PSSpacing.md)
-        .background(state.gradient)
-        .clipShape(RoundedRectangle(cornerRadius: PSRadius.md))
     }
 }
 
