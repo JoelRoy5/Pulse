@@ -13,6 +13,8 @@ struct PulseApp: App {
     private let container: ModelContainer
     @State private var healthEngine = HealthEngine()
     @State private var scriptureEngine: ScriptureEngine
+    @State private var hasCompletedOnboarding: Bool
+    @State private var onboardingStartStep: OnboardingViewModel.Step?
 
     init() {
         do {
@@ -58,41 +60,82 @@ struct PulseApp: App {
             preferredBibleID: bibleID,
             preferredBibleAbbreviation: bibleAbbreviation
         ))
+
+        // Read onboarding completion flag
+        let args = ProcessInfo.processInfo.arguments
+        var completed = false
+        if let prefs = try? context.fetch(prefDescriptor).first {
+            completed = prefs.hasCompletedOnboarding
+        }
+
+        // -PulseResetOnboarding YES — clear flag at launch for testing
+        if let idx = args.firstIndex(of: "-PulseResetOnboarding"),
+           idx + 1 < args.count,
+           args[idx + 1].uppercased() == "YES" {
+            completed = false
+            if let prefs = try? context.fetch(prefDescriptor).first {
+                prefs.hasCompletedOnboarding = false
+                try? context.save()
+            }
+        }
+        _hasCompletedOnboarding = State(initialValue: completed)
+
+        // -PulseOnboardingStep <welcome|permissions|translation|complete>
+        var startStep: OnboardingViewModel.Step? = nil
+        if let idx = args.firstIndex(of: "-PulseOnboardingStep"),
+           idx + 1 < args.count {
+            let stepRaw = args[idx + 1]
+            startStep = OnboardingViewModel.Step(rawValue: stepRaw)
+        }
+        _onboardingStartStep = State(initialValue: startStep)
     }
 
     var body: some Scene {
         WindowGroup {
-            DebugHomeView()
-                .environment(healthEngine)
-                .environment(scriptureEngine)
-                .task {
-                    // Wire onClassification hook ONCE
-                    healthEngine.onClassification = { [se = scriptureEngine] result in
-                        await se.processStateChange(result)
-                    }
-                    // Wire onDelivery so PhoneSessionManager relays verses to the watch
-                    scriptureEngine.onDelivery = { delivery in
-                        PhoneSessionManager.shared.sendVerse(delivery)
-                    }
-                    // Register AppBridge so AppDelegate can trigger refresh
-                    AppBridge.shared.healthEngine = healthEngine
-                    AppBridge.shared.modelContainer = container
-                    // Activate WatchConnectivity
-                    PhoneSessionManager.shared.activate()
-                    // Schedule background task
-                    AppDelegate.scheduleHealthCheckTask()
-                    // Auto-deliver when launched with -PulseAutoDeliver YES
-                    // (run before notification permission prompt so it is not blocked)
-                    let args = ProcessInfo.processInfo.arguments
-                    if let idx = args.firstIndex(of: "-PulseAutoDeliver"),
-                       idx + 1 < args.count,
-                       args[idx + 1] == "YES" {
-                        logger.info("PulseAutoDeliver: triggering deliverFirstVerse()")
-                        _ = await scriptureEngine.deliverFirstVerse()
-                    }
-                    // Request notification permissions
-                    _ = await NotificationService.shared.requestAuthorization()
+            Group {
+                if hasCompletedOnboarding && onboardingStartStep == nil {
+                    MainTabView()
+                } else {
+                    OnboardingFlow(
+                        startStep: onboardingStartStep ?? .welcome,
+                        onComplete: {
+                            hasCompletedOnboarding = true
+                            onboardingStartStep = nil
+                        }
+                    )
                 }
+            }
+            .preferredColorScheme(.dark)
+            .environment(healthEngine)
+            .environment(scriptureEngine)
+            .task {
+                // Wire onClassification hook ONCE
+                healthEngine.onClassification = { [se = scriptureEngine] result in
+                    await se.processStateChange(result)
+                }
+                // Wire onDelivery so PhoneSessionManager relays verses to the watch
+                scriptureEngine.onDelivery = { delivery in
+                    PhoneSessionManager.shared.sendVerse(delivery)
+                }
+                // Register AppBridge so AppDelegate can trigger refresh
+                AppBridge.shared.healthEngine = healthEngine
+                AppBridge.shared.modelContainer = container
+                // Activate WatchConnectivity
+                PhoneSessionManager.shared.activate()
+                // Schedule background task
+                AppDelegate.scheduleHealthCheckTask()
+                // Auto-deliver when launched with -PulseAutoDeliver YES
+                // (run before notification permission prompt so it is not blocked)
+                let args = ProcessInfo.processInfo.arguments
+                if let idx = args.firstIndex(of: "-PulseAutoDeliver"),
+                   idx + 1 < args.count,
+                   args[idx + 1] == "YES" {
+                    logger.info("PulseAutoDeliver: triggering deliverFirstVerse()")
+                    _ = await scriptureEngine.deliverFirstVerse()
+                }
+                // Request notification permissions
+                _ = await NotificationService.shared.requestAuthorization()
+            }
         }
         .modelContainer(container)
     }
@@ -111,100 +154,5 @@ private struct OfflineFallbackSelector: VerseSelecting {
 private struct OfflineFallbackFetcher: VerseFetching {
     func fetchVerse(reference: String, bibleID: Int, abbreviation: String) async throws -> BibleVerse {
         throw ScriptureAPIError.notConfigured
-    }
-}
-
-// MARK: - Debug Home View (Task 9 + Task 10 extended)
-
-private struct DebugHomeView: View {
-    @Environment(HealthEngine.self) private var healthEngine
-    @Environment(ScriptureEngine.self) private var scriptureEngine
-
-    var body: some View {
-        ScrollView {
-            VStack(spacing: 20) {
-
-                // --- Health State ---
-                Group {
-                    Text(healthEngine.currentClassification?.state.displayName ?? "—")
-                        .font(.largeTitle)
-                        .bold()
-
-                    if let classification = healthEngine.currentClassification {
-                        Text(String(format: "Confidence: %.0f%%", classification.confidence * 100))
-                            .font(.headline)
-                            .foregroundStyle(.secondary)
-
-                        if let snapshot = healthEngine.currentSnapshot {
-                            Text(String(format: "Data completeness: %.0f%%", snapshot.dataCompleteness * 100))
-                                .font(.subheadline)
-                                .foregroundStyle(.secondary)
-                        }
-                    } else {
-                        Text("No classification yet")
-                            .foregroundStyle(.secondary)
-                    }
-                }
-
-                Divider()
-
-                // --- Verse Delivery ---
-                Group {
-                    if scriptureEngine.isLoading {
-                        ProgressView("Delivering verse…")
-                    } else if let delivery = scriptureEngine.currentDelivery {
-                        VStack(alignment: .leading, spacing: 8) {
-                            Text(delivery.verseReference)
-                                .font(.headline)
-                                .bold()
-                            Text(delivery.verseText)
-                                .font(.body)
-                                .multilineTextAlignment(.leading)
-                            HStack {
-                                Text(delivery.translationAbbreviation)
-                                    .font(.caption)
-                                    .foregroundStyle(.secondary)
-                                Spacer()
-                                if delivery.isOfflineFallback {
-                                    Text("Offline")
-                                        .font(.caption)
-                                        .foregroundStyle(.orange)
-                                        .padding(.horizontal, 6)
-                                        .padding(.vertical, 2)
-                                        .background(Color.orange.opacity(0.15))
-                                        .cornerRadius(4)
-                                }
-                            }
-                        }
-                        .padding()
-                        .background(Color(.secondarySystemBackground))
-                        .cornerRadius(12)
-                        .padding(.horizontal)
-                    } else {
-                        Text("No verse delivered yet")
-                            .foregroundStyle(.secondary)
-                    }
-                }
-
-                // --- Actions ---
-                VStack(spacing: 12) {
-                    Button("Refresh Health") {
-                        Task { await healthEngine.refresh() }
-                    }
-                    .buttonStyle(.borderedProminent)
-
-                    Button("Deliver First Verse") {
-                        Task { await scriptureEngine.deliverFirstVerse() }
-                    }
-                    .buttonStyle(.bordered)
-                    .tint(.green)
-                }
-            }
-            .padding()
-        }
-        .task {
-            try? await healthEngine.requestAuthorization()
-            await healthEngine.refresh()
-        }
     }
 }
