@@ -1,0 +1,165 @@
+import SwiftUI
+import WatchKit
+import PulseShared
+
+// MARK: - PrayerView
+
+struct PrayerView: View {
+    @Environment(WatchState.self) private var watchState
+    @State private var selectedFeeling: PrayerFeeling?
+    @State private var showResponse = false
+
+    enum PrayerFeeling: String, CaseIterable {
+        case grateful = "Grateful"
+        case struggling = "Struggling"
+        case atPeace = "At Peace"
+        case needHelp = "Need Help"
+
+        var emoji: String {
+            switch self {
+            case .grateful:   return "🙏"
+            case .struggling: return "😔"
+            case .atPeace:    return "🕊️"
+            case .needHelp:   return "🆘"
+            }
+        }
+
+        var biometricState: BiometricState {
+            switch self {
+            case .grateful:   return .deepRestRecovered
+            case .struggling: return .sadWithdrawn
+            case .atPeace:    return .peacefulSteady
+            case .needHelp:   return .stressedAnxious
+            }
+        }
+    }
+
+    var body: some View {
+        ScrollView {
+            VStack(spacing: 10) {
+                Text("🙏")
+                    .font(.system(size: 28))
+                    .padding(.top, 4)
+
+                Text("How are you\nfeeling right now?")
+                    .font(.system(size: 13, weight: .medium, design: .rounded))
+                    .foregroundStyle(.white)
+                    .multilineTextAlignment(.center)
+
+                // 2×2 feeling buttons
+                VStack(spacing: 6) {
+                    HStack(spacing: 6) {
+                        feelingButton(.grateful)
+                        feelingButton(.struggling)
+                    }
+                    HStack(spacing: 6) {
+                        feelingButton(.atPeace)
+                        feelingButton(.needHelp)
+                    }
+                }
+
+                Divider()
+                    .overlay(.white.opacity(0.2))
+                    .padding(.vertical, 2)
+
+                // Breath Prayer (Phase 2)
+                VStack(spacing: 4) {
+                    Button("Begin Breath Prayer") { }
+                        .buttonStyle(.borderedProminent)
+                        .tint(Color.psAccent.opacity(0.5))
+                        .font(.system(size: 12, weight: .semibold))
+                        .disabled(true)
+
+                    Text("Coming soon")
+                        .font(.system(size: 10))
+                        .foregroundStyle(.white.opacity(0.4))
+                }
+            }
+            .padding(.horizontal, 8)
+            .padding(.bottom, 12)
+        }
+        .background(Color.psDeepNavy.ignoresSafeArea())
+        .sheet(item: $selectedFeeling) { feeling in
+            PrayerResponseSheet(
+                feeling: feeling,
+                deliveryID: watchState.currentVerse?.deliveryID ?? "prayer"
+            )
+        }
+    }
+
+    @ViewBuilder
+    private func feelingButton(_ feeling: PrayerFeeling) -> some View {
+        Button {
+            WKInterfaceDevice.current().play(.click)
+            selectedFeeling = feeling
+        } label: {
+            VStack(spacing: 3) {
+                Text(feeling.emoji)
+                    .font(.system(size: 16))
+                Text(feeling.rawValue)
+                    .font(.system(size: 11, weight: .medium, design: .rounded))
+                    .foregroundStyle(.white)
+                    .lineLimit(1)
+                    .minimumScaleFactor(0.7)
+            }
+            .frame(maxWidth: .infinity)
+            .padding(.vertical, 8)
+            .background(Color.psNavy)
+            .clipShape(RoundedRectangle(cornerRadius: 10))
+        }
+        .buttonStyle(.plain)
+    }
+}
+
+// MARK: - PrayerFeeling Identifiable
+
+extension PrayerView.PrayerFeeling: Identifiable {
+    var id: String { rawValue }
+}
+
+// MARK: - Prayer Response Sheet
+
+private struct PrayerResponseSheet: View {
+    let feeling: PrayerView.PrayerFeeling
+    let deliveryID: String
+
+    private var emergencyVerse: BibleVerse {
+        FallbackVerseProvider().emergencyVerse(for: feeling.biometricState)
+    }
+
+    var body: some View {
+        ScrollView {
+            VStack(alignment: .leading, spacing: 10) {
+                // Header
+                HStack {
+                    Text(feeling.emoji)
+                        .font(.system(size: 20))
+                    Text(feeling.rawValue)
+                        .font(.system(size: 14, weight: .semibold, design: .rounded))
+                        .foregroundStyle(.white)
+                }
+                .padding(.top, 4)
+
+                Divider().overlay(.white.opacity(0.2))
+
+                // Verse text
+                Text(emergencyVerse.text)
+                    .font(.system(size: 13, design: .serif))
+                    .foregroundStyle(.white)
+                    .multilineTextAlignment(.leading)
+                    .fixedSize(horizontal: false, vertical: true)
+
+                Text(emergencyVerse.reference)
+                    .font(.system(size: 11, weight: .medium))
+                    .foregroundStyle(.white.opacity(0.7))
+                    .frame(maxWidth: .infinity, alignment: .trailing)
+            }
+            .padding(.horizontal, 10)
+            .padding(.vertical, 10)
+        }
+        .background(feeling.biometricState.gradient)
+        .onAppear {
+            WatchSessionManager.shared.sendReaction(.prayed, deliveryID: deliveryID)
+        }
+    }
+}

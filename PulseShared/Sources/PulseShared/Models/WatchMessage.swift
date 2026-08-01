@@ -14,7 +14,8 @@ public enum WatchMessage {
         static func from(_ dict: [String: Any]) -> Self?
     }
 
-    public struct VerseDeliveryPayload: WatchPayload, Sendable {
+    public struct VerseDeliveryPayload: WatchPayload, Sendable, Identifiable {
+        public var id: String { deliveryID }
         public let deliveryID: String
         public let verseText: String
         public let verseReference: String
