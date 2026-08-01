@@ -22,6 +22,7 @@ struct HomeView: View {
     @State private var selectedDetailDelivery: VerseDelivery?
     @State private var showingDetail = false
     @State private var shareItem: ShareItem?
+    @State private var shareCardDelivery: VerseDelivery?
 
     // MARK: - Derived
 
@@ -124,8 +125,21 @@ struct HomeView: View {
                     preferredBibleID: preferredBibleID,
                     onReact: { reaction in
                         viewModel?.react(reaction, to: delivery)
+                    },
+                    onShare: {
+                        showingDetail = false
+                        DispatchQueue.main.asyncAfter(deadline: .now() + 0.3) {
+                            shareCardDelivery = delivery
+                        }
                     }
                 )
+            }
+        }
+        .sheet(item: $shareCardDelivery) { delivery in
+            ShareCardView(delivery: delivery) {
+                delivery.sharedAt = .now
+                delivery.engagedAt = delivery.engagedAt ?? .now
+                try? modelContext.save()
             }
         }
         .sheet(item: $shareItem) { item in
@@ -145,8 +159,10 @@ struct HomeView: View {
                 onLove: { viewModel?.react(.loved, to: delivery) },
                 onSave: { viewModel?.react(.saved, to: delivery) },
                 onShare: {
-                    let text = "\"\(delivery.verseText)\" — \(delivery.verseReference) (\(delivery.translationAbbreviation))"
-                    shareItem = ShareItem(text: text)
+                    shareCardDelivery = delivery
+                    delivery.sharedAt = .now
+                    delivery.engagedAt = delivery.engagedAt ?? .now
+                    try? modelContext.save()
                 },
                 onReadMore: {
                     selectedDetailDelivery = delivery

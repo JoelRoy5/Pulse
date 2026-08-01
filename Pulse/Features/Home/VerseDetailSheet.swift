@@ -8,6 +8,7 @@ struct VerseDetailSheet: View {
     let delivery: VerseDelivery
     let preferredBibleID: Int
     let onReact: (VerseReaction) -> Void
+    var onShare: (() -> Void)? = nil
 
     @Environment(\.dismiss) private var dismiss
     @State private var whyExpanded = false
@@ -76,7 +77,7 @@ struct VerseDetailSheet: View {
                 .accessibilityLabel("Read Full Chapter on Bible.com")
 
                 // Action row
-                DetailActionRow(delivery: delivery, onReact: onReact)
+                DetailActionRow(delivery: delivery, onReact: onReact, onShare: onShare)
 
                 // Bottom safe area buffer
                 Color.clear.frame(height: PSSpacing.xl)
@@ -174,10 +175,7 @@ private struct WhyThisVerseSection: View {
 private struct DetailActionRow: View {
     let delivery: VerseDelivery
     let onReact: (VerseReaction) -> Void
-
-    private var shareText: String {
-        "\"\(delivery.verseText)\" — \(delivery.verseReference) (\(delivery.translationAbbreviation))"
-    }
+    var onShare: (() -> Void)? = nil
 
     var body: some View {
         HStack(spacing: PSSpacing.sm) {
@@ -199,20 +197,30 @@ private struct DetailActionRow: View {
                 onReact(.saved)
             }
 
-            // Share
-            ShareLink(item: shareText) {
-                VStack(spacing: 4) {
-                    Image(systemName: "square.and.arrow.up")
-                        .font(.system(size: 20))
-                        .foregroundStyle(Color.psWhite.opacity(0.7))
-                    Text("Share")
-                        .font(PSFont.label(size: 12))
-                        .foregroundStyle(Color.psGrayMuted)
+            // Share — presents ShareCardView when onShare is provided; falls back to plain ShareLink
+            if let onShare {
+                DetailActionButton(
+                    icon: "square.and.arrow.up",
+                    label: "Share",
+                    tint: Color.psWhite.opacity(0.7),
+                    action: onShare
+                )
+            } else {
+                let shareText = "\"\(delivery.verseText)\" — \(delivery.verseReference) (\(delivery.translationAbbreviation))"
+                ShareLink(item: shareText) {
+                    VStack(spacing: 4) {
+                        Image(systemName: "square.and.arrow.up")
+                            .font(.system(size: 20))
+                            .foregroundStyle(Color.psWhite.opacity(0.7))
+                        Text("Share")
+                            .font(PSFont.label(size: 12))
+                            .foregroundStyle(Color.psGrayMuted)
+                    }
+                    .frame(maxWidth: .infinity)
+                    .frame(minHeight: 44)
                 }
-                .frame(maxWidth: .infinity)
-                .frame(minHeight: 44)
+                .buttonStyle(.plain)
             }
-            .buttonStyle(.plain)
         }
         .padding(PSSpacing.md)
         .background(Color.psNavy)

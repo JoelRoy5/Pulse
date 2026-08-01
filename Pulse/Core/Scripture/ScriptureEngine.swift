@@ -80,9 +80,10 @@ final class ScriptureEngine {
     }
 
     /// Onboarding / debug path — bypasses scheduler rules. Always yields a verse.
+    /// Pass `mockState` to override the biometric state used for verse selection (used by -PulseMockState).
     @discardableResult
-    func deliverFirstVerse() async -> VerseDelivery {
-        let result = makeSyntheticResult()
+    func deliverFirstVerse(mockState: BiometricState? = nil) async -> VerseDelivery {
+        let result = makeSyntheticResult(state: mockState)
         return await runPipeline(result: result)
     }
 
@@ -281,14 +282,14 @@ final class ScriptureEngine {
 
     // MARK: - Synthetic ClassificationResult (for deliverFirstVerse)
 
-    private func makeSyntheticResult() -> ClassificationResult {
+    private func makeSyntheticResult(state: BiometricState? = nil) -> ClassificationResult {
         // Construct a minimal stub when no real HealthEngine state is available.
         let snapshot = HealthSnapshot(
             dataCompleteness: 1.0
         )
         let hour = Calendar.current.component(.hour, from: .now)
         return ClassificationResult(
-            state: .peacefulSteady,
+            state: state ?? .peacefulSteady,
             confidence: 1.0,
             snapshot: snapshot,
             subScores: BiometricSubScores(

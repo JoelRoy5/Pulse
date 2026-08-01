@@ -133,13 +133,28 @@ struct PulseApp: App {
                 // Schedule background task
                 AppDelegate.scheduleHealthCheckTask()
                 // Auto-deliver when launched with -PulseAutoDeliver YES
+                // Optional: -PulseMockState <state_raw_value> forces a specific biometric state
                 // (run before notification permission prompt so it is not blocked)
                 let args = ProcessInfo.processInfo.arguments
                 if let idx = args.firstIndex(of: "-PulseAutoDeliver"),
                    idx + 1 < args.count,
                    args[idx + 1] == "YES" {
-                    logger.info("PulseAutoDeliver: triggering deliverFirstVerse()")
-                    _ = await scriptureEngine.deliverFirstVerse()
+                    // Read optional mock state
+                    var mockState: BiometricState? = nil
+                    if let stateIdx = args.firstIndex(of: "-PulseMockState"),
+                       stateIdx + 1 < args.count {
+                        mockState = BiometricState(rawValue: args[stateIdx + 1])
+                    }
+                    logger.info("PulseAutoDeliver: triggering deliverFirstVerse() mockState=\(mockState?.rawValue ?? "none", privacy: .public)")
+                    let delivery = await scriptureEngine.deliverFirstVerse(mockState: mockState)
+                    // -PulseSaveShareDebug YES — render share cards to /tmp for verification
+                    if let saveIdx = args.firstIndex(of: "-PulseSaveShareDebug"),
+                       saveIdx + 1 < args.count,
+                       args[saveIdx + 1].uppercased() == "YES" {
+                        ShareCardRenderer.saveClassicVariantDebug(delivery: delivery)
+                        ShareCardRenderer.saveNightVariantDebug(delivery: delivery)
+                        logger.info("PulseSaveShareDebug: saved classic+night to /tmp/")
+                    }
                 }
                 // NOTE: Notification authorization is requested by OnboardingViewModel.grantPermissions()
                 // during onboarding. Do NOT add a top-level call here — it causes a double-prompt.
