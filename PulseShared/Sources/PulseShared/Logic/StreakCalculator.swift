@@ -32,7 +32,11 @@ public struct StreakCalculator: Sendable {
 
         // Get startOfDay for today and yesterday
         let todayStart = calendar.startOfDay(for: today)
-        let yesterday = calendar.date(byAdding: .day, value: -1, to: todayStart)!
+
+        guard let yesterday = calendar.date(byAdding: .day, value: -1, to: todayStart) else {
+            // If we can't compute yesterday, return 0 (streak can't be computed safely)
+            return 0
+        }
         let yesterdayStart = calendar.startOfDay(for: yesterday)
 
         // If neither today nor yesterday has engagement, streak is 0
@@ -47,7 +51,10 @@ public struct StreakCalculator: Sendable {
         // Step back while the day is in the set
         while engagedDays.contains(currentDay) {
             count += 1
-            let previous = calendar.date(byAdding: .day, value: -1, to: currentDay)!
+            guard let previous = calendar.date(byAdding: .day, value: -1, to: currentDay) else {
+                // If we can't compute the previous day, stop the walk and return the count so far
+                break
+            }
             currentDay = calendar.startOfDay(for: previous)
         }
 
@@ -70,12 +77,12 @@ public struct StreakCalculator: Sendable {
 
         // Get today's month and year components
         let todayComponents = calendar.dateComponents([.year, .month], from: todayStart)
-        let todayYear = todayComponents.year!
-        let todayMonth = todayComponents.month!
+        let todayYear = todayComponents.year ?? 1970
+        let todayMonth = todayComponents.month ?? 1
 
         // Get today's day-of-month for total
         let todayDayComponent = calendar.dateComponents([.day], from: todayStart)
-        let total = todayDayComponent.day!
+        let total = todayDayComponent.day ?? 1
 
         // Reduce to set of startOfDay dates and filter to this month
         let engagedDays = Set(engagementDates.map { calendar.startOfDay(for: $0) })
@@ -83,7 +90,9 @@ public struct StreakCalculator: Sendable {
 
         for date in engagedDays {
             let components = calendar.dateComponents([.year, .month], from: date)
-            if components.year == todayYear && components.month == todayMonth {
+            let year = components.year ?? 1970
+            let month = components.month ?? 1
+            if year == todayYear && month == todayMonth {
                 engagedThisMonth.insert(date)
             }
         }
