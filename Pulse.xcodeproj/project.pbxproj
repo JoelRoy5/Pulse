@@ -7,8 +7,11 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		0D21DAC89D867E3EB6E74DFD /* PSCard.swift in Sources */ = {isa = PBXBuildFile; fileRef = 14C9095CC4988578C90F000C /* PSCard.swift */; };
 		14B0F60B45F2D68848F511EF /* WatchSessionManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = D781730BCEDD3158AB713975 /* WatchSessionManager.swift */; };
 		15A8DDEC3C62DF529C4ED72E /* PulseWatchWidgets.appex in Embed Foundation Extensions */ = {isa = PBXBuildFile; fileRef = 0405A3882AE55FA28CB4FEA7 /* PulseWatchWidgets.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
+		1DAED3A7021E31C6A63E2693 /* MetricTile.swift in Sources */ = {isa = PBXBuildFile; fileRef = B53EE25454C6849FC058934B /* MetricTile.swift */; };
+		24C66624CCAFE5B675979021 /* PulseRing.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5D58FF5DF89E2161D951DF1A /* PulseRing.swift */; };
 		2E13F6007A8F7449A8CFCC89 /* VerseView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3EABAF7E9F79AF4B72252E40 /* VerseView.swift */; };
 		3486367464537B6192F7C2AF /* PulseApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0AEE9CD05DD0A6FAA15E6014 /* PulseApp.swift */; };
 		3A8F65C6B42C3D6AE0118D32 /* PulseWatchApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = F76E0B0971A3D5FFE79D25DD /* PulseWatchApp.swift */; };
@@ -31,12 +34,15 @@
 		9E7FC8D4372D7D6477B1E1CE /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = B7045A0EAF2A362DBDC67DCA /* AppDelegate.swift */; };
 		A5C54ADE0C5514A00DA4DCFA /* HealthEngine.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5FCEE7A5CD3B4DDFF21B1DEF /* HealthEngine.swift */; };
 		A9F3479015B3DD98808FCAB4 /* NotificationService.swift in Sources */ = {isa = PBXBuildFile; fileRef = DD88FD056C666BFB9ADEFDBC /* NotificationService.swift */; };
+		AC191A0C8B96CED95DD6B014 /* VerseTextView.swift in Sources */ = {isa = PBXBuildFile; fileRef = BE0124814F82ED74D90B98DF /* VerseTextView.swift */; };
 		B01C22C285F9E458C70B993F /* PulseShared in Frameworks */ = {isa = PBXBuildFile; productRef = A4B6B95425B67549673F84A3 /* PulseShared */; };
 		B20FA01CD469A0B7AD4DB784 /* ModelContainer+Setup.swift in Sources */ = {isa = PBXBuildFile; fileRef = FF94ABC9A97854F7CC080CE4 /* ModelContainer+Setup.swift */; };
 		B5112710A03EDCF3F387EF00 /* PulseComplications.swift in Sources */ = {isa = PBXBuildFile; fileRef = 765F7C1351C0FA1232BF3188 /* PulseComplications.swift */; };
+		BBAC41A330724FB36B826205 /* PSButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9BCAFD230EF79BCA2EA6A5B7 /* PSButton.swift */; };
 		C802F2996F9DC7F8B40490A7 /* HealthDataProviding.swift in Sources */ = {isa = PBXBuildFile; fileRef = 25C9B0047CCEBB272191C917 /* HealthDataProviding.swift */; };
 		D8165E0533D81C4893398E2D /* WatchHealthEngine.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3074BD3D3564A521779E8B8A /* WatchHealthEngine.swift */; };
 		DBB562A4C9E125DA6C8BB7C4 /* HistoryView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1DC49BDF687185AE0657AADC /* HistoryView.swift */; };
+		E49A86E1663C6DB8722A0BF5 /* StateChipView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5B90EB55056AFBCB2A9DF40F /* StateChipView.swift */; };
 		F022C85557F91AB1142744FE /* MetricCollector.swift in Sources */ = {isa = PBXBuildFile; fileRef = 894578127626DAF4E24944F4 /* MetricCollector.swift */; };
 		F1B8A8253EC9CBCB13D0F643 /* VitalsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 106E207F452F51DA0DD90C08 /* VitalsView.swift */; };
 		FF152BDE6343A10B8627BC3C /* PulseShared in Frameworks */ = {isa = PBXBuildFile; productRef = E589F9A8F747F1E94E85082E /* PulseShared */; };
@@ -91,6 +97,7 @@
 		0AEE9CD05DD0A6FAA15E6014 /* PulseApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PulseApp.swift; sourceTree = "<group>"; };
 		106E207F452F51DA0DD90C08 /* VitalsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VitalsView.swift; sourceTree = "<group>"; };
 		13FEF2D2118D74C3572DF349 /* Pulse.app */ = {isa = PBXFileReference; includeInIndex = 0; lastKnownFileType = wrapper.application; path = Pulse.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		14C9095CC4988578C90F000C /* PSCard.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PSCard.swift; sourceTree = "<group>"; };
 		1DC49BDF687185AE0657AADC /* HistoryView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HistoryView.swift; sourceTree = "<group>"; };
 		1E0CFBDDC4B6C4C6F19905F6 /* VerseCache.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VerseCache.swift; sourceTree = "<group>"; };
 		25C9B0047CCEBB272191C917 /* HealthDataProviding.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HealthDataProviding.swift; sourceTree = "<group>"; };
@@ -99,6 +106,8 @@
 		3EABAF7E9F79AF4B72252E40 /* VerseView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VerseView.swift; sourceTree = "<group>"; };
 		3F60F6AA95CD6BBACC401AD7 /* PrayerView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PrayerView.swift; sourceTree = "<group>"; };
 		49CAB3507692A5788EDD021C /* MainView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MainView.swift; sourceTree = "<group>"; };
+		5B90EB55056AFBCB2A9DF40F /* StateChipView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StateChipView.swift; sourceTree = "<group>"; };
+		5D58FF5DF89E2161D951DF1A /* PulseRing.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PulseRing.swift; sourceTree = "<group>"; };
 		5FCEE7A5CD3B4DDFF21B1DEF /* HealthEngine.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HealthEngine.swift; sourceTree = "<group>"; };
 		5FCFC8C1E9A3B989961B020B /* Pulse.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = Pulse.entitlements; sourceTree = "<group>"; };
 		658BC99EE552C7E68CBA5EB8 /* PulseWatch.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = PulseWatch.app; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -112,10 +121,13 @@
 		8955765F322AB6B8869FBBD2 /* ScriptureEngine.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ScriptureEngine.swift; sourceTree = "<group>"; };
 		935401AC9AF178CA8A14AB97 /* PulseSchema.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PulseSchema.swift; sourceTree = "<group>"; };
 		9B3A3BC945381B2E11B96FA8 /* PulseWatch.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = PulseWatch.entitlements; sourceTree = "<group>"; };
+		9BCAFD230EF79BCA2EA6A5B7 /* PSButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PSButton.swift; sourceTree = "<group>"; };
 		A407568C5689F0F6FD2FEC9A /* MockHealthProvider.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MockHealthProvider.swift; sourceTree = "<group>"; };
 		A6BA81F9947113A4B58D4E49 /* PhoneSessionManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PhoneSessionManager.swift; sourceTree = "<group>"; };
 		B3941E64DF15AE175EA3A9CC /* Debug.xcconfig */ = {isa = PBXFileReference; lastKnownFileType = text.xcconfig; path = Debug.xcconfig; sourceTree = "<group>"; };
+		B53EE25454C6849FC058934B /* MetricTile.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MetricTile.swift; sourceTree = "<group>"; };
 		B7045A0EAF2A362DBDC67DCA /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
+		BE0124814F82ED74D90B98DF /* VerseTextView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VerseTextView.swift; sourceTree = "<group>"; };
 		D781730BCEDD3158AB713975 /* WatchSessionManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WatchSessionManager.swift; sourceTree = "<group>"; };
 		DD88FD056C666BFB9ADEFDBC /* NotificationService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NotificationService.swift; sourceTree = "<group>"; };
 		E2B5FBC3DA7A32B44A484727 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist; path = Info.plist; sourceTree = "<group>"; };
@@ -183,6 +195,7 @@
 			children = (
 				38F29541A06B8A159C0EFF06 /* App */,
 				0DBDBE9D62FC59B0A976D043 /* Core */,
+				38D2581186EA6474F113D42F /* DesignSystem */,
 				7B2DACA61F39E7B50B11EBE2 /* Notifications */,
 				F7EE12501EB7201D317BF279 /* Resources */,
 			);
@@ -229,6 +242,14 @@
 			path = Health;
 			sourceTree = "<group>";
 		};
+		38D2581186EA6474F113D42F /* DesignSystem */ = {
+			isa = PBXGroup;
+			children = (
+				67A377F100E9C32D2F5A5284 /* Components */,
+			);
+			path = DesignSystem;
+			sourceTree = "<group>";
+		};
 		38F29541A06B8A159C0EFF06 /* App */ = {
 			isa = PBXGroup;
 			children = (
@@ -264,6 +285,19 @@
 				E3DB0ED9C9FB9510602FD2FD /* PulseShared */,
 			);
 			name = Packages;
+			sourceTree = "<group>";
+		};
+		67A377F100E9C32D2F5A5284 /* Components */ = {
+			isa = PBXGroup;
+			children = (
+				B53EE25454C6849FC058934B /* MetricTile.swift */,
+				9BCAFD230EF79BCA2EA6A5B7 /* PSButton.swift */,
+				14C9095CC4988578C90F000C /* PSCard.swift */,
+				5D58FF5DF89E2161D951DF1A /* PulseRing.swift */,
+				5B90EB55056AFBCB2A9DF40F /* StateChipView.swift */,
+				BE0124814F82ED74D90B98DF /* VerseTextView.swift */,
+			);
+			path = Components;
 			sourceTree = "<group>";
 		};
 		7A87E3B4AE2E59047EFB8F61 = {
@@ -530,14 +564,20 @@
 				C802F2996F9DC7F8B40490A7 /* HealthDataProviding.swift in Sources */,
 				A5C54ADE0C5514A00DA4DCFA /* HealthEngine.swift in Sources */,
 				F022C85557F91AB1142744FE /* MetricCollector.swift in Sources */,
+				1DAED3A7021E31C6A63E2693 /* MetricTile.swift in Sources */,
 				3C2325F3D5E37522A7B82A03 /* MockHealthProvider.swift in Sources */,
 				B20FA01CD469A0B7AD4DB784 /* ModelContainer+Setup.swift in Sources */,
 				A9F3479015B3DD98808FCAB4 /* NotificationService.swift in Sources */,
+				BBAC41A330724FB36B826205 /* PSButton.swift in Sources */,
+				0D21DAC89D867E3EB6E74DFD /* PSCard.swift in Sources */,
 				43E02C8449DDB3CE6793AB01 /* PhoneSessionManager.swift in Sources */,
 				3486367464537B6192F7C2AF /* PulseApp.swift in Sources */,
+				24C66624CCAFE5B675979021 /* PulseRing.swift in Sources */,
 				8C516DA412FFF75038F61FF3 /* PulseSchema.swift in Sources */,
 				81E6C11A1FE2FE2C8126D95A /* ScriptureEngine.swift in Sources */,
+				E49A86E1663C6DB8722A0BF5 /* StateChipView.swift in Sources */,
 				5647EB4F9B143A99D0BB77FC /* VerseCache.swift in Sources */,
+				AC191A0C8B96CED95DD6B014 /* VerseTextView.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
