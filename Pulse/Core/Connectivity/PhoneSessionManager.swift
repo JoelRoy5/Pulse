@@ -115,6 +115,16 @@ final class PhoneSessionManager: NSObject {
         logger.info("sendHealthSummary: dispatched for state \(state.rawValue, privacy: .public)")
     }
 
+    // MARK: - Send Settings Update
+
+    /// Sends a `settings_update` payload to the watch via `transferUserInfo` (guaranteed delivery).
+    /// The watch currently ignores this payload; it is wired here so future watch versions can react.
+    func sendSettingsUpdate(_ payload: [String: Any]) {
+        guard WCSession.isSupported(), session.activationState == .activated else { return }
+        session.transferUserInfo(payload)
+        logger.info("sendSettingsUpdate: dispatched settings payload to watch")
+    }
+
     // MARK: - Handle Incoming Messages
 
     /// Routes an incoming WC message. When `replyHandler` is provided (i.e. the

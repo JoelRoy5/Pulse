@@ -5,17 +5,45 @@ import os.log
 
 private let logger = Logger(subsystem: "com.joelroy.pulse", category: "MetricCollector")
 
+// MARK: - MetricToggles
+
+/// Snapshot of UserPreferences metric toggle values passed into MetricCollector.
+/// All fields default to `true` so that the collector works correctly when no
+/// UserPreferences row exists (first launch, simulator, etc.).
+struct MetricToggles: Sendable {
+    var useHeartRate:   Bool = true
+    var useHRV:         Bool = true
+    var useSleep:       Bool = true
+    var useOxygen:      Bool = true
+    var useRespiration: Bool = true
+    var useBodyTemp:    Bool = false
+    var useActivity:    Bool = true
+    var useVO2Max:      Bool = true
+    var useMindfulness: Bool = true
+
+    static let defaults = MetricToggles()
+}
+
 // MARK: - MetricCollector
 
 /// Real HealthKit implementation of `HealthDataProviding`.
 /// Each metric is fetched in a separate failure-isolated async task; a failed
 /// query yields `nil` for that field and never propagates an error out of
 /// `fetchSnapshot()`.
+///
+/// Metric toggles (sourced from `UserPreferences`) gate which fields are
+/// requested from HealthKit. A disabled metric yields `nil` in the snapshot
+/// and is ignored by `StateClassifier`.
 final class MetricCollector: HealthDataProviding, @unchecked Sendable {
 
     // MARK: - Properties
 
     private let healthStore = HKHealthStore()
+
+    /// Toggled by SettingsView via `HealthEngine.updateMetricToggles(_:)`.
+    /// Mutations are always performed on the MainActor; reads happen on an
+    /// arbitrary background task — the struct is value-typed so copying is safe.
+    var toggles: MetricToggles = .defaults
 
     var isAvailable: Bool { HKHealthStore.isHealthDataAvailable() }
 
@@ -68,25 +96,33 @@ final class MetricCollector: HealthDataProviding, @unchecked Sendable {
     /// Fetches all metrics concurrently via `async let`.
     /// Every individual fetch is wrapped so that a failure yields `nil` for that
     /// metric and does not interrupt the overall snapshot construction.
+    ///
+    /// Metrics disabled in `toggles` (from UserPreferences) are short-circuited
+    /// to `nil` without issuing a HealthKit query — they will not influence
+    /// `StateClassifier` results.
     func fetchSnapshot() async throws -> HealthSnapshot {
-        async let heartRate         = fetchHeartRate()
-        async let hrv               = fetchHRV()
-        async let restingHR         = fetchRestingHR()
-        async let respiratoryRate   = fetchRespiratoryRate()
-        async let oxygenSaturation  = fetchOxygenSaturation()
-        async let bodyTemperature   = fetchBodyTemperature()
-        async let activeEnergy      = fetchActiveEnergy()
-        async let basalEnergy       = fetchBasalEnergy()
-        async let stepCount         = fetchStepCount()
-        async let exerciseMinutes   = fetchExerciseMinutes()
-        async let standHours        = fetchStandHours()
-        async let distance          = fetchDistance()
-        async let flightsClimbed    = fetchFlightsClimbed()
-        async let walkingHRAvg      = fetchWalkingHRAverage()
-        async let vo2Max            = fetchVO2Max()
-        async let mindfulMinutes    = fetchMindfulMinutes()
-        async let sleepData         = fetchSleepData()
-        async let workout           = fetchLastWorkout()
+        // Capture toggles once on the calling actor — avoids data-race reading
+        // a stored property from a concurrent context.
+        let t = toggles
+
+        async let heartRate         = t.useHeartRate   ? fetchHeartRate()        : nil as Double?
+        async let hrv               = t.useHRV         ? fetchHRV()              : nil as Double?
+        async let restingHR         = t.useHeartRate   ? fetchRestingHR()        : nil as Double?
+        async let respiratoryRate   = t.useRespiration ? fetchRespiratoryRate()  : nil as Double?
+        async let oxygenSaturation  = t.useOxygen      ? fetchOxygenSaturation() : nil as Double?
+        async let bodyTemperature   = t.useBodyTemp    ? fetchBodyTemperature()  : nil as Double?
+        async let activeEnergy      = t.useActivity    ? fetchActiveEnergy()     : nil as Double?
+        async let basalEnergy       = t.useActivity    ? fetchBasalEnergy()      : nil as Double?
+        async let stepCount         = t.useActivity    ? fetchStepCount()        : nil as Int?
+        async let exerciseMinutes   = t.useActivity    ? fetchExerciseMinutes()  : nil as Double?
+        async let standHours        = t.useActivity    ? fetchStandHours()       : nil as Int?
+        async let distance          = t.useActivity    ? fetchDistance()          : nil as Double?
+        async let flightsClimbed    = t.useActivity    ? fetchFlightsClimbed()   : nil as Int?
+        async let walkingHRAvg      = t.useHeartRate   ? fetchWalkingHRAverage() : nil as Double?
+        async let vo2Max            = t.useVO2Max      ? fetchVO2Max()            : nil as Double?
+        async let mindfulMinutes    = t.useMindfulness ? fetchMindfulMinutes()   : nil as Double?
+        async let sleepData         = t.useSleep       ? fetchSleepData()         : nil as SleepBreakdown?
+        async let workout           = t.useActivity    ? fetchLastWorkout()       : nil as WorkoutInfo?
 
         let hrValue          = await heartRate
         let hrvValue         = await hrv

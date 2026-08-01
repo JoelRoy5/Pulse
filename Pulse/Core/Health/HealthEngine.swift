@@ -65,6 +65,15 @@ final class HealthEngine {
         try await provider.requestAuthorization()
     }
 
+    /// Pushes updated metric toggles from UserPreferences into the underlying
+    /// `MetricCollector` so the next `refresh()` honours the user's selections.
+    /// No-op when the provider is a mock (simulator or -PulseMockState).
+    func updateMetricToggles(_ toggles: MetricToggles) {
+        guard let collector = provider as? MetricCollector else { return }
+        collector.toggles = toggles
+        logger.info("Metric toggles updated: HR=\(toggles.useHeartRate) HRV=\(toggles.useHRV) sleep=\(toggles.useSleep)")
+    }
+
     func refresh() async {
         do {
             let snapshot = try await provider.fetchSnapshot()

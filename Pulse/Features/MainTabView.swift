@@ -49,7 +49,7 @@ struct MainTabView: View {
                 .tabItem { Label("Journey", systemImage: "book.closed.fill") }
                 .tag(Tab.history)
 
-            SettingsPlaceholderView()
+            SettingsView()
                 .tabItem { Label("Settings", systemImage: "slider.horizontal.3") }
                 .tag(Tab.settings)
         }
@@ -88,14 +88,3 @@ struct MainTabView: View {
     }
 }
 
-// MARK: - Placeholder Screens
-
-private struct SettingsPlaceholderView: View {
-    var body: some View {
-        ZStack {
-            Color.psDeepNavy.ignoresSafeArea()
-            Text("Settings coming soon")
-                .foregroundStyle(Color.psWhite.opacity(0.5))
-        }
-    }
-}

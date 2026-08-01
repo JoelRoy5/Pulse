@@ -153,4 +153,21 @@ final class UserPreferences {
     var useMindfulness: Bool = true
 
     init() {}
+
+    // MARK: - Fetch-or-Create Helper
+
+    /// Returns the single `UserPreferences` singleton row (id == 1), creating and
+    /// inserting it if it does not yet exist.  Always call on the main context.
+    static func current(in context: ModelContext) -> UserPreferences {
+        let descriptor = FetchDescriptor<UserPreferences>(
+            predicate: #Predicate { $0.id == 1 }
+        )
+        if let existing = try? context.fetch(descriptor).first {
+            return existing
+        }
+        let prefs = UserPreferences()
+        context.insert(prefs)
+        try? context.save()
+        return prefs
+    }
 }
