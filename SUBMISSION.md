@@ -86,7 +86,7 @@ Response:
 }
 ```
 
-The USFM reference format (`BOOK.CHAPTER.VERSE`) is constructed from the verse reference string returned by Gloo AI. Multi-verse ranges use the short form `BOOK.C.VS-VE` for same-chapter ranges (e.g., `MAT.11.28-30`) and full dot notation for cross-chapter ranges (e.g., `GEN.1.1-2.3`). The `?format=text` parameter returns plain text rather than HTML with `<span data-usfm="...">` wrappers.
+The USFM reference format (`BOOK.CHAPTER.VERSE`) is constructed from the verse reference string returned by Gloo AI. Single verses (e.g., `MAT.11.28`) and same-chapter ranges (e.g., `MAT.11.28-30`) are supported. The `?format=text` parameter returns plain text rather than HTML with `<span data-usfm="...">` wrappers.
 
 **Live verification (2026-07-31):** `GET /v1/bibles/3034/passages/MAT.11.28?format=text` with a real App Key returned the passage text above. The response does not include a `copyright` field; copyright attribution is derived from the Bible version metadata.
 
@@ -208,13 +208,17 @@ The user message is a JSON-encoded `GlooUserMessage` struct with exactly these f
 ```swift
 // No raw health numbers (heart rate, HRV, bpm, etc.) are included.
 public struct VerseSelectionContext: Sendable {
-    public let state: BiometricState
-    public let timeOfDay: TimeOfDay
-    public let confidence: Double
-    public let recentStates: [BiometricState]
-    public let translationAbbreviation: String
-    public let preferredThemes: [String]
-    public let avoidRepeats: [String]
+    public var state: BiometricState
+    public var timeOfDay: TimeOfDay
+    public var confidence: Double
+    public var recentStates: [BiometricState]
+    /// Abbreviation string of the preferred Bible translation (e.g. "BSB", "ESV").
+    /// Defaults to DefaultBible.abbreviation ("BSB"), which is confirmed accessible
+    /// via the YouVersion app key. Stored as a plain String rather than BibleTranslationID
+    /// to avoid implying that numeric IDs here are suitable for API fetching.
+    public var translationAbbreviation: String
+    public var preferredThemes: [String]
+    public var avoidRepeats: [String]
 }
 ```
 
@@ -425,7 +429,7 @@ The following features were scoped as Phase 2 from the start of the project. The
 
 **7-day sparklines.** A miniature chart of HRV or sleep quality trends in the HomeView metrics grid, giving the user a week-at-a-glance biometric context.
 
-**Remaining share card variants.** Two additional card design variants beyond Classic and Night: a Scripture Highlight card (single word or phrase emphasized) and a Minimal card (verse text only, no branding).
+**Remaining share card variants.** Three additional card design variants beyond Classic and Night: Luminous (state gradient background, white text, glow effect), Dawn (warm sunrise gradient, verse centered), and Minimal (white background, accent color reference text).
 
 **Complication polish.** Extra watchOS complication families and richer data display (e.g., state color gradient on the circular complication).
 

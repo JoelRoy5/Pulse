@@ -120,9 +120,9 @@ swift test --package-path PulseShared
 
 The `PulseShared` package contains all logic-layer unit tests. As of Phase 1: **53 tests pass, 1 skipped, 0 failures**.
 
-Test suites:
+Core logic suites include:
 - `StateClassifierTests` — all 12 biometric states + graceful fallback
-- `DeliverySchedulerTests` — cooldown logic, quiet hours, urgency override
+- `DeliveryRulesEngineTests` — cooldown logic, quiet hours, urgency override
 - `HealthSnapshotTests` — metric parsing and completeness threshold
 - `GlooAIClientTests` — mocked Gloo transport (token exchange + completion parsing)
 - `YouVersionClientTests` — mocked YouVersion transport (passage fetch + error handling)
