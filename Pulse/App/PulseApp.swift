@@ -13,6 +13,7 @@ struct PulseApp: App {
     private let container: ModelContainer
     @State private var healthEngine = HealthEngine()
     @State private var scriptureEngine: ScriptureEngine
+    @State private var votdScheduler: VerseOfDayScheduler
     @State private var hasCompletedOnboarding: Bool
     @State private var onboardingStartStep: OnboardingViewModel.Step?
 
@@ -35,13 +36,24 @@ struct PulseApp: App {
         // Prefer live API clients when keys are configured and offline mode is off
         let selector: any VerseSelecting
         let fetcher: any VerseFetching
+        let youVersionClient: YouVersionClient?
         if AppConfig.isConfigured && !AppConfig.forceOffline {
+            let yvc = YouVersionClient(appKey: AppConfig.youVersionAppKey)
             selector = GlooAIClient(clientID: AppConfig.glooClientID, clientSecret: AppConfig.glooClientSecret)
-            fetcher = YouVersionClient(appKey: AppConfig.youVersionAppKey)
+            fetcher = yvc
+            youVersionClient = yvc
         } else {
             selector = OfflineFallbackSelector()
             fetcher = OfflineFallbackFetcher()
+            youVersionClient = nil
         }
+
+        // Build the Verse of the Day scheduler
+        _votdScheduler = State(initialValue: VerseOfDayScheduler(
+            cache: verseCache,
+            client: youVersionClient,
+            notifications: NotificationService.shared
+        ))
 
         // Read UserPreferences for bible ID (use defaults if no row yet)
         var bibleID = DefaultBible.id
@@ -116,6 +128,7 @@ struct PulseApp: App {
             .preferredColorScheme(.dark)
             .environment(healthEngine)
             .environment(scriptureEngine)
+            .environment(votdScheduler)
             .task {
                 // Wire onClassification hook ONCE
                 healthEngine.onClassification = { [se = scriptureEngine] result in
@@ -132,6 +145,8 @@ struct PulseApp: App {
                 PhoneSessionManager.shared.activate()
                 // Schedule background task
                 AppDelegate.scheduleHealthCheckTask()
+                // Schedule (or remove) the daily 8 AM Verse of the Day notification
+                votdScheduler.scheduleDailyNotification()
                 // Auto-deliver when launched with -PulseAutoDeliver YES
                 // Optional: -PulseMockState <state_raw_value> forces a specific biometric state
                 // (run before notification permission prompt so it is not blocked)
@@ -158,6 +173,12 @@ struct PulseApp: App {
                 }
                 // NOTE: Notification authorization is requested by OnboardingViewModel.grantPermissions()
                 // during onboarding. Do NOT add a top-level call here — it causes a double-prompt.
+                // Exception: -PulseGrantNotifications YES skips the prompt for simulator verification.
+                if let gIdx = args.firstIndex(of: "-PulseGrantNotifications"),
+                   gIdx + 1 < args.count,
+                   args[gIdx + 1].uppercased() == "YES" {
+                    _ = await NotificationService.shared.requestAuthorization()
+                }
             }
         }
         .modelContainer(container)

@@ -7,12 +7,22 @@ import PulseShared
 struct HomeView: View {
     @Environment(HealthEngine.self) private var healthEngine
     @Environment(ScriptureEngine.self) private var scriptureEngine
+    @Environment(VerseOfDayScheduler.self) private var votdScheduler
     @Environment(\.modelContext) private var modelContext
 
     // Last 5 deliveries for recent verses row
     @Query(sort: \VerseDelivery.deliveredAt, order: .reverse) private var allDeliveries: [VerseDelivery]
 
-    // UserPreferences for bible ID
+    // VOTD deliveries today (deliveryMethod == "votd", delivered since startOfDay)
+    // Note: SwiftData @Query does not support Date.now in #Predicate at compile time,
+    // so we filter from all "votd" deliveries sorted descending and pick today's.
+    @Query(
+        filter: #Predicate<VerseDelivery> { $0.deliveryMethod == "votd" },
+        sort: \VerseDelivery.deliveredAt,
+        order: .reverse
+    ) private var allVOTDDeliveries: [VerseDelivery]
+
+    // UserPreferences for bible ID and VOTD setting
     @Query private var preferences: [UserPreferences]
 
     // ViewModel — lazily created once we have modelContext
@@ -36,6 +46,16 @@ struct HomeView: View {
 
     private var preferredBibleID: Int {
         preferences.first?.preferredBibleID ?? 3034
+    }
+
+    private var includeVerseOfDay: Bool {
+        preferences.first?.includeVerseOfDay ?? true
+    }
+
+    /// Returns the most recent VOTD delivery from today's calendar day, if any.
+    private var todaysVOTDDelivery: VerseDelivery? {
+        let startOfDay = Calendar.current.startOfDay(for: .now)
+        return allVOTDDeliveries.first { $0.deliveredAt >= startOfDay }
     }
 
     private var currentDelivery: VerseDelivery? {
@@ -85,7 +105,15 @@ struct HomeView: View {
                         MetricsGridView(snapshot: healthEngine.currentSnapshot)
                     }
 
-                    // 4. Recent Verses
+                    // 4. Verse of the Day Card
+                    if includeVerseOfDay, let votd = todaysVOTDDelivery {
+                        VerseOfDayCard(delivery: votd) {
+                            selectedDetailDelivery = votd
+                            showingDetail = true
+                        }
+                    }
+
+                    // 5. Recent Verses
                     if !recentDeliveries.isEmpty {
                         RecentVersesRow(
                             deliveries: recentDeliveries,
@@ -112,6 +140,8 @@ struct HomeView: View {
                     viewModel = HomeViewModel(context: modelContext)
                 }
                 await healthEngine.refresh()
+                // Ensure today's VOTD is fetched and persisted
+                await votdScheduler.ensureTodaysVOTD()
             }
             .onAppear {
                 // -PulseShowDetail YES — debug flag: auto-present detail sheet
