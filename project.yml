@@ -11,6 +11,7 @@ configFiles:
 settings:
   base:
     DEVELOPMENT_TEAM: APQT8U28NL
+    CODE_SIGN_IDENTITY: "Apple Development"
     CODE_SIGN_STYLE: Automatic
     SWIFT_VERSION: "5.0"
     CURRENT_PROJECT_VERSION: 1

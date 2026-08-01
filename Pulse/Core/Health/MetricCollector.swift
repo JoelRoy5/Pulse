@@ -34,6 +34,7 @@ struct MetricToggles: Sendable {
 /// Metric toggles (sourced from `UserPreferences`) gate which fields are
 /// requested from HealthKit. A disabled metric yields `nil` in the snapshot
 /// and is ignored by `StateClassifier`.
+// SAFETY: HKHealthStore is thread-safe per Apple; toggles is value-copied before the concurrent async-let fan-out in fetchSnapshot, and mutated only on @MainActor.
 final class MetricCollector: HealthDataProviding, @unchecked Sendable {
 
     // MARK: - Properties
