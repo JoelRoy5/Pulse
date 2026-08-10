@@ -41,6 +41,18 @@ struct HomeView: View {
         Array(allDeliveries.filter { $0.deliveryMethod != "votd" }.prefix(5))
     }
 
+    /// All engagement dates for the streak widget:
+    /// each delivery's deliveredAt plus engagedAt when non-nil.
+    private var streakEngagementDates: [Date] {
+        allDeliveries.flatMap { delivery -> [Date] in
+            var dates = [delivery.deliveredAt]
+            if let engaged = delivery.engagedAt {
+                dates.append(engaged)
+            }
+            return dates
+        }
+    }
+
     private var latestDelivery: VerseDelivery? {
         allDeliveries.first
     }
@@ -124,6 +136,9 @@ struct HomeView: View {
                             }
                         )
                     }
+
+                    // 6. Streak Widget
+                    StreakWidget(engagementDates: streakEngagementDates)
 
                     Spacer(minLength: PSSpacing.xxl)
                 }

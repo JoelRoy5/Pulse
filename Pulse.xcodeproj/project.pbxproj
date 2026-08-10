@@ -21,6 +21,7 @@
 		3ADA9E9BB62E2F868A936DC4 /* HomeView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C0D1390EE653F2D9B57F24AA /* HomeView.swift */; };
 		3C2325F3D5E37522A7B82A03 /* MockHealthProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = A407568C5689F0F6FD2FEC9A /* MockHealthProvider.swift */; };
 		3F0A6D3439C8900AF8F84A9A /* PrayerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3F60F6AA95CD6BBACC401AD7 /* PrayerView.swift */; };
+		40264E284E8FF83323821822 /* ScrollScreenshotTest.swift in Sources */ = {isa = PBXBuildFile; fileRef = D38E1FC483337742977EE984 /* ScrollScreenshotTest.swift */; };
 		43E02C8449DDB3CE6793AB01 /* PhoneSessionManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = A6BA81F9947113A4B58D4E49 /* PhoneSessionManager.swift */; };
 		45A99CE20E14662637AA8D84 /* PulseWatch.app in Embed Watch Content */ = {isa = PBXBuildFile; fileRef = 658BC99EE552C7E68CBA5EB8 /* PulseWatch.app */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
 		4D873A7FAEF0992A95998A01 /* RecentVersesRow.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3E451C341D0BF1CEB115F0D7 /* RecentVersesRow.swift */; };
@@ -44,6 +45,7 @@
 		90A3E45D156D49DCBD18CF2E /* VerseDetailSheet.swift in Sources */ = {isa = PBXBuildFile; fileRef = 29FA64B0180D4CDBFC838B54 /* VerseDetailSheet.swift */; };
 		94B8EC034C1765D77212F1DC /* HistoryViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 61351325E55F640F3125EDCC /* HistoryViewModel.swift */; };
 		9C912D3251EAAD0C45AEC7E0 /* WatchAppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = E57CC045AC727642E42EE5DB /* WatchAppDelegate.swift */; };
+		9E2350D8E653EC18DA7F1E56 /* StreakWidget.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4BDC583C372415D61AC4D617 /* StreakWidget.swift */; };
 		9E7FC8D4372D7D6477B1E1CE /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = B7045A0EAF2A362DBDC67DCA /* AppDelegate.swift */; };
 		A5C54ADE0C5514A00DA4DCFA /* HealthEngine.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5FCEE7A5CD3B4DDFF21B1DEF /* HealthEngine.swift */; };
 		A9F3479015B3DD98808FCAB4 /* NotificationService.swift in Sources */ = {isa = PBXBuildFile; fileRef = DD88FD056C666BFB9ADEFDBC /* NotificationService.swift */; };
@@ -75,6 +77,13 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
+		232E7BA609C87DFE93F6A643 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 84FEC84833EC6BF77563A3F6 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = CF79B1BAD3D70F54153FE0B3;
+			remoteInfo = Pulse;
+		};
 		3F7687E2638334DDDA4F9FD9 /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
 			containerPortal = 84FEC84833EC6BF77563A3F6 /* Project object */;
@@ -140,6 +149,7 @@
 		3F60F6AA95CD6BBACC401AD7 /* PrayerView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PrayerView.swift; sourceTree = "<group>"; };
 		49CAB3507692A5788EDD021C /* MainView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MainView.swift; sourceTree = "<group>"; };
 		4AA54FFD5368F70522460346 /* HistoryRowView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HistoryRowView.swift; sourceTree = "<group>"; };
+		4BDC583C372415D61AC4D617 /* StreakWidget.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StreakWidget.swift; sourceTree = "<group>"; };
 		5414380F98EE676E0E738DBC /* OnboardingFlow.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OnboardingFlow.swift; sourceTree = "<group>"; };
 		5B90EB55056AFBCB2A9DF40F /* StateChipView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StateChipView.swift; sourceTree = "<group>"; };
 		5D58FF5DF89E2161D951DF1A /* PulseRing.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PulseRing.swift; sourceTree = "<group>"; };
@@ -178,6 +188,7 @@
 		BE0124814F82ED74D90B98DF /* VerseTextView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VerseTextView.swift; sourceTree = "<group>"; };
 		C0D1390EE653F2D9B57F24AA /* HomeView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HomeView.swift; sourceTree = "<group>"; };
 		D0AE5E25194558D68B33915D /* SettingsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsView.swift; sourceTree = "<group>"; };
+		D38E1FC483337742977EE984 /* ScrollScreenshotTest.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ScrollScreenshotTest.swift; sourceTree = "<group>"; };
 		D781730BCEDD3158AB713975 /* WatchSessionManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WatchSessionManager.swift; sourceTree = "<group>"; };
 		DBBB7FDB243B4CA672E7FF03 /* HistoryView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HistoryView.swift; sourceTree = "<group>"; };
 		DD88FD056C666BFB9ADEFDBC /* NotificationService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NotificationService.swift; sourceTree = "<group>"; };
@@ -188,6 +199,7 @@
 		EA7D9FF486D22C0334697983 /* StateBannerCard.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StateBannerCard.swift; sourceTree = "<group>"; };
 		EC7FFBAB32D5F8DE5505202F /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist; path = Info.plist; sourceTree = "<group>"; };
 		F76E0B0971A3D5FFE79D25DD /* PulseWatchApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PulseWatchApp.swift; sourceTree = "<group>"; };
+		FE8D92E6665E742A48BC43D2 /* PulseUITests.xctest */ = {isa = PBXFileReference; includeInIndex = 0; lastKnownFileType = wrapper.cfbundle; path = PulseUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		FF94ABC9A97854F7CC080CE4 /* ModelContainer+Setup.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "ModelContainer+Setup.swift"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -272,6 +284,7 @@
 			isa = PBXGroup;
 			children = (
 				13FEF2D2118D74C3572DF349 /* Pulse.app */,
+				FE8D92E6665E742A48BC43D2 /* PulseUITests.xctest */,
 				658BC99EE552C7E68CBA5EB8 /* PulseWatch.app */,
 				0405A3882AE55FA28CB4FEA7 /* PulseWatchWidgets.appex */,
 			);
@@ -407,6 +420,7 @@
 				804718858774CF6562046B1F /* Config */,
 				66B4C3B58C6C8FE5EA3EA8B7 /* Packages */,
 				16C8605271C6A45188D07E13 /* Pulse */,
+				A0E66727F0E981795FC96C44 /* PulseUITests */,
 				8575991D469966D1B48555F6 /* PulseWatch */,
 				9D2E4F0FBA3338F6D2620C5B /* PulseWatchWidgets */,
 				1FEE830988994786371D8E45 /* Products */,
@@ -461,6 +475,14 @@
 			path = PulseWatchWidgets;
 			sourceTree = "<group>";
 		};
+		A0E66727F0E981795FC96C44 /* PulseUITests */ = {
+			isa = PBXGroup;
+			children = (
+				D38E1FC483337742977EE984 /* ScrollScreenshotTest.swift */,
+			);
+			path = PulseUITests;
+			sourceTree = "<group>";
+		};
 		BF8B62DA9B7E73FAAF0F188C /* Connectivity */ = {
 			isa = PBXGroup;
 			children = (
@@ -487,6 +509,7 @@
 				1461D6EBAE5EEE1FEFAA43C2 /* MetricsGridView.swift */,
 				3E451C341D0BF1CEB115F0D7 /* RecentVersesRow.swift */,
 				EA7D9FF486D22C0334697983 /* StateBannerCard.swift */,
+				4BDC583C372415D61AC4D617 /* StreakWidget.swift */,
 				29FA64B0180D4CDBFC838B54 /* VerseDetailSheet.swift */,
 				1D601BA8856C4514C28F85C5 /* VerseOfDayCard.swift */,
 			);
@@ -546,6 +569,24 @@
 			productReference = 658BC99EE552C7E68CBA5EB8 /* PulseWatch.app */;
 			productType = "com.apple.product-type.application";
 		};
+		AD188051DBF61C8291631068 /* PulseUITests */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = EEDF49BCEEFCC0E6884EE85E /* Build configuration list for PBXNativeTarget "PulseUITests" */;
+			buildPhases = (
+				1469FCE86B2CB9FF2BBF3EB2 /* Sources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				24C65BB34EBACEED26C327CD /* PBXTargetDependency */,
+			);
+			name = PulseUITests;
+			packageProductDependencies = (
+			);
+			productName = PulseUITests;
+			productReference = FE8D92E6665E742A48BC43D2 /* PulseUITests.xctest */;
+			productType = "com.apple.product-type.bundle.ui-testing";
+		};
 		BF89A5F8D54D18A7B041A357 /* PulseWatchWidgets */ = {
 			isa = PBXNativeTarget;
 			buildConfigurationList = 467D577D30B4C86E3320AFA3 /* Build configuration list for PBXNativeTarget "PulseWatchWidgets" */;
@@ -601,6 +642,11 @@
 						DevelopmentTeam = APQT8U28NL;
 						ProvisioningStyle = Automatic;
 					};
+					AD188051DBF61C8291631068 = {
+						DevelopmentTeam = APQT8U28NL;
+						ProvisioningStyle = Automatic;
+						TestTargetID = CF79B1BAD3D70F54153FE0B3;
+					};
 					BF89A5F8D54D18A7B041A357 = {
 						DevelopmentTeam = APQT8U28NL;
 						ProvisioningStyle = Automatic;
@@ -630,6 +676,7 @@
 			targets = (
 				CF79B1BAD3D70F54153FE0B3 /* Pulse */,
 				1FD59D79150B4CD00EEDF298 /* PulseWatch */,
+				AD188051DBF61C8291631068 /* PulseUITests */,
 				BF89A5F8D54D18A7B041A357 /* PulseWatchWidgets */,
 			);
 		};
@@ -663,6 +710,14 @@
 /* End PBXResourcesBuildPhase section */
 
 /* Begin PBXSourcesBuildPhase section */
+		1469FCE86B2CB9FF2BBF3EB2 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				40264E284E8FF83323821822 /* ScrollScreenshotTest.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		88D6AF757036F12496010781 /* Sources */ = {
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
@@ -729,6 +784,7 @@
 				BF5C626DB654EFD8BC0520D5 /* ShareCardView.swift in Sources */,
 				EA322B1C7EAE9B9B1D238A88 /* StateBannerCard.swift in Sources */,
 				E49A86E1663C6DB8722A0BF5 /* StateChipView.swift in Sources */,
+				9E2350D8E653EC18DA7F1E56 /* StreakWidget.swift in Sources */,
 				CDC2932EC564B24A26DB35F7 /* TodayPlaceholderView.swift in Sources */,
 				6829FB7CA37E1495674B8868 /* TranslationPickerView.swift in Sources */,
 				16875E44B5FDDBFB8155C6FC /* TranslationSettingsView.swift in Sources */,
@@ -744,6 +800,11 @@
 /* End PBXSourcesBuildPhase section */
 
 /* Begin PBXTargetDependency section */
+		24C65BB34EBACEED26C327CD /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = CF79B1BAD3D70F54153FE0B3 /* Pulse */;
+			targetProxy = 232E7BA609C87DFE93F6A643 /* PBXContainerItemProxy */;
+		};
 		4765615F2013AD0A5BFBF0ED /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
 			target = 1FD59D79150B4CD00EEDF298 /* PulseWatch */;
@@ -757,6 +818,23 @@
 /* End PBXTargetDependency section */
 
 /* Begin XCBuildConfiguration section */
+		06D1B8F6B37F28F892C685B3 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				BUNDLE_LOADER = "$(TEST_HOST)";
+				GENERATE_INFOPLIST_FILE = YES;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@loader_path/Frameworks",
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = com.joelroy.pulse.uitests;
+				SDKROOT = iphoneos;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				TEST_TARGET_NAME = Pulse;
+			};
+			name = Debug;
+		};
 		1307602CABC3521F8B1E15B3 /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
@@ -898,6 +976,23 @@
 			};
 			name = Debug;
 		};
+		C36FE27327E562F4AFC22F30 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				BUNDLE_LOADER = "$(TEST_HOST)";
+				GENERATE_INFOPLIST_FILE = YES;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@loader_path/Frameworks",
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = com.joelroy.pulse.uitests;
+				SDKROOT = iphoneos;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				TEST_TARGET_NAME = Pulse;
+			};
+			name = Release;
+		};
 		DF81B04A566426AD422B92B3 /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
@@ -1009,6 +1104,15 @@
 			buildConfigurations = (
 				FA223E74BBF86702C72CD3A8 /* Debug */,
 				2E7048B1817FBF01C246A8F3 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Debug;
+		};
+		EEDF49BCEEFCC0E6884EE85E /* Build configuration list for PBXNativeTarget "PulseUITests" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				06D1B8F6B37F28F892C685B3 /* Debug */,
+				C36FE27327E562F4AFC22F30 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Debug;
