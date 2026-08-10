@@ -37,7 +37,8 @@ struct HomeView: View {
     // MARK: - Derived
 
     private var recentDeliveries: [VerseDelivery] {
-        Array(allDeliveries.prefix(5))
+        // Exclude VOTD deliveries — they are already shown in the dedicated Verse of the Day card above.
+        Array(allDeliveries.filter { $0.deliveryMethod != "votd" }.prefix(5))
     }
 
     private var latestDelivery: VerseDelivery? {

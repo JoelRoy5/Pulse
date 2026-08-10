@@ -174,11 +174,13 @@ struct PulseApp: App {
                 // NOTE: Notification authorization is requested by OnboardingViewModel.grantPermissions()
                 // during onboarding. Do NOT add a top-level call here — it causes a double-prompt.
                 // Exception: -PulseGrantNotifications YES skips the prompt for simulator verification.
+                #if DEBUG
                 if let gIdx = args.firstIndex(of: "-PulseGrantNotifications"),
                    gIdx + 1 < args.count,
                    args[gIdx + 1].uppercased() == "YES" {
                     _ = await NotificationService.shared.requestAuthorization()
                 }
+                #endif
             }
         }
         .modelContainer(container)
