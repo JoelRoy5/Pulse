@@ -97,6 +97,12 @@ final class VerseOfDayScheduler {
             return
         }
 
+        // Decide "which day" exactly once, from a single captured instant, and
+        // thread it through both the fetch and the persisted timestamp so the
+        // day can't shift between reads (recompute at midnight / timezone edge).
+        let now = Date()
+        let dayOfYear = Calendar.current.ordinality(of: .day, in: .year, for: now) ?? 1
+
         // Skip if already delivered today
         if todaysVOTD() != nil {
             logger.debug("VOTD already delivered today \u{2014} skipping")
@@ -107,10 +113,11 @@ final class VerseOfDayScheduler {
         let bibleID = prefs?.preferredBibleID ?? DefaultBible.id
         let abbreviation = prefs?.preferredBibleAbbreviation ?? DefaultBible.abbreviation
 
-        // Fetch verse with offline-chain fallback
-        let (verse, isOffline) = await fetchVOTDWithFallback(bibleID: bibleID, abbreviation: abbreviation)
+        // Fetch verse with offline-chain fallback for the decided day
+        let (verse, isOffline) = await fetchVOTDWithFallback(
+            bibleID: bibleID, abbreviation: abbreviation, dayOfYear: dayOfYear)
 
-        // Persist delivery
+        // Persist delivery, stamped with the same instant used to pick the day
         let state = BiometricState.morningAwakening
         let delivery = VerseDelivery(
             verseID: verse.id,
@@ -122,7 +129,7 @@ final class VerseOfDayScheduler {
             biometricStateRaw: state.rawValue,
             stateConfidence: 1.0,
             stateBodyText: state.bodyInterpretation,
-            deliveredAt: .now,
+            deliveredAt: now,
             deliveryMethod: Self.deliveryMethod,
             isOfflineFallback: isOffline
         )
@@ -141,12 +148,13 @@ final class VerseOfDayScheduler {
 
     // MARK: - Private Helpers
 
-    /// Attempts a live YouVersion VOTD fetch; falls back to the emergency verse on any error.
-    /// Returns `(verse, isOfflineFallback)`.
-    private func fetchVOTDWithFallback(bibleID: Int, abbreviation: String) async -> (BibleVerse, Bool) {
+    /// Attempts a live YouVersion VOTD fetch for the given day-of-year; falls back
+    /// to the emergency verse on any error. Returns `(verse, isOfflineFallback)`.
+    private func fetchVOTDWithFallback(bibleID: Int, abbreviation: String, dayOfYear: Int) async -> (BibleVerse, Bool) {
         if AppConfig.isConfigured && !AppConfig.forceOffline, let client {
             do {
-                let verse = try await client.fetchVerseOfTheDay(bibleID: bibleID, abbreviation: abbreviation)
+                let verse = try await client.fetchVerseOfTheDay(
+                    bibleID: bibleID, abbreviation: abbreviation, day: dayOfYear)
                 return (verse, false)
             } catch {
                 logger.warning("VOTD live fetch failed (\(error.localizedDescription, privacy: .public)) \u{2014} using fallback")
