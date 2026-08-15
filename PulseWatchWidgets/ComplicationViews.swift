@@ -28,9 +28,9 @@ struct RectangularComplicationView: View {
     var body: some View {
         if let verse {
             VStack(alignment: .leading, spacing: 2) {
-                // State line: emoji + abbreviation
+                // State line: symbol + abbreviation
                 HStack(spacing: 4) {
-                    Text(verse.stateEmoji)
+                    Image(systemName: verse.stateSymbol)
                         .font(.system(size: 10))
                     Text((biometricState?.abbreviation ?? verse.stateDisplayName).uppercased())
                         .font(.system(size: 10, weight: .semibold))
@@ -83,7 +83,7 @@ struct CircularComplicationView: View {
     var body: some View {
         if let verse {
             Gauge(value: 0.7, in: 0...1) {
-                Text(verse.stateEmoji)
+                Image(systemName: verse.stateSymbol)
                     .font(.system(size: 14))
             }
             .gaugeStyle(.accessoryCircular)
@@ -106,7 +106,11 @@ struct InlineComplicationView: View {
 
     var body: some View {
         if let verse {
-            Text("\(verse.stateEmoji) \(verse.verseReference)")
+            Label {
+                Text(verse.verseReference)
+            } icon: {
+                Image(systemName: verse.stateSymbol)
+            }
         } else {
             Label("Pulse", systemImage: "heart.text.square")
         }
@@ -129,7 +133,7 @@ struct CornerComplicationView: View {
     var body: some View {
         if let verse {
             Gauge(value: 0.7, in: 0...1) {
-                Text(verse.stateEmoji)
+                Image(systemName: verse.stateSymbol)
                     .font(.system(size: 12))
             }
             .gaugeStyle(.accessoryCircular)
@@ -163,7 +167,7 @@ private let sampleVerse = WatchMessage.VerseDeliveryPayload(
     translationAbbreviation: "NIV",
     stateRaw: "exhausted_depleted",
     stateDisplayName: "Weary Soul",
-    stateEmoji: "🌙",
+    stateSymbol: "moon.fill",
     stateBodyText: "Your body is asking for rest.",
     primaryColor: "#6366F1",
     timestamp: Date().timeIntervalSince1970

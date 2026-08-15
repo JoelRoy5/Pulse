@@ -6,13 +6,13 @@ struct PermissionsView: View {
     var healthEngine: HealthEngine
     @State private var isGranting = false
 
-    private let permissions: [(emoji: String, title: String, detail: String)] = [
-        ("❤️", "Heart Rate",             "Detect stress and exercise"),
-        ("📊", "Heart Rate Variability", "Measure recovery and tension"),
-        ("🌙", "Sleep Analysis",         "Understand your rest"),
-        ("🫁", "Blood Oxygen",           "Monitor vitality levels"),
-        ("🏃", "Activity & Exercise",    "Celebrate your movement"),
-        ("🔔", "Notifications",          "Receive verses at the right moment"),
+    private let permissions: [(icon: String, title: String, detail: String)] = [
+        ("heart.fill",         "Heart Rate",             "Detect stress and exercise"),
+        ("waveform.path.ecg",  "Heart Rate Variability", "Measure recovery and tension"),
+        ("moon.fill",          "Sleep Analysis",         "Understand your rest"),
+        ("lungs.fill",         "Blood Oxygen",           "Monitor vitality levels"),
+        ("figure.walk",        "Activity & Exercise",    "Celebrate your movement"),
+        ("bell.fill",          "Notifications",          "Receive verses at the right moment"),
     ]
 
     var body: some View {
@@ -39,8 +39,9 @@ struct PermissionsView: View {
                         VStack(spacing: PSSpacing.md) {
                             ForEach(permissions, id: \.title) { perm in
                                 HStack(spacing: PSSpacing.md) {
-                                    Text(perm.emoji)
-                                        .font(.system(size: 24))
+                                    Image(systemName: perm.icon)
+                                        .font(.system(size: 22))
+                                        .foregroundStyle(Color.psAccent)
                                         .frame(width: 36)
                                     VStack(alignment: .leading, spacing: 2) {
                                         Text(perm.title)

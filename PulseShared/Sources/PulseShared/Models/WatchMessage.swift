@@ -22,7 +22,7 @@ public enum WatchMessage {
         public let translationAbbreviation: String
         public let stateRaw: String
         public let stateDisplayName: String
-        public let stateEmoji: String
+        public let stateSymbol: String
         public let stateBodyText: String
         public let primaryColor: String
         public let timestamp: Double
@@ -40,7 +40,7 @@ public enum WatchMessage {
             translationAbbreviation: String,
             stateRaw: String,
             stateDisplayName: String,
-            stateEmoji: String,
+            stateSymbol: String,
             stateBodyText: String,
             primaryColor: String,
             timestamp: Double,
@@ -54,7 +54,7 @@ public enum WatchMessage {
             self.translationAbbreviation = translationAbbreviation
             self.stateRaw = stateRaw
             self.stateDisplayName = stateDisplayName
-            self.stateEmoji = stateEmoji
+            self.stateSymbol = stateSymbol
             self.stateBodyText = stateBodyText
             self.primaryColor = primaryColor
             self.timestamp = timestamp

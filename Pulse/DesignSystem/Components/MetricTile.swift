@@ -27,8 +27,9 @@ struct MetricTile: View {
                 Circle()
                     .fill(quality.color)
                     .frame(width: 6, height: 6)
-                Text(icon)
+                Image(systemName: icon)
                     .font(.system(size: 16))
+                    .foregroundStyle(Color.psAccent)
             }
 
             HStack(alignment: .firstTextBaseline, spacing: 2) {
@@ -64,7 +65,7 @@ struct MetricTile: View {
 
             // Tile with action (good quality)
             MetricTile(
-                icon: "❤️",
+                icon: "heart.fill",
                 value: "72",
                 unit: "bpm",
                 label: "Heart Rate",
@@ -74,7 +75,7 @@ struct MetricTile: View {
 
             // Tile with action (fair quality)
             MetricTile(
-                icon: "📊",
+                icon: "waveform.path.ecg",
                 value: "42",
                 unit: "ms",
                 label: "Heart Rate Variability",
@@ -84,7 +85,7 @@ struct MetricTile: View {
 
             // Tile with action (poor quality)
             MetricTile(
-                icon: "💨",
+                icon: "lungs.fill",
                 value: "94",
                 unit: "%",
                 label: "Oxygen Saturation",
@@ -94,7 +95,7 @@ struct MetricTile: View {
 
             // Tile without action (unavailable)
             MetricTile(
-                icon: "😴",
+                icon: "moon.zzz.fill",
                 value: "—",
                 unit: "",
                 label: "Sleep Score",

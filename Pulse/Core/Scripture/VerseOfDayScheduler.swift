@@ -57,7 +57,7 @@ final class VerseOfDayScheduler {
             let trigger = UNCalendarNotificationTrigger(dateMatching: components, repeats: true)
 
             let content = UNMutableNotificationContent()
-            content.title = "\u{2600}\u{FE0F} Verse of the Day"
+            content.title = "Verse of the Day"
             content.body = "Your daily scripture is ready \u{2014} tap to read."
             content.sound = .default
             content.categoryIdentifier = "verse_notification"

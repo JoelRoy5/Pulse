@@ -29,8 +29,9 @@ private struct AODVerseView: View {
         ZStack {
             Color.black.ignoresSafeArea()
             VStack(spacing: 4) {
-                Text(verse?.stateEmoji ?? "❤️")
+                Image(systemName: verse?.stateSymbol ?? "heart.fill")
                     .font(.system(size: 20))
+                    .foregroundStyle(.white)
                 if let verse {
                     Text(verse.verseText.verseExcerpt(maxChars: 30))
                         .font(.system(size: 11, design: .serif))
@@ -148,8 +149,9 @@ private struct FullVerseView: View {
     private func statePill(verse: WatchMessage.VerseDeliveryPayload) -> some View {
         let stateColor = biometricState?.primaryColor ?? Color(hex: verse.primaryColor)
         HStack(spacing: 3) {
-            Text(verse.stateEmoji)
+            Image(systemName: verse.stateSymbol)
                 .font(.system(size: 10))
+                .foregroundStyle(stateColor)
             Text((BiometricState(rawValue: verse.stateRaw)?.abbreviation ?? verse.stateDisplayName).uppercased())
                 .font(.system(size: 9, weight: .semibold, design: .rounded))
                 .lineLimit(1)
@@ -209,8 +211,9 @@ private struct FullVerseView: View {
     @ViewBuilder
     private var emptyStateView: some View {
         VStack(spacing: 12) {
-            Text("❤️")
+            Image(systemName: "heart.fill")
                 .font(.system(size: 36))
+                .foregroundStyle(Color.psAccent)
             Text("Gathering your\nhealth data...")
                 .font(.system(size: 14, design: .rounded))
                 .foregroundStyle(.white.opacity(0.9))

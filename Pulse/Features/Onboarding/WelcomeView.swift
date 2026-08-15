@@ -42,9 +42,9 @@ struct WelcomeView: View {
 
                 // 3 feature rows — staggered fade-in (collapsed to instant opacity when reduce motion is on)
                 VStack(alignment: .leading, spacing: PSSpacing.lg) {
-                    featureRow(emoji: "♥", text: "Reads your heartbeat", visible: showRow1)
-                    featureRow(emoji: "🌙", text: "Watches while you sleep", visible: showRow2)
-                    featureRow(emoji: "📖", text: "Speaks God's Word when you need it", visible: showRow3)
+                    featureRow(icon: "heart.fill", text: "Reads your heartbeat", visible: showRow1)
+                    featureRow(icon: "moon.fill", text: "Watches while you sleep", visible: showRow2)
+                    featureRow(icon: "book.fill", text: "Speaks God's Word when you need it", visible: showRow3)
                 }
                 .padding(.horizontal, PSSpacing.screenHorizontal)
 
@@ -74,10 +74,12 @@ struct WelcomeView: View {
         }
     }
 
-    private func featureRow(emoji: String, text: String, visible: Bool) -> some View {
+    private func featureRow(icon: String, text: String, visible: Bool) -> some View {
         HStack(spacing: PSSpacing.md) {
-            Text(emoji)
-                .font(.system(size: 22))
+            Image(systemName: icon)
+                .font(.system(size: 20))
+                .foregroundStyle(Color.psAccent)
+                .frame(width: 26)
             Text(text)
                 .font(PSFont.label(size: 17, weight: .medium))
                 .foregroundStyle(Color.psWhite)

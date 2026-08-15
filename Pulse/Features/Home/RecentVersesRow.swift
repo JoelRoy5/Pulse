@@ -67,8 +67,9 @@ private struct RecentVerseCard: View {
         VStack(alignment: .leading, spacing: PSSpacing.xs) {
             // State indicator strip
             HStack(spacing: 4) {
-                Text(state.emoji)
-                    .font(.system(size: 12))
+                Image(systemName: state.systemImageName)
+                    .font(.system(size: 11))
+                    .foregroundStyle(state.primaryColor)
                 Text(state.abbreviation.uppercased())
                     .font(PSFont.label(size: 10, weight: .semibold))
                     .foregroundStyle(state.primaryColor)

@@ -50,9 +50,14 @@ struct StreakWidget: View {
                         .foregroundStyle(Color.psWhite)
                         .fixedSize(horizontal: false, vertical: true)
                 } else {
-                    Text("🔥 \(streak)-Day Streak")
-                        .font(PSFont.label(size: 20, weight: .bold))
-                        .foregroundStyle(Color.psAccentLight)
+                    HStack(spacing: 6) {
+                        Image(systemName: "flame.fill")
+                            .font(.system(size: 18))
+                            .foregroundStyle(Color.psAccentLight)
+                        Text("\(streak)-Day Streak")
+                            .font(PSFont.label(size: 20, weight: .bold))
+                            .foregroundStyle(Color.psAccentLight)
+                    }
                 }
 
                 // Encouragement

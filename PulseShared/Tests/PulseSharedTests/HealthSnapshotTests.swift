@@ -46,7 +46,7 @@ final class HealthSnapshotTests: XCTestCase {
         let payload = WatchMessage.VerseDeliveryPayload(
             deliveryID: "abc", verseText: "Come to me", verseReference: "Matthew 11:28",
             translationAbbreviation: "NIV", stateRaw: "exhausted_depleted",
-            stateDisplayName: "Weary Soul", stateEmoji: "🌙",
+            stateDisplayName: "Weary Soul", stateSymbol: "moon.fill",
             stateBodyText: "Your body is asking for rest. Come and lay it down.",
             primaryColor: "#6366F1", timestamp: 123.0)
         let dict = payload.dictionary(type: .verseDelivery)

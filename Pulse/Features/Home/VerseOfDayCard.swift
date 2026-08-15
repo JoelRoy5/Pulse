@@ -31,8 +31,9 @@ struct VerseOfDayCard: View {
 
                     // Label row
                     HStack(spacing: PSSpacing.xs) {
-                        Text("\u{2600}\u{FE0F}")
-                            .font(.system(size: 18))
+                        Image(systemName: "sun.max.fill")
+                            .font(.system(size: 16))
+                            .foregroundStyle(.white.opacity(0.9))
                         Text("Verse of the Day")
                             .font(PSFont.label(size: 13, weight: .bold))
                             .foregroundStyle(.white.opacity(0.9))

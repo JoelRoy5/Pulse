@@ -54,7 +54,7 @@ final class PhoneSessionManager: NSObject {
 
         let state = delivery.biometricState
         let primaryColor = state?.primaryColorHex ?? "#C9A96E"
-        let stateEmoji   = state?.emoji          ?? "✨"
+        let stateSymbol   = state?.systemImageName ?? "sparkles"
 
         let payload = WatchMessage.VerseDeliveryPayload(
             deliveryID:              delivery.id.uuidString,
@@ -63,7 +63,7 @@ final class PhoneSessionManager: NSObject {
             translationAbbreviation: delivery.translationAbbreviation,
             stateRaw:                delivery.biometricStateRaw,
             stateDisplayName:        state?.displayName  ?? delivery.biometricStateRaw,
-            stateEmoji:              stateEmoji,
+            stateSymbol:              stateSymbol,
             stateBodyText:           delivery.stateBodyText,
             primaryColor:            primaryColor,
             timestamp:               delivery.deliveredAt.timeIntervalSince1970,
@@ -192,7 +192,7 @@ final class PhoneSessionManager: NSObject {
             translationAbbreviation: delivery.translationAbbreviation,
             stateRaw:                delivery.biometricStateRaw,
             stateDisplayName:        state?.displayName  ?? delivery.biometricStateRaw,
-            stateEmoji:              state?.emoji        ?? "✨",
+            stateSymbol:              state?.systemImageName ?? "sparkles",
             stateBodyText:           delivery.stateBodyText,
             primaryColor:            state?.primaryColorHex ?? "#C9A96E",
             timestamp:               delivery.deliveredAt.timeIntervalSince1970,
