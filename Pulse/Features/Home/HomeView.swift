@@ -41,11 +41,17 @@ struct HomeView: View {
         Array(allDeliveries.filter { $0.deliveryMethod != "votd" }.prefix(5))
     }
 
-    /// All engagement dates for the streak widget:
-    /// each delivery's deliveredAt plus engagedAt when non-nil.
+    /// Engagement dates for the streak widget. A day counts when a biometric
+    /// verse was delivered, or when the user actually engaged with any verse
+    /// (`engagedAt`). Auto-fetched Verse-of-the-Day deliveries are excluded from
+    /// the delivered-date signal so that merely opening the app each day does not
+    /// inflate the streak — consistent with excluding VOTD from Recent Verses.
     private var streakEngagementDates: [Date] {
         allDeliveries.flatMap { delivery -> [Date] in
-            var dates = [delivery.deliveredAt]
+            var dates: [Date] = []
+            if delivery.deliveryMethod != "votd" {
+                dates.append(delivery.deliveredAt)
+            }
             if let engaged = delivery.engagedAt {
                 dates.append(engaged)
             }

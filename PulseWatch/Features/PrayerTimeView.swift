@@ -157,6 +157,7 @@ struct PrayerTimeView: View {
     private func startSession() {
         startedAt = Date()
         prompts = PrayerPrompts.prompts(for: currentVerse?.stateRaw)
+        requestMindfulAuthorization()
 
         let hr = WatchHealthEngine.shared.snapshot?.heartRate ?? 70
         let cadence = PrayerCadence(
@@ -196,6 +197,15 @@ struct PrayerTimeView: View {
             .prayed,
             deliveryID: currentVerse?.deliveryID ?? "prayer"
         )
+    }
+
+    /// Ask for mindfulSession share access at session start, so the prompt is
+    /// resolved before the write at the end (otherwise the first session's write
+    /// races the permission sheet and is silently dropped).
+    private func requestMindfulAuthorization() {
+        guard HKHealthStore.isHealthDataAvailable(),
+              let type = HKObjectType.categoryType(forIdentifier: .mindfulSession) else { return }
+        Task { try? await HKHealthStore().requestAuthorization(toShare: [type], read: []) }
     }
 
     /// Best-effort write of an HKCategoryType.mindfulSession for the elapsed span.

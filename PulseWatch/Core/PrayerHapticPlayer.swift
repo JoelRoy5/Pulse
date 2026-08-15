@@ -16,6 +16,7 @@ final class PrayerHapticPlayer {
     private let cadence: PrayerCadence
     private var loop: Task<Void, Never>?
     private var startedAt: Date?
+    private var isRunning = false
 
     /// Delay between the "lub" and the "dub" of a single beat.
     private let lubDubGap: TimeInterval = 0.14
@@ -30,6 +31,7 @@ final class PrayerHapticPlayer {
         stop()
         let start = Date()
         startedAt = start
+        isRunning = true
 
         loop = Task { [weak self] in
             while !Task.isCancelled {
@@ -52,6 +54,7 @@ final class PrayerHapticPlayer {
 
     /// Stops the heartbeat. Safe to call repeatedly.
     func stop() {
+        isRunning = false
         loop?.cancel()
         loop = nil
         startedAt = nil
@@ -66,11 +69,12 @@ final class PrayerHapticPlayer {
     // MARK: - Private
 
     private func playLubDub() {
-        let device = WKInterfaceDevice.current()
-        device.play(.click)
-        Task { [lubDubGap] in
+        WKInterfaceDevice.current().play(.click)
+        // The "dub" follows after a short gap; skip it if the session stopped
+        // in the interim so no stray tap fires after the view closes.
+        Task { @MainActor [weak self, lubDubGap] in
             try? await Task.sleep(nanoseconds: UInt64(lubDubGap * 1_000_000_000))
-            guard !Task.isCancelled else { return }
+            guard let self, self.isRunning else { return }
             WKInterfaceDevice.current().play(.click)
         }
     }
