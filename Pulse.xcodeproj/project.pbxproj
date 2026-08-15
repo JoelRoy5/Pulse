@@ -21,6 +21,7 @@
 		3ADA9E9BB62E2F868A936DC4 /* HomeView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C0D1390EE653F2D9B57F24AA /* HomeView.swift */; };
 		3C2325F3D5E37522A7B82A03 /* MockHealthProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = A407568C5689F0F6FD2FEC9A /* MockHealthProvider.swift */; };
 		3F0A6D3439C8900AF8F84A9A /* PrayerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3F60F6AA95CD6BBACC401AD7 /* PrayerView.swift */; };
+		410BB61D05F47BC030C1C30F /* PrayerPrompts.swift in Sources */ = {isa = PBXBuildFile; fileRef = E3AE4B5FB41D7E62DD3BAE73 /* PrayerPrompts.swift */; };
 		43E02C8449DDB3CE6793AB01 /* PhoneSessionManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = A6BA81F9947113A4B58D4E49 /* PhoneSessionManager.swift */; };
 		45A99CE20E14662637AA8D84 /* PulseWatch.app in Embed Watch Content */ = {isa = PBXBuildFile; fileRef = 658BC99EE552C7E68CBA5EB8 /* PulseWatch.app */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
 		4D873A7FAEF0992A95998A01 /* RecentVersesRow.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3E451C341D0BF1CEB115F0D7 /* RecentVersesRow.swift */; };
@@ -47,6 +48,7 @@
 		9E2350D8E653EC18DA7F1E56 /* StreakWidget.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4BDC583C372415D61AC4D617 /* StreakWidget.swift */; };
 		9E7FC8D4372D7D6477B1E1CE /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = B7045A0EAF2A362DBDC67DCA /* AppDelegate.swift */; };
 		A5C54ADE0C5514A00DA4DCFA /* HealthEngine.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5FCEE7A5CD3B4DDFF21B1DEF /* HealthEngine.swift */; };
+		A9C3381D063CE3534A3C2C29 /* PrayerHapticPlayer.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA1DE624FDE1C8A4A6185E63 /* PrayerHapticPlayer.swift */; };
 		A9F3479015B3DD98808FCAB4 /* NotificationService.swift in Sources */ = {isa = PBXBuildFile; fileRef = DD88FD056C666BFB9ADEFDBC /* NotificationService.swift */; };
 		AC191A0C8B96CED95DD6B014 /* VerseTextView.swift in Sources */ = {isa = PBXBuildFile; fileRef = BE0124814F82ED74D90B98DF /* VerseTextView.swift */; };
 		AD59AF35E363B7CD0D9C7A73 /* MetricsGridView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1461D6EBAE5EEE1FEFAA43C2 /* MetricsGridView.swift */; };
@@ -173,6 +175,7 @@
 		A407568C5689F0F6FD2FEC9A /* MockHealthProvider.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MockHealthProvider.swift; sourceTree = "<group>"; };
 		A6BA81F9947113A4B58D4E49 /* PhoneSessionManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PhoneSessionManager.swift; sourceTree = "<group>"; };
 		A8D14B8A053ACD3F42EC4D9A /* VerseOfDayScheduler.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VerseOfDayScheduler.swift; sourceTree = "<group>"; };
+		AA1DE624FDE1C8A4A6185E63 /* PrayerHapticPlayer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PrayerHapticPlayer.swift; sourceTree = "<group>"; };
 		B3941E64DF15AE175EA3A9CC /* Debug.xcconfig */ = {isa = PBXFileReference; lastKnownFileType = text.xcconfig; path = Debug.xcconfig; sourceTree = "<group>"; };
 		B417C955215C652DE92713E3 /* PermissionsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PermissionsView.swift; sourceTree = "<group>"; };
 		B53EE25454C6849FC058934B /* MetricTile.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MetricTile.swift; sourceTree = "<group>"; };
@@ -184,6 +187,7 @@
 		DBBB7FDB243B4CA672E7FF03 /* HistoryView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HistoryView.swift; sourceTree = "<group>"; };
 		DD88FD056C666BFB9ADEFDBC /* NotificationService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NotificationService.swift; sourceTree = "<group>"; };
 		E2B5FBC3DA7A32B44A484727 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist; path = Info.plist; sourceTree = "<group>"; };
+		E3AE4B5FB41D7E62DD3BAE73 /* PrayerPrompts.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PrayerPrompts.swift; sourceTree = "<group>"; };
 		E3DB0ED9C9FB9510602FD2FD /* PulseShared */ = {isa = PBXFileReference; lastKnownFileType = folder; name = PulseShared; path = PulseShared; sourceTree = SOURCE_ROOT; };
 		E57CC045AC727642E42EE5DB /* WatchAppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WatchAppDelegate.swift; sourceTree = "<group>"; };
 		E7059FABA65645A103CAF056 /* AppConfig.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppConfig.swift; sourceTree = "<group>"; };
@@ -474,6 +478,8 @@
 		E7B56EA1E0CB45E55B406F4A /* Core */ = {
 			isa = PBXGroup;
 			children = (
+				AA1DE624FDE1C8A4A6185E63 /* PrayerHapticPlayer.swift */,
+				E3AE4B5FB41D7E62DD3BAE73 /* PrayerPrompts.swift */,
 				3074BD3D3564A521779E8B8A /* WatchHealthEngine.swift */,
 				D781730BCEDD3158AB713975 /* WatchSessionManager.swift */,
 			);
@@ -672,6 +678,8 @@
 			files = (
 				DBB562A4C9E125DA6C8BB7C4 /* HistoryView.swift in Sources */,
 				5EA0DBA1B4A3099A6B9440AE /* MainView.swift in Sources */,
+				A9C3381D063CE3534A3C2C29 /* PrayerHapticPlayer.swift in Sources */,
+				410BB61D05F47BC030C1C30F /* PrayerPrompts.swift in Sources */,
 				3F0A6D3439C8900AF8F84A9A /* PrayerView.swift in Sources */,
 				3A8F65C6B42C3D6AE0118D32 /* PulseWatchApp.swift in Sources */,
 				2E13F6007A8F7449A8CFCC89 /* VerseView.swift in Sources */,
