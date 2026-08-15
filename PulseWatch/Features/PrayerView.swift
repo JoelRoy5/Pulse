@@ -8,6 +8,7 @@ struct PrayerView: View {
     @Environment(WatchState.self) private var watchState
     @State private var selectedFeeling: PrayerFeeling?
     @State private var showResponse = false
+    @State private var showPrayerSession = false
 
     enum PrayerFeeling: String, CaseIterable {
         case grateful = "Grateful"
@@ -62,18 +63,17 @@ struct PrayerView: View {
                     .overlay(.white.opacity(0.2))
                     .padding(.vertical, 2)
 
-                // Breath Prayer (Phase 2)
-                VStack(spacing: 4) {
-                    Button("Begin Breath Prayer") { }
-                        .buttonStyle(.borderedProminent)
-                        .tint(Color.psAccent.opacity(0.5))
+                // A Time of Prayer (Phase 2)
+                Button {
+                    WKInterfaceDevice.current().play(.click)
+                    showPrayerSession = true
+                } label: {
+                    Text("Begin a Time of Prayer")
                         .font(.system(size: 12, weight: .semibold))
-                        .disabled(true)
-
-                    Text("Coming soon")
-                        .font(.system(size: 10))
-                        .foregroundStyle(.white.opacity(0.4))
+                        .frame(maxWidth: .infinity)
                 }
+                .buttonStyle(.borderedProminent)
+                .tint(Color.psAccent)
             }
             .padding(.horizontal, 8)
             .padding(.bottom, 12)
@@ -84,6 +84,9 @@ struct PrayerView: View {
                 feeling: feeling,
                 deliveryID: watchState.currentVerse?.deliveryID ?? "prayer"
             )
+        }
+        .fullScreenCover(isPresented: $showPrayerSession) {
+            PrayerTimeView(currentVerse: watchState.currentVerse)
         }
     }
 

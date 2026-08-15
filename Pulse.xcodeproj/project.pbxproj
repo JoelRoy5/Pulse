@@ -13,6 +13,7 @@
 		16875E44B5FDDBFB8155C6FC /* TranslationSettingsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 074A54C7F7A0F3C9C3C50423 /* TranslationSettingsView.swift */; };
 		19DF5F1B9A565596C89D9FB3 /* HistoryDetailView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 73AE1E80F5729A55FED67C05 /* HistoryDetailView.swift */; };
 		1DAED3A7021E31C6A63E2693 /* MetricTile.swift in Sources */ = {isa = PBXBuildFile; fileRef = B53EE25454C6849FC058934B /* MetricTile.swift */; };
+		2317F8D467AF9702B64D6F8D /* PrayerTimeView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 36104FAC6C30543319AEF429 /* PrayerTimeView.swift */; };
 		24C66624CCAFE5B675979021 /* PulseRing.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5D58FF5DF89E2161D951DF1A /* PulseRing.swift */; };
 		2B6434E400F64A228DE923EB /* HomeViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 69DBD08C32085CC637A1F35C /* HomeViewModel.swift */; };
 		2E13F6007A8F7449A8CFCC89 /* VerseView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3EABAF7E9F79AF4B72252E40 /* VerseView.swift */; };
@@ -138,6 +139,7 @@
 		282AC598C18A98F698CFAD2E /* DeliveryScheduler.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DeliveryScheduler.swift; sourceTree = "<group>"; };
 		29FA64B0180D4CDBFC838B54 /* VerseDetailSheet.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VerseDetailSheet.swift; sourceTree = "<group>"; };
 		3074BD3D3564A521779E8B8A /* WatchHealthEngine.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WatchHealthEngine.swift; sourceTree = "<group>"; };
+		36104FAC6C30543319AEF429 /* PrayerTimeView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PrayerTimeView.swift; sourceTree = "<group>"; };
 		3E451C341D0BF1CEB115F0D7 /* RecentVersesRow.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RecentVersesRow.swift; sourceTree = "<group>"; };
 		3EABAF7E9F79AF4B72252E40 /* VerseView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VerseView.swift; sourceTree = "<group>"; };
 		3F60F6AA95CD6BBACC401AD7 /* PrayerView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PrayerView.swift; sourceTree = "<group>"; };
@@ -254,6 +256,7 @@
 			children = (
 				1DC49BDF687185AE0657AADC /* HistoryView.swift */,
 				49CAB3507692A5788EDD021C /* MainView.swift */,
+				36104FAC6C30543319AEF429 /* PrayerTimeView.swift */,
 				3F60F6AA95CD6BBACC401AD7 /* PrayerView.swift */,
 				3EABAF7E9F79AF4B72252E40 /* VerseView.swift */,
 				106E207F452F51DA0DD90C08 /* VitalsView.swift */,
@@ -680,6 +683,7 @@
 				5EA0DBA1B4A3099A6B9440AE /* MainView.swift in Sources */,
 				A9C3381D063CE3534A3C2C29 /* PrayerHapticPlayer.swift in Sources */,
 				410BB61D05F47BC030C1C30F /* PrayerPrompts.swift in Sources */,
+				2317F8D467AF9702B64D6F8D /* PrayerTimeView.swift in Sources */,
 				3F0A6D3439C8900AF8F84A9A /* PrayerView.swift in Sources */,
 				3A8F65C6B42C3D6AE0118D32 /* PulseWatchApp.swift in Sources */,
 				2E13F6007A8F7449A8CFCC89 /* VerseView.swift in Sources */,

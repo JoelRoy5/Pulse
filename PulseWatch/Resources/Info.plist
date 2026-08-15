@@ -20,6 +20,8 @@
 	<string>1</string>
 	<key>NSHealthShareUsageDescription</key>
 	<string>Pulse reads your health data on Apple Watch to deliver contextual scripture to your wrist.</string>
+	<key>NSHealthUpdateUsageDescription</key>
+	<string>Pulse can save your time of prayer to the Health app as a mindful minutes session.</string>
 	<key>WKApplication</key>
 	<true/>
 	<key>WKCompanionAppBundleIdentifier</key>
