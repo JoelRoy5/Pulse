@@ -76,17 +76,6 @@ targets:
         WKApplication: true
         WKCompanionAppBundleIdentifier: com.joelroy.pulse
         NSHealthShareUsageDescription: "Pulse reads your health data on Apple Watch to deliver contextual scripture to your wrist."
-  PulseUITests:
-    type: bundle.ui-testing
-    platform: iOS
-    sources: [PulseUITests]
-    dependencies:
-      - target: Pulse
-        embed: false
-    settings:
-      base:
-        PRODUCT_BUNDLE_IDENTIFIER: com.joelroy.pulse.uitests
-        GENERATE_INFOPLIST_FILE: YES
   PulseWatchWidgets:
     type: app-extension
     platform: watchOS
