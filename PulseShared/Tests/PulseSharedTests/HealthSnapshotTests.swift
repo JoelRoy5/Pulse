@@ -46,13 +46,39 @@ final class HealthSnapshotTests: XCTestCase {
         let payload = WatchMessage.VerseDeliveryPayload(
             deliveryID: "abc", verseText: "Come to me", verseReference: "Matthew 11:28",
             translationAbbreviation: "NIV", stateRaw: "exhausted_depleted",
-            stateDisplayName: "Weary Soul", stateEmoji: "🌙",
+            stateDisplayName: "Weary Soul", stateSymbol: "moon.fill",
             stateBodyText: "Your body is asking for rest. Come and lay it down.",
             primaryColor: "#6366F1", timestamp: 123.0)
         let dict = payload.dictionary(type: .verseDelivery)
         XCTAssertEqual(dict["type"] as? String, "verse_delivery")
         let decoded = WatchMessage.VerseDeliveryPayload.from(dict)
         XCTAssertEqual(decoded?.verseReference, "Matthew 11:28")
+    }
+
+    /// Back-compat: payloads persisted/sent before the stateEmoji→stateSymbol rename
+    /// have no `stateSymbol` key. Decoding must not throw; the symbol is derived
+    /// from `stateRaw` so cached verses/history survive an app upgrade.
+    func testLegacyPayloadWithoutStateSymbolDecodes() {
+        let legacyJSON = """
+        {
+          "deliveryID": "old-1",
+          "verseText": "Come to me",
+          "verseReference": "Matthew 11:28",
+          "translationAbbreviation": "NIV",
+          "stateRaw": "exhausted_depleted",
+          "stateDisplayName": "Weary Soul",
+          "stateEmoji": "🌙",
+          "stateBodyText": "Your body is asking for rest.",
+          "primaryColor": "#6366F1",
+          "timestamp": 123.0
+        }
+        """
+        let decoded = try? JSONDecoder().decode(
+            WatchMessage.VerseDeliveryPayload.self, from: Data(legacyJSON.utf8))
+        XCTAssertNotNil(decoded, "legacy payload without stateSymbol should still decode")
+        XCTAssertEqual(decoded?.verseReference, "Matthew 11:28")
+        // Derived from stateRaw == exhausted_depleted.
+        XCTAssertEqual(decoded?.stateSymbol, BiometricState.exhaustedDepleted.systemImageName)
     }
 
     func testSleepBreakdownQualityBands() {

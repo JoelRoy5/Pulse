@@ -61,14 +61,14 @@ struct VitalsView: View {
         VStack(spacing: 6) {
             HStack(spacing: 6) {
                 MetricTile(
-                    icon: "♥",
+                    icon: "heart.fill",
                     label: "Heart Rate",
                     value: resolvedHeartRate(summary: summary, local: local),
                     unit: "bpm",
                     quality: resolvedHRQuality(summary: summary, local: local)
                 )
                 MetricTile(
-                    icon: "📊",
+                    icon: "waveform.path.ecg",
                     label: "HRV",
                     value: resolvedHRV(summary: summary, local: local),
                     unit: "ms",
@@ -77,14 +77,14 @@ struct VitalsView: View {
             }
             HStack(spacing: 6) {
                 MetricTile(
-                    icon: "🫁",
+                    icon: "lungs.fill",
                     label: "Oxygen",
                     value: resolvedSpO2(summary: summary, local: local),
                     unit: "%",
                     quality: resolvedSpO2Quality(summary: summary, local: local)
                 )
                 MetricTile(
-                    icon: "🌙",
+                    icon: "moon.fill",
                     label: "Sleep Eff.",
                     value: summary.flatMap { $0.sleepEfficiency.map { String(format: "%.0f", $0 * 100) } },
                     unit: "%",
@@ -93,7 +93,7 @@ struct VitalsView: View {
             }
             HStack(spacing: 6) {
                 MetricTile(
-                    icon: "🏃",
+                    icon: "figure.walk",
                     label: "Steps",
                     value: resolvedSteps(summary: summary, local: local),
                     unit: nil,
@@ -201,8 +201,9 @@ private struct MetricTile: View {
                 Circle()
                     .fill(quality?.color ?? Color.psGrayMuted)
                     .frame(width: 6, height: 6)
-                Text(icon)
+                Image(systemName: icon)
                     .font(.system(size: 12))
+                    .foregroundStyle(Color.psAccent)
             }
             HStack(alignment: .firstTextBaseline, spacing: 2) {
                 Text(value ?? "—")

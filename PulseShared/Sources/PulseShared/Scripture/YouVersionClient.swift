@@ -27,6 +27,16 @@ private struct YouVersionPassageResponse: Decodable {
     let content: String
 }
 
+private struct VOTDResponse: Decodable {
+    let day: Int
+    let passageId: String
+
+    enum CodingKeys: String, CodingKey {
+        case day
+        case passageId = "passage_id"
+    }
+}
+
 private struct YouVersionBiblesResponse: Decodable {
     let data: [YouVersionBibleItem]
 }
@@ -82,9 +92,43 @@ public struct YouVersionClient: VerseFetching {
         guard let usfm = USFM.usfm(for: reference) else {
             throw ScriptureAPIError.requestFailed(status: 0)
         }
+        return try await fetchPassage(passageID: usfm, bibleID: bibleID, abbreviation: abbreviation)
+    }
+
+    /// Fetches the verse of the day for a given day-of-year.
+    ///
+    /// - Parameters:
+    ///   - bibleID: Numeric YouVersion bible version ID (e.g. 3034 for BSB)
+    ///   - abbreviation: Translation abbreviation (e.g. "BSB") — passed through to BibleVerse
+    ///   - day: Day-of-year (1–366). Defaults to the current day of year.
+    public func fetchVerseOfTheDay(bibleID: Int, abbreviation: String, day: Int? = nil) async throws -> BibleVerse {
+        let dayOfYear = day ?? Calendar.current.ordinality(of: .day, in: .year, for: .now) ?? 1
 
         var components = URLComponents(url: Self.baseURL, resolvingAgainstBaseURL: false)!
-        components.path = "/v1/bibles/\(bibleID)/passages/\(usfm)"
+        components.path = "/v1/verse_of_the_days/\(dayOfYear)"
+
+        guard let url = components.url else {
+            throw ScriptureAPIError.requestFailed(status: 0)
+        }
+
+        var request = URLRequest(url: url, timeoutInterval: 10)
+        request.setValue(appKey, forHTTPHeaderField: Self.appKeyHeader)
+        request.setValue("application/json", forHTTPHeaderField: "Accept")
+
+        let (votdData, votdResponse) = try await performRequest(request)
+        try checkResponse(data: votdData, response: votdResponse)
+
+        let votd = try decode(VOTDResponse.self, from: votdData)
+        return try await fetchPassage(passageID: votd.passageId, bibleID: bibleID, abbreviation: abbreviation)
+    }
+
+    // MARK: - Shared Passage Fetch
+
+    /// Fetches a passage by USFM passage ID and wraps it into a BibleVerse.
+    /// Used by both `fetchVerse` and `fetchVerseOfTheDay`.
+    private func fetchPassage(passageID: String, bibleID: Int, abbreviation: String) async throws -> BibleVerse {
+        var components = URLComponents(url: Self.baseURL, resolvingAgainstBaseURL: false)!
+        components.path = "/v1/bibles/\(bibleID)/passages/\(passageID)"
         components.queryItems = [URLQueryItem(name: "format", value: "text")]
 
         guard let url = components.url else {
@@ -101,7 +145,7 @@ public struct YouVersionClient: VerseFetching {
         let passage = try decode(YouVersionPassageResponse.self, from: data)
 
         // Build chapter URL: https://www.bible.com/bible/{bibleId}/{BOOK.C}
-        let chapterURLString = buildChapterURL(usfm: usfm, bibleID: bibleID)
+        let chapterURLString = buildChapterURL(usfm: passageID, bibleID: bibleID)
 
         return BibleVerse(
             id: passage.id,

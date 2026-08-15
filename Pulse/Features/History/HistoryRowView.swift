@@ -28,10 +28,11 @@ struct HistoryRowView: View {
     var body: some View {
         VStack(alignment: .leading, spacing: PSSpacing.xs) {
 
-            // Row 1: emoji + state name · date+time
+            // Row 1: state symbol + state name · date+time
             HStack(spacing: PSSpacing.xs) {
-                Text(state.emoji)
-                    .font(.system(size: 14))
+                Image(systemName: state.systemImageName)
+                    .font(.system(size: 12))
+                    .foregroundStyle(state.primaryColor)
                 Text(state.displayName)
                     .font(PSFont.label(size: 13, weight: .semibold))
                     .foregroundStyle(state.primaryColor)

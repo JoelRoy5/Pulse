@@ -64,14 +64,14 @@ final class NotificationService: NSObject {
         if let state = delivery.biometricState {
             switch state {
             case .energizedPostWorkout:
-                content.title = "\u{1F3C6} Well done! Here's your verse"
+                content.title = "Well done \u{2014} here's your verse"
             case .morningAwakening, .deepRestRecovered:
-                content.title = "\u{2600}\u{FE0F} Good morning \u{2014} new mercies today"
+                content.title = "Good morning \u{2014} new mercies today"
             default:
-                content.title = "\u{1F30A} A word for you right now"
+                content.title = "A word for you right now"
             }
         } else {
-            content.title = "\u{1F30A} A word for you right now"
+            content.title = "A word for you right now"
         }
 
         // Body template controlled by notificationStyle preference
@@ -106,12 +106,12 @@ final class NotificationService: NSObject {
     func registerCategories() {
         let loveAction = UNNotificationAction(
             identifier: "LOVE_VERSE",
-            title: "\u{2661} Love",
+            title: "Love",
             options: []
         )
         let saveAction = UNNotificationAction(
             identifier: "SAVE_VERSE",
-            title: "\u{1F516} Save",
+            title: "Save",
             options: []
         )
         let dismissAction = UNNotificationAction(

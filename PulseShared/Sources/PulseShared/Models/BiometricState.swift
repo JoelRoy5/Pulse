@@ -94,20 +94,21 @@ public enum BiometricState: String, Codable, CaseIterable, Identifiable, Sendabl
         }
     }
 
-    public var emoji: String {
+    /// SF Symbol name representing this state (used in place of an emoji glyph).
+    public var systemImageName: String {
         switch self {
-        case .energizedPostWorkout:  return "🏆"
-        case .stressedAnxious:       return "🌊"
-        case .exhaustedDepleted:     return "🌙"
-        case .deepRestRecovered:     return "☀️"
-        case .peacefulSteady:        return "🕊️"
-        case .morningAwakening:      return "🌅"
-        case .eveningWindingDown:    return "🌆"
-        case .activeEngaged:         return "⚡️"
-        case .sadWithdrawn:          return "🫂"
-        case .sickUnwell:            return "🌿"
-        case .peakPerformance:       return "🔥"
-        case .spiritualAlert:        return "🌌"
+        case .energizedPostWorkout:  return "trophy.fill"
+        case .stressedAnxious:       return "water.waves"
+        case .exhaustedDepleted:     return "moon.fill"
+        case .deepRestRecovered:     return "sun.max.fill"
+        case .peacefulSteady:        return "leaf.fill"
+        case .morningAwakening:      return "sunrise.fill"
+        case .eveningWindingDown:    return "sunset.fill"
+        case .activeEngaged:         return "bolt.fill"
+        case .sadWithdrawn:          return "cloud.rain.fill"
+        case .sickUnwell:            return "cross.case.fill"
+        case .peakPerformance:       return "flame.fill"
+        case .spiritualAlert:        return "sparkles"
         }
     }
 

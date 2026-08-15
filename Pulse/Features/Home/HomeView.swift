@@ -7,12 +7,22 @@ import PulseShared
 struct HomeView: View {
     @Environment(HealthEngine.self) private var healthEngine
     @Environment(ScriptureEngine.self) private var scriptureEngine
+    @Environment(VerseOfDayScheduler.self) private var votdScheduler
     @Environment(\.modelContext) private var modelContext
 
     // Last 5 deliveries for recent verses row
     @Query(sort: \VerseDelivery.deliveredAt, order: .reverse) private var allDeliveries: [VerseDelivery]
 
-    // UserPreferences for bible ID
+    // VOTD deliveries today (deliveryMethod == "votd", delivered since startOfDay)
+    // Note: SwiftData @Query does not support Date.now in #Predicate at compile time,
+    // so we filter from all "votd" deliveries sorted descending and pick today's.
+    @Query(
+        filter: #Predicate<VerseDelivery> { $0.deliveryMethod == "votd" },
+        sort: \VerseDelivery.deliveredAt,
+        order: .reverse
+    ) private var allVOTDDeliveries: [VerseDelivery]
+
+    // UserPreferences for bible ID and VOTD setting
     @Query private var preferences: [UserPreferences]
 
     // ViewModel — lazily created once we have modelContext
@@ -27,7 +37,26 @@ struct HomeView: View {
     // MARK: - Derived
 
     private var recentDeliveries: [VerseDelivery] {
-        Array(allDeliveries.prefix(5))
+        // Exclude VOTD deliveries — they are already shown in the dedicated Verse of the Day card above.
+        Array(allDeliveries.filter { $0.deliveryMethod != "votd" }.prefix(5))
+    }
+
+    /// Engagement dates for the streak widget. A day counts when a biometric
+    /// verse was delivered, or when the user actually engaged with any verse
+    /// (`engagedAt`). Auto-fetched Verse-of-the-Day deliveries are excluded from
+    /// the delivered-date signal so that merely opening the app each day does not
+    /// inflate the streak — consistent with excluding VOTD from Recent Verses.
+    private var streakEngagementDates: [Date] {
+        allDeliveries.flatMap { delivery -> [Date] in
+            var dates: [Date] = []
+            if delivery.deliveryMethod != "votd" {
+                dates.append(delivery.deliveredAt)
+            }
+            if let engaged = delivery.engagedAt {
+                dates.append(engaged)
+            }
+            return dates
+        }
     }
 
     private var latestDelivery: VerseDelivery? {
@@ -36,6 +65,16 @@ struct HomeView: View {
 
     private var preferredBibleID: Int {
         preferences.first?.preferredBibleID ?? 3034
+    }
+
+    private var includeVerseOfDay: Bool {
+        preferences.first?.includeVerseOfDay ?? true
+    }
+
+    /// Returns the most recent VOTD delivery from today's calendar day, if any.
+    private var todaysVOTDDelivery: VerseDelivery? {
+        let startOfDay = Calendar.current.startOfDay(for: .now)
+        return allVOTDDeliveries.first { $0.deliveredAt >= startOfDay }
     }
 
     private var currentDelivery: VerseDelivery? {
@@ -53,6 +92,18 @@ struct HomeView: View {
         NavigationStack {
             ScrollView {
                 VStack(alignment: .leading, spacing: PSSpacing.md) {
+
+                    // 0. Header
+                    VStack(alignment: .leading, spacing: 2) {
+                        Text("Pulse")
+                            .font(PSFont.label(size: 28, weight: .bold))
+                            .foregroundStyle(Color.psAccent)
+                        Text(Date.now.formatted(.dateTime.weekday(.wide).month().day()))
+                            .font(PSFont.label(size: 14))
+                            .foregroundStyle(Color.psGrayMuted)
+                    }
+                    .frame(maxWidth: .infinity, alignment: .leading)
+                    .padding(.top, PSSpacing.sm)
 
                     // 1. State Banner Card
                     if let state = currentState {
@@ -73,7 +124,15 @@ struct HomeView: View {
                         MetricsGridView(snapshot: healthEngine.currentSnapshot)
                     }
 
-                    // 4. Recent Verses
+                    // 4. Verse of the Day Card
+                    if includeVerseOfDay, let votd = todaysVOTDDelivery {
+                        VerseOfDayCard(delivery: votd) {
+                            selectedDetailDelivery = votd
+                            showingDetail = true
+                        }
+                    }
+
+                    // 5. Recent Verses
                     if !recentDeliveries.isEmpty {
                         RecentVersesRow(
                             deliveries: recentDeliveries,
@@ -84,6 +143,9 @@ struct HomeView: View {
                         )
                     }
 
+                    // 6. Streak Widget
+                    StreakWidget(engagementDates: streakEngagementDates)
+
                     Spacer(minLength: PSSpacing.xxl)
                 }
                 .padding(.horizontal, PSSpacing.screenHorizontal)
@@ -91,11 +153,6 @@ struct HomeView: View {
             }
             .background(Color.psDeepNavy.ignoresSafeArea())
             .navigationBarTitleDisplayMode(.inline)
-            .toolbar {
-                ToolbarItem(placement: .navigationBarLeading) {
-                    topBarLeading
-                }
-            }
             .refreshable {
                 await healthEngine.refresh()
             }
@@ -105,6 +162,8 @@ struct HomeView: View {
                     viewModel = HomeViewModel(context: modelContext)
                 }
                 await healthEngine.refresh()
+                // Ensure today's VOTD is fetched and persisted
+                await votdScheduler.ensureTodaysVOTD()
             }
             .onAppear {
                 // -PulseShowDetail YES — debug flag: auto-present detail sheet
@@ -177,18 +236,6 @@ struct HomeView: View {
         }
     }
 
-    // MARK: - Top Bar
-
-    private var topBarLeading: some View {
-        VStack(alignment: .leading, spacing: 0) {
-            Text("Pulse")
-                .font(PSFont.label(size: 22, weight: .bold))
-                .foregroundStyle(Color.psAccent)
-            Text(Date.now.formatted(.dateTime.weekday(.wide).month().day()))
-                .font(PSFont.label(size: 13))
-                .foregroundStyle(Color.psGrayMuted)
-        }
-    }
 }
 
 // MARK: - Helpers

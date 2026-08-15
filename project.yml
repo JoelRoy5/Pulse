@@ -42,7 +42,7 @@ targets:
       properties:
         UILaunchScreen: {}
         NSHealthShareUsageDescription: "Pulse reads your health data to find scripture that meets your current physical and emotional state. This data stays on your device."
-        NSHealthUpdateUsageDescription: "Pulse can save mindfulness sessions to your Health app after Scripture-inspired breathing exercises."
+        NSHealthUpdateUsageDescription: "Pulse can save your time of prayer to the Health app as a mindful minutes session."
         BGTaskSchedulerPermittedIdentifiers:
           - com.joelroy.pulse.health-check
           - com.joelroy.pulse.verse-refresh
@@ -76,6 +76,7 @@ targets:
         WKApplication: true
         WKCompanionAppBundleIdentifier: com.joelroy.pulse
         NSHealthShareUsageDescription: "Pulse reads your health data on Apple Watch to deliver contextual scripture to your wrist."
+        NSHealthUpdateUsageDescription: "Pulse can save your time of prayer to the Health app as a mindful minutes session."
   PulseWatchWidgets:
     type: app-extension
     platform: watchOS

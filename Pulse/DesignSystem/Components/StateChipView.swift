@@ -8,8 +8,8 @@ struct StateChip: View {
 
     var body: some View {
         HStack(spacing: PSSpacing.xs) {
-            Text(state.emoji)
-                .font(.system(size: 14))
+            Image(systemName: state.systemImageName)
+                .font(.system(size: 12))
             Text(state.displayName.uppercased())
                 .font(PSFont.label(size: 11, weight: .semibold))
                 .kerning(1.5)

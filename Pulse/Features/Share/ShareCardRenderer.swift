@@ -12,7 +12,7 @@ struct ShareCardSnapshot: Sendable {
     let verseReference: String
     let translationAbbreviation: String
     let stateName: String        // e.g. "Exhausted & Depleted"
-    let stateEmoji: String       // e.g. "😔"
+    let stateSymbol: String      // SF Symbol name, e.g. "moon.fill"
     let contextLine: String      // stateBodyText
     let isOfflineFallback: Bool
 
@@ -23,7 +23,7 @@ struct ShareCardSnapshot: Sendable {
         self.translationAbbreviation = delivery.translationAbbreviation
         let state = delivery.biometricState ?? .peacefulSteady
         self.stateName = state.displayName
-        self.stateEmoji = state.emoji
+        self.stateSymbol = state.systemImageName
         self.contextLine = delivery.stateBodyText
         self.isOfflineFallback = delivery.isOfflineFallback
     }

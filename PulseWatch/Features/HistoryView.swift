@@ -82,8 +82,9 @@ struct HistoryView: View {
         let date = Date(timeIntervalSince1970: verse.timestamp)
         VStack(alignment: .leading, spacing: 2) {
             HStack {
-                Text(verse.stateEmoji)
+                Image(systemName: verse.stateSymbol)
                     .font(.system(size: 14))
+                    .foregroundStyle(.white)
                 Text(verse.stateDisplayName)
                     .font(.system(size: 12, weight: .medium, design: .rounded))
                     .foregroundStyle(.white)
@@ -104,8 +105,9 @@ struct HistoryView: View {
     @ViewBuilder
     private var emptyStateView: some View {
         VStack(spacing: 10) {
-            Text("📜")
+            Image(systemName: "clock.arrow.circlepath")
                 .font(.system(size: 32))
+                .foregroundStyle(.white.opacity(0.8))
             Text("No verses yet")
                 .font(.system(size: 14, weight: .medium, design: .rounded))
                 .foregroundStyle(.white)
@@ -128,8 +130,9 @@ private struct VerseDetailSheet: View {
             VStack(alignment: .leading, spacing: 10) {
                 // Header
                 HStack {
-                    Text(verse.stateEmoji)
+                    Image(systemName: verse.stateSymbol)
                         .font(.system(size: 16))
+                        .foregroundStyle(.white)
                     Text(verse.stateDisplayName)
                         .font(.system(size: 13, weight: .semibold, design: .rounded))
                         .foregroundStyle(.white)
@@ -139,7 +142,7 @@ private struct VerseDetailSheet: View {
                     .font(.system(size: 11))
                     .foregroundStyle(.white.opacity(0.5))
 
-                // Vitals line: ♥ bpm / HRV ms / Sleep % — omitted when all nil
+                // Vitals line: HR bpm / HRV ms / Sleep % — omitted when all nil
                 vitalsLine
 
                 Divider().overlay(.white.opacity(0.2))
@@ -186,13 +189,13 @@ private struct VerseDetailSheet: View {
     private var vitalsChips: [VitalsChipData] {
         var chips: [VitalsChipData] = []
         if let hr = verse.heartRate {
-            chips.append(VitalsChipData(icon: "♥", value: String(format: "%.0f", hr), label: "bpm"))
+            chips.append(VitalsChipData(icon: "heart.fill", value: String(format: "%.0f", hr), label: "bpm"))
         }
         if let hrv = verse.hrv {
-            chips.append(VitalsChipData(icon: "〜", value: String(format: "%.0f", hrv), label: "hrv"))
+            chips.append(VitalsChipData(icon: "waveform.path.ecg", value: String(format: "%.0f", hrv), label: "hrv"))
         }
         if let sleep = verse.sleepEfficiency {
-            chips.append(VitalsChipData(icon: "🌙", value: String(format: "%.0f%%", sleep * 100), label: "sleep"))
+            chips.append(VitalsChipData(icon: "moon.fill", value: String(format: "%.0f%%", sleep * 100), label: "sleep"))
         }
         return chips
     }
@@ -205,8 +208,9 @@ private struct VitalsChip: View {
 
     var body: some View {
         HStack(spacing: 2) {
-            Text(icon)
+            Image(systemName: icon)
                 .font(.system(size: 9))
+                .foregroundStyle(.white.opacity(0.85))
             Text(value)
                 .font(.system(size: 10, weight: .semibold, design: .monospaced))
                 .foregroundStyle(.white)

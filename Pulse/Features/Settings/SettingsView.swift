@@ -8,13 +8,16 @@ struct SettingsView: View {
     @Environment(\.modelContext) private var modelContext
     @Environment(ScriptureEngine.self) private var scriptureEngine
     @Environment(HealthEngine.self) private var healthEngine
+    @Environment(VerseOfDayScheduler.self) private var votdScheduler
 
     @State private var vm: SettingsViewModel?
 
     var body: some View {
         Group {
             if let vm {
-                SettingsContentView(vm: vm)
+                SettingsContentView(vm: vm, onVOTDToggle: {
+                    votdScheduler.scheduleDailyNotification()
+                })
             } else {
                 ZStack {
                     Color.psDeepNavy.ignoresSafeArea()
@@ -41,6 +44,7 @@ struct SettingsView: View {
 
 private struct SettingsContentView: View {
     @Bindable var vm: SettingsViewModel
+    var onVOTDToggle: () -> Void = {}
 
     var body: some View {
         NavigationStack {
@@ -378,7 +382,10 @@ private struct SettingsContentView: View {
                 Toggle("", isOn: $vm.includeVerseOfDay)
                     .tint(Color.psAccent)
                     .labelsHidden()
-                    .onChange(of: vm.includeVerseOfDay) { _, _ in vm.save() }
+                    .onChange(of: vm.includeVerseOfDay) { _, _ in
+                        vm.save()
+                        onVOTDToggle()
+                    }
             }
             .frame(minHeight: 44)
             .listRowBackground(Color.psNavy)

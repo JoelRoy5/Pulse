@@ -8,6 +8,7 @@ struct PrayerView: View {
     @Environment(WatchState.self) private var watchState
     @State private var selectedFeeling: PrayerFeeling?
     @State private var showResponse = false
+    @State private var showPrayerSession = false
 
     enum PrayerFeeling: String, CaseIterable {
         case grateful = "Grateful"
@@ -15,12 +16,12 @@ struct PrayerView: View {
         case atPeace = "At Peace"
         case needHelp = "Need Help"
 
-        var emoji: String {
+        var systemImageName: String {
             switch self {
-            case .grateful:   return "🙏"
-            case .struggling: return "😔"
-            case .atPeace:    return "🕊️"
-            case .needHelp:   return "🆘"
+            case .grateful:   return "hands.and.sparkles.fill"
+            case .struggling: return "cloud.rain.fill"
+            case .atPeace:    return "leaf.fill"
+            case .needHelp:   return "exclamationmark.bubble.fill"
             }
         }
 
@@ -37,8 +38,9 @@ struct PrayerView: View {
     var body: some View {
         ScrollView {
             VStack(spacing: 10) {
-                Text("🙏")
-                    .font(.system(size: 28))
+                Image(systemName: "hands.and.sparkles.fill")
+                    .font(.system(size: 26))
+                    .foregroundStyle(Color.psAccent)
                     .padding(.top, 4)
 
                 Text("How are you\nfeeling right now?")
@@ -62,18 +64,17 @@ struct PrayerView: View {
                     .overlay(.white.opacity(0.2))
                     .padding(.vertical, 2)
 
-                // Breath Prayer (Phase 2)
-                VStack(spacing: 4) {
-                    Button("Begin Breath Prayer") { }
-                        .buttonStyle(.borderedProminent)
-                        .tint(Color.psAccent.opacity(0.5))
+                // A Time of Prayer (Phase 2)
+                Button {
+                    WKInterfaceDevice.current().play(.click)
+                    showPrayerSession = true
+                } label: {
+                    Text("Begin a Time of Prayer")
                         .font(.system(size: 12, weight: .semibold))
-                        .disabled(true)
-
-                    Text("Coming soon")
-                        .font(.system(size: 10))
-                        .foregroundStyle(.white.opacity(0.4))
+                        .frame(maxWidth: .infinity)
                 }
+                .buttonStyle(.borderedProminent)
+                .tint(Color.psAccent)
             }
             .padding(.horizontal, 8)
             .padding(.bottom, 12)
@@ -85,6 +86,9 @@ struct PrayerView: View {
                 deliveryID: watchState.currentVerse?.deliveryID ?? "prayer"
             )
         }
+        .fullScreenCover(isPresented: $showPrayerSession) {
+            PrayerTimeView(currentVerse: watchState.currentVerse)
+        }
     }
 
     @ViewBuilder
@@ -94,8 +98,9 @@ struct PrayerView: View {
             selectedFeeling = feeling
         } label: {
             VStack(spacing: 3) {
-                Text(feeling.emoji)
+                Image(systemName: feeling.systemImageName)
                     .font(.system(size: 16))
+                    .foregroundStyle(Color.psAccent)
                 Text(feeling.rawValue)
                     .font(.system(size: 11, weight: .medium, design: .rounded))
                     .foregroundStyle(.white)
@@ -132,8 +137,9 @@ private struct PrayerResponseSheet: View {
             VStack(alignment: .leading, spacing: 10) {
                 // Header
                 HStack {
-                    Text(feeling.emoji)
+                    Image(systemName: feeling.systemImageName)
                         .font(.system(size: 20))
+                        .foregroundStyle(.white)
                     Text(feeling.rawValue)
                         .font(.system(size: 14, weight: .semibold, design: .rounded))
                         .foregroundStyle(.white)

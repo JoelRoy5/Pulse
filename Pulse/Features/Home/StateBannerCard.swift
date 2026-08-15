@@ -12,10 +12,11 @@ struct StateBannerCard: View {
         PSCard(style: .state(state)) {
             VStack(alignment: .leading, spacing: PSSpacing.sm) {
 
-                // Row 1: emoji + state name + confidence
+                // Row 1: state symbol + state name + confidence
                 HStack(alignment: .firstTextBaseline) {
-                    Text(state.emoji)
-                        .font(.system(size: 32))
+                    Image(systemName: state.systemImageName)
+                        .font(.system(size: 30))
+                        .foregroundStyle(.white)
                     VStack(alignment: .leading, spacing: 2) {
                         Text(state.displayName.uppercased())
                             .font(PSFont.label(size: 18, weight: .bold))
@@ -52,16 +53,16 @@ private struct MetricChipsRow: View {
         ScrollView(.horizontal, showsIndicators: false) {
             HStack(spacing: PSSpacing.sm) {
                 if let hr = snapshot.heartRate {
-                    MetricChip(icon: "♥", value: "\(Int(hr))", unit: "bpm")
+                    MetricChip(icon: "heart.fill", value: "\(Int(hr))", unit: "bpm")
                 }
                 if let hrv = snapshot.heartRateVariability {
-                    MetricChip(icon: "〜", value: "\(Int(hrv))", unit: "ms HRV")
+                    MetricChip(icon: "waveform.path.ecg", value: "\(Int(hrv))", unit: "ms HRV")
                 }
                 if let sleep = snapshot.sleepEfficiency {
-                    MetricChip(icon: "🌙", value: "\(Int(sleep * 100))", unit: "% Sleep")
+                    MetricChip(icon: "moon.fill", value: "\(Int(sleep * 100))", unit: "% Sleep")
                 }
                 if let spo2 = snapshot.oxygenSaturation {
-                    MetricChip(icon: "🫁", value: "\(Int(spo2 * 100))", unit: "% O₂")
+                    MetricChip(icon: "lungs.fill", value: "\(Int(spo2 * 100))", unit: "% O₂")
                 }
             }
         }
@@ -77,8 +78,9 @@ private struct MetricChip: View {
 
     var body: some View {
         HStack(spacing: 4) {
-            Text(icon)
+            Image(systemName: icon)
                 .font(.system(size: 13))
+                .foregroundStyle(.white)
             Text(value)
                 .font(PSFont.metric(size: 13))
                 .foregroundStyle(.white)

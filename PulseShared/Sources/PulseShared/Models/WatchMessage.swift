@@ -22,7 +22,7 @@ public enum WatchMessage {
         public let translationAbbreviation: String
         public let stateRaw: String
         public let stateDisplayName: String
-        public let stateEmoji: String
+        public let stateSymbol: String
         public let stateBodyText: String
         public let primaryColor: String
         public let timestamp: Double
@@ -40,7 +40,7 @@ public enum WatchMessage {
             translationAbbreviation: String,
             stateRaw: String,
             stateDisplayName: String,
-            stateEmoji: String,
+            stateSymbol: String,
             stateBodyText: String,
             primaryColor: String,
             timestamp: Double,
@@ -54,13 +54,44 @@ public enum WatchMessage {
             self.translationAbbreviation = translationAbbreviation
             self.stateRaw = stateRaw
             self.stateDisplayName = stateDisplayName
-            self.stateEmoji = stateEmoji
+            self.stateSymbol = stateSymbol
             self.stateBodyText = stateBodyText
             self.primaryColor = primaryColor
             self.timestamp = timestamp
             self.heartRate = heartRate
             self.hrv = hrv
             self.sleepEfficiency = sleepEfficiency
+        }
+
+        private enum CodingKeys: String, CodingKey {
+            case deliveryID, verseText, verseReference, translationAbbreviation
+            case stateRaw, stateDisplayName, stateSymbol, stateBodyText, primaryColor
+            case timestamp, heartRate, hrv, sleepEfficiency
+        }
+
+        // Custom decode keeps backward compatibility with payloads written before the
+        // `stateEmoji` → `stateSymbol` rename (App Group cache + in-flight WC messages):
+        // older JSON has no `stateSymbol` key, so we derive a valid SF Symbol from
+        // `stateRaw` rather than throwing `keyNotFound` and dropping the whole delivery.
+        public init(from decoder: Decoder) throws {
+            let c = try decoder.container(keyedBy: CodingKeys.self)
+            deliveryID = try c.decode(String.self, forKey: .deliveryID)
+            verseText = try c.decode(String.self, forKey: .verseText)
+            verseReference = try c.decode(String.self, forKey: .verseReference)
+            translationAbbreviation = try c.decode(String.self, forKey: .translationAbbreviation)
+            stateRaw = try c.decode(String.self, forKey: .stateRaw)
+            stateDisplayName = try c.decode(String.self, forKey: .stateDisplayName)
+            stateBodyText = try c.decode(String.self, forKey: .stateBodyText)
+            primaryColor = try c.decode(String.self, forKey: .primaryColor)
+            timestamp = try c.decode(Double.self, forKey: .timestamp)
+            heartRate = try c.decodeIfPresent(Double.self, forKey: .heartRate)
+            hrv = try c.decodeIfPresent(Double.self, forKey: .hrv)
+            sleepEfficiency = try c.decodeIfPresent(Double.self, forKey: .sleepEfficiency)
+            if let symbol = try c.decodeIfPresent(String.self, forKey: .stateSymbol) {
+                stateSymbol = symbol
+            } else {
+                stateSymbol = BiometricState(rawValue: stateRaw)?.systemImageName ?? "sparkles"
+            }
         }
     }
 

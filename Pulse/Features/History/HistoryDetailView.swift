@@ -147,7 +147,7 @@ private struct HistoryMetricChips: View {
         if let hr = delivery.heartRateAtDelivery {
             result.append(MetricChipData(
                 id: "hr",
-                icon: "♥",
+                icon: "HR",
                 label: "Heart Rate",
                 value: "\(Int(hr))",
                 unit: "bpm"

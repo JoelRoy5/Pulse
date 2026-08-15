@@ -41,7 +41,7 @@
 	<key>NSHealthShareUsageDescription</key>
 	<string>Pulse reads your health data to find scripture that meets your current physical and emotional state. This data stays on your device.</string>
 	<key>NSHealthUpdateUsageDescription</key>
-	<string>Pulse can save mindfulness sessions to your Health app after Scripture-inspired breathing exercises.</string>
+	<string>Pulse can save your time of prayer to the Health app as a mindful minutes session.</string>
 	<key>UIBackgroundModes</key>
 	<array>
 		<string>fetch</string>

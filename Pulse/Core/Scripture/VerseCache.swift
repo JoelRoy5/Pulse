@@ -14,6 +14,9 @@ final class VerseCache {
 
     private let context: ModelContext
 
+    /// Internal access for modules in the same target (e.g. VerseOfDayScheduler).
+    var modelContext: ModelContext { context }
+
     private static let maxCachedVerses = 500
 
     init(context: ModelContext) {
@@ -78,6 +81,17 @@ final class VerseCache {
     }
 
     // MARK: - Delivery Queries
+
+    /// Returns the first `VerseDelivery` today (local calendar day) for a given delivery method, or nil.
+    func todaysDelivery(deliveryMethod: String) -> VerseDelivery? {
+        let startOfDay = Calendar.current.startOfDay(for: .now)
+        var descriptor = FetchDescriptor<VerseDelivery>(
+            predicate: #Predicate { $0.deliveryMethod == deliveryMethod && $0.deliveredAt >= startOfDay },
+            sortBy: [SortDescriptor(\.deliveredAt, order: .reverse)]
+        )
+        descriptor.fetchLimit = 1
+        return try? context.fetch(descriptor).first
+    }
 
     /// Returns the count of deliveries made today (local calendar day).
     func todayDeliveryCount() -> Int {

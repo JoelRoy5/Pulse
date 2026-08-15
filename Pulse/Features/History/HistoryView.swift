@@ -183,7 +183,7 @@ struct HistoryView: View {
                         viewModel?.stateFilter = state
                     } label: {
                         Label(
-                            "\(state.emoji) \(state.displayName)",
+                            state.displayName,
                             systemImage: viewModel?.stateFilter == state ? "checkmark" : ""
                         )
                     }

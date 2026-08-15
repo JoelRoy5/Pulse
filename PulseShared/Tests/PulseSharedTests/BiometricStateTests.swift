@@ -12,7 +12,7 @@ final class BiometricStateTests: XCTestCase {
         for state in BiometricState.allCases {
             XCTAssertFalse(state.displayName.isEmpty)
             XCTAssertFalse(state.bodyInterpretation.isEmpty)
-            XCTAssertFalse(state.emoji.isEmpty)
+            XCTAssertFalse(state.systemImageName.isEmpty)
             XCTAssertFalse(state.verseTheme.isEmpty)
         }
         XCTAssertEqual(BiometricState.exhaustedDepleted.displayName, "Weary Soul")
