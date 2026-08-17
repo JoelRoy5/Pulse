@@ -51,6 +51,10 @@
 	</array>
 	<key>UILaunchScreen</key>
 	<dict/>
+	<key>UISupportedInterfaceOrientations</key>
+	<array>
+		<string>UIInterfaceOrientationPortrait</string>
+	</array>
 	<key>YouVersionAppKey</key>
 	<string>$(YOUVERSION_APP_KEY)</string>
 </dict>

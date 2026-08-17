@@ -27,6 +27,7 @@ targets:
     settings:
       base:
         PRODUCT_BUNDLE_IDENTIFIER: com.joelroy.pulse
+        TARGETED_DEVICE_FAMILY: 1
     dependencies:
       - package: PulseShared
       - target: PulseWatch
@@ -41,6 +42,7 @@ targets:
       path: Pulse/Resources/Info.plist
       properties:
         UILaunchScreen: {}
+        UISupportedInterfaceOrientations: [UIInterfaceOrientationPortrait]
         ITSAppUsesNonExemptEncryption: false
         NSHealthShareUsageDescription: "Pulse reads your health data to find scripture that meets your current physical and emotional state. This data stays on your device."
         NSHealthUpdateUsageDescription: "Pulse can save your time of prayer to the Health app as a mindful minutes session."
@@ -94,5 +96,6 @@ targets:
     info:
       path: PulseWatchWidgets/Resources/Info.plist
       properties:
+        CFBundleDisplayName: Pulse
         NSExtension:
           NSExtensionPointIdentifier: com.apple.widgetkit-extension
