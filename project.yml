@@ -41,6 +41,7 @@ targets:
       path: Pulse/Resources/Info.plist
       properties:
         UILaunchScreen: {}
+        ITSAppUsesNonExemptEncryption: false
         NSHealthShareUsageDescription: "Pulse reads your health data to find scripture that meets your current physical and emotional state. This data stays on your device."
         NSHealthUpdateUsageDescription: "Pulse can save your time of prayer to the Health app as a mindful minutes session."
         BGTaskSchedulerPermittedIdentifiers:
