@@ -142,6 +142,7 @@ struct PulseApp: App {
                 }
                 // Register AppBridge so AppDelegate can trigger refresh
                 AppBridge.shared.healthEngine = healthEngine
+                AppBridge.shared.scriptureEngine = scriptureEngine
                 AppBridge.shared.modelContainer = container
                 // Activate WatchConnectivity
                 PhoneSessionManager.shared.activate()

@@ -160,9 +160,32 @@ final class PhoneSessionManager: NSObject {
                 replyHandler?(dict ?? [:])
             }
 
+        case .requestVerseForState:
+            let stateRaw = message["stateRaw"] as? String ?? ""
+            logger.info("Received request_verse_for_state '\(stateRaw, privacy: .public)' from watch")
+            // Run the live pipeline for the requested feeling and reply with the verse.
+            // (persistDelivery also pushes it to the watch via onDelivery.)
+            Task { @MainActor in
+                let dict = await self.deliverVerseForState(stateRaw)
+                replyHandler?(dict ?? [:])
+            }
+
         default:
             replyHandler?([:])
         }
+    }
+
+    /// Runs the live verse pipeline for a watch-requested feeling and returns the
+    /// resulting delivery as a payload dict (nil if the state or engine is missing).
+    @MainActor
+    private func deliverVerseForState(_ stateRaw: String) async -> [String: Any]? {
+        guard let state = BiometricState(rawValue: stateRaw),
+              let engine = AppBridge.shared.scriptureEngine else {
+            logger.warning("deliverVerseForState: missing state or scriptureEngine")
+            return nil
+        }
+        let delivery = await engine.deliverFirstVerse(mockState: state)
+        return payloadDict(from: delivery)
     }
 
     /// Fetches the most recently delivered VerseDelivery and returns its payload
@@ -183,7 +206,13 @@ final class PhoneSessionManager: NSObject {
             logger.info("latestVersePayloadDict: no VerseDelivery found")
             return nil
         }
+        return payloadDict(from: delivery)
+    }
 
+    /// Builds the WC payload dictionary for a delivery (shared by the latest-verse
+    /// and verse-for-feeling reply paths).
+    @MainActor
+    private func payloadDict(from delivery: VerseDelivery) -> [String: Any] {
         let state = delivery.biometricState
         let payload = WatchMessage.VerseDeliveryPayload(
             deliveryID:              delivery.id.uuidString,

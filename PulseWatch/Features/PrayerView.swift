@@ -81,10 +81,7 @@ struct PrayerView: View {
         }
         .background(Color.psDeepNavy.ignoresSafeArea())
         .sheet(item: $selectedFeeling) { feeling in
-            PrayerResponseSheet(
-                feeling: feeling,
-                deliveryID: watchState.currentVerse?.deliveryID ?? "prayer"
-            )
+            PrayerResponseSheet(feeling: feeling)
         }
         .fullScreenCover(isPresented: $showPrayerSession) {
             PrayerTimeView(currentVerse: watchState.currentVerse)
@@ -126,9 +123,12 @@ extension PrayerView.PrayerFeeling: Identifiable {
 
 private struct PrayerResponseSheet: View {
     let feeling: PrayerView.PrayerFeeling
-    let deliveryID: String
 
-    private var emergencyVerse: BibleVerse {
+    // nil while the live request is in flight; then a live verse (from the phone)
+    // or a local bundled fallback when the phone is unreachable.
+    @State private var verse: BibleVerse?
+
+    private var localFallback: BibleVerse {
         FallbackVerseProvider().emergencyVerse(for: feeling.biometricState)
     }
 
@@ -148,24 +148,47 @@ private struct PrayerResponseSheet: View {
 
                 Divider().overlay(.white.opacity(0.2))
 
-                // Verse text
-                Text(emergencyVerse.text)
-                    .font(.system(size: 13, design: .serif))
-                    .foregroundStyle(.white)
-                    .multilineTextAlignment(.leading)
-                    .fixedSize(horizontal: false, vertical: true)
+                if let verse {
+                    // Verse text
+                    Text(verse.text)
+                        .font(.system(size: 13, design: .serif))
+                        .foregroundStyle(.white)
+                        .multilineTextAlignment(.leading)
+                        .fixedSize(horizontal: false, vertical: true)
 
-                Text(emergencyVerse.reference)
-                    .font(.system(size: 11, weight: .medium))
-                    .foregroundStyle(.white.opacity(0.7))
-                    .frame(maxWidth: .infinity, alignment: .trailing)
+                    Text(verse.reference)
+                        .font(.system(size: 11, weight: .medium))
+                        .foregroundStyle(.white.opacity(0.7))
+                        .frame(maxWidth: .infinity, alignment: .trailing)
+                } else {
+                    HStack {
+                        ProgressView()
+                        Text("Finding a verse\u{2026}")
+                            .font(.system(size: 12))
+                            .foregroundStyle(.white.opacity(0.7))
+                    }
+                    .frame(maxWidth: .infinity)
+                    .padding(.vertical, 12)
+                }
             }
             .padding(.horizontal, 10)
             .padding(.vertical, 10)
         }
         .background(feeling.biometricState.gradient)
-        .onAppear {
-            WatchSessionManager.shared.sendReaction(.prayed, deliveryID: deliveryID)
+        .task {
+            // Ask the phone for a live, varied verse; fall back locally if it's
+            // unreachable or the request fails.
+            let payload = await WatchSessionManager.shared.requestVerse(for: feeling.biometricState)
+            verse = payload.map {
+                BibleVerse(
+                    id: $0.deliveryID,
+                    reference: $0.verseReference,
+                    text: $0.verseText,
+                    translationAbbreviation: $0.translationAbbreviation,
+                    copyright: "",
+                    chapterURLString: nil
+                )
+            } ?? localFallback
         }
     }
 }

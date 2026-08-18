@@ -91,6 +91,10 @@ final class AppBridge {
 
     weak var healthEngine: HealthEngine?
 
+    /// Set by `PulseApp` so `PhoneSessionManager` can run the live verse pipeline
+    /// in response to a watch "verse for this feeling" request.
+    weak var scriptureEngine: ScriptureEngine?
+
     /// Set by `PulseApp` so that `PhoneSessionManager` can write to SwiftData
     /// without creating a second `ModelContainer`.
     var modelContainer: ModelContainer?

@@ -121,6 +121,30 @@ final class WatchSessionManager: NSObject {
         }
     }
 
+    /// Requests a live verse from the phone for the given feeling/state. The phone
+    /// runs the full Gloo/YouVersion pipeline and replies with the verse (it also
+    /// pushes it through the normal channel, which updates history). Returns nil if
+    /// the phone is unreachable or the request fails, so the caller can fall back
+    /// to a local bundled verse.
+    func requestVerse(for state: BiometricState) async -> WatchMessage.VerseDeliveryPayload? {
+        guard WCSession.isSupported(), session.isReachable else {
+            logger.info("requestVerse: phone not reachable — caller will use local fallback")
+            return nil
+        }
+        let request: [String: Any] = [
+            "type": WatchMessage.MessageType.requestVerseForState.rawValue,
+            "stateRaw": state.rawValue
+        ]
+        return await withCheckedContinuation { continuation in
+            session.sendMessage(request, replyHandler: { reply in
+                continuation.resume(returning: WatchMessage.VerseDeliveryPayload.from(reply))
+            }, errorHandler: { error in
+                logger.warning("requestVerse failed: \(error.localizedDescription, privacy: .public)")
+                continuation.resume(returning: nil)
+            })
+        }
+    }
+
     /// Called from `WatchAppDelegate` for `WKWatchConnectivityRefreshBackgroundTask`.
     func handleBackgroundConnectivity() {
         logger.info("handleBackgroundConnectivity: processing pending transfers")
