@@ -26,14 +26,17 @@ final class HomeViewModel {
 
     /// Persists a reaction for the given delivery and saves to SwiftData.
     func react(_ reaction: VerseReaction, to delivery: VerseDelivery) {
-        delivery.userReaction = reaction
         switch reaction {
         case .loved:
+            // Independent toggle — does not affect Save.
+            delivery.lovedAt = delivery.isLoved ? nil : .now
             delivery.engagedAt = .now
         case .saved:
+            // Independent toggle — does not affect Love.
+            delivery.savedAt = delivery.isSaved ? nil : .now
             delivery.engagedAt = .now
-            delivery.savedAt = .now
         case .shared:
+            delivery.userReaction = .shared
             delivery.engagedAt = .now
             delivery.sharedAt = .now
         case .dismissed:
@@ -42,6 +45,7 @@ final class HomeViewModel {
                 delivery.engagedAt = .now
             }
         case .prayed:
+            delivery.userReaction = .prayed
             delivery.engagedAt = .now
         }
         do {

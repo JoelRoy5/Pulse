@@ -181,18 +181,18 @@ private struct DetailActionRow: View {
         HStack(spacing: PSSpacing.sm) {
             // Love
             DetailActionButton(
-                icon: delivery.userReaction == .loved ? "heart.fill" : "heart",
+                icon: delivery.isLoved ? "heart.fill" : "heart",
                 label: "Love",
-                tint: delivery.userReaction == .loved ? .red : Color.psWhite.opacity(0.7)
+                tint: delivery.isLoved ? .red : Color.psWhite.opacity(0.7)
             ) {
                 onReact(.loved)
             }
 
             // Save
             DetailActionButton(
-                icon: delivery.userReaction == .saved ? "bookmark.fill" : "bookmark",
+                icon: delivery.isSaved ? "bookmark.fill" : "bookmark",
                 label: "Save",
-                tint: delivery.userReaction == .saved ? Color.psAccent : Color.psWhite.opacity(0.7)
+                tint: delivery.isSaved ? Color.psAccent : Color.psWhite.opacity(0.7)
             ) {
                 onReact(.saved)
             }

@@ -54,9 +54,9 @@ final class HistoryViewModel {
             case .all:
                 passesReaction = true
             case .loved:
-                passesReaction = delivery.userReaction == .loved
+                passesReaction = delivery.isLoved
             case .saved:
-                passesReaction = delivery.userReaction == .saved
+                passesReaction = delivery.isSaved
             }
 
             // State filter
@@ -104,17 +104,21 @@ final class HistoryViewModel {
     // MARK: - React
 
     func react(_ reaction: VerseReaction, to delivery: VerseDelivery) {
-        delivery.userReaction = reaction
         switch reaction {
         case .loved:
+            // Independent toggle — does not affect Save.
+            delivery.lovedAt = delivery.isLoved ? nil : .now
             delivery.engagedAt = .now
         case .saved:
+            // Independent toggle — does not affect Love.
+            delivery.savedAt = delivery.isSaved ? nil : .now
             delivery.engagedAt = .now
-            delivery.savedAt = .now
         case .shared:
+            delivery.userReaction = .shared
             delivery.engagedAt = .now
             delivery.sharedAt = .now
         default:
+            delivery.userReaction = reaction
             delivery.engagedAt = delivery.engagedAt ?? .now
         }
         do {

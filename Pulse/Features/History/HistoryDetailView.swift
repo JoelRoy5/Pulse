@@ -63,9 +63,14 @@ struct HistoryDetailView: View {
                 // Horizontal metric chips (omit nils)
                 HistoryMetricChips(delivery: delivery)
 
-                // Reaction display (icon + displayName when present)
-                if let reaction = delivery.userReaction {
-                    ReactionDisplayRow(reaction: reaction)
+                // Engagement display — Love and Save are independent, plus any
+                // transient reaction (prayed / shared).
+                HStack(spacing: PSSpacing.md) {
+                    if delivery.isLoved { ReactionDisplayRow(reaction: .loved) }
+                    if delivery.isSaved { ReactionDisplayRow(reaction: .saved) }
+                    if let reaction = delivery.userReaction, reaction == .prayed || reaction == .shared {
+                        ReactionDisplayRow(reaction: reaction)
+                    }
                 }
 
                 // Share button

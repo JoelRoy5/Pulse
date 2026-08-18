@@ -40,8 +40,8 @@ struct CurrentVerseCard: View {
 
                 // Action row
                 HStack(spacing: 0) {
-                    ActionButton(icon: "heart", label: "Love", isActive: delivery.userReaction == .loved, tint: Color.psDeepNavy, action: onLove)
-                    ActionButton(icon: "bookmark", label: "Save", isActive: delivery.userReaction == .saved, tint: Color.psDeepNavy, action: onSave)
+                    ActionButton(icon: "heart", label: "Love", isActive: delivery.isLoved, tint: Color.psDeepNavy, action: onLove)
+                    ActionButton(icon: "bookmark", label: "Save", isActive: delivery.isSaved, tint: Color.psDeepNavy, action: onSave)
                     ActionButton(icon: "square.and.arrow.up", label: "Share", isActive: false, tint: Color.psDeepNavy, action: onShare)
                     ActionButton(icon: "book.closed", label: "Read More", isActive: false, tint: Color.psDeepNavy, action: onReadMore)
                 }

@@ -38,10 +38,14 @@ final class VerseDelivery {
     var deliveryMethod: String
 
     // User engagement
+    // Love and Save are independent toggles, tracked by their own timestamps so
+    // a verse can be both loved and saved at once. `userReactionRaw` remains for
+    // the transient reactions (shared / prayed / dismissed).
     var userReactionRaw: String?
     var engagedAt: Date?
     var sharedAt: Date?
     var savedAt: Date?
+    var lovedAt: Date?
 
     // AI metadata
     var glooRationale: String?
@@ -88,6 +92,10 @@ final class VerseDelivery {
         get { userReactionRaw.flatMap(VerseReaction.init(rawValue:)) }
         set { userReactionRaw = newValue?.rawValue }
     }
+
+    /// Independent Love / Save state (both can be true at once).
+    var isLoved: Bool { lovedAt != nil }
+    var isSaved: Bool { savedAt != nil }
 }
 
 // MARK: - CachedVerse

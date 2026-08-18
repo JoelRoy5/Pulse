@@ -55,15 +55,18 @@ struct HistoryRowView: View {
                 .foregroundStyle(Color.psWhite.opacity(0.75))
                 .lineLimit(2)
 
-            // Row 4: reaction icon (if any)
-            if let reaction = delivery.userReaction {
-                HStack(spacing: 4) {
-                    Image(systemName: reaction.icon)
-                        .font(.system(size: 11))
-                    Text(reaction.displayName)
-                        .font(PSFont.label(size: 11))
+            // Row 4: engagement badges — Love and Save are independent, plus any
+            // transient reaction (prayed / shared).
+            HStack(spacing: 8) {
+                if delivery.isLoved {
+                    reactionBadge(icon: "heart.fill", label: "Loved", color: .red)
                 }
-                .foregroundStyle(reactionColor(for: reaction))
+                if delivery.isSaved {
+                    reactionBadge(icon: "bookmark.fill", label: "Saved", color: Color.psAccent)
+                }
+                if let reaction = delivery.userReaction, reaction == .prayed || reaction == .shared {
+                    reactionBadge(icon: reaction.icon, label: reaction.displayName, color: reactionColor(for: reaction))
+                }
             }
         }
         .padding(.vertical, PSSpacing.sm)
@@ -87,5 +90,16 @@ struct HistoryRowView: View {
         case .prayed:    return Color.psSuccess
         case .dismissed: return Color.psGrayMuted
         }
+    }
+
+    @ViewBuilder
+    private func reactionBadge(icon: String, label: String, color: Color) -> some View {
+        HStack(spacing: 4) {
+            Image(systemName: icon)
+                .font(.system(size: 11))
+            Text(label)
+                .font(PSFont.label(size: 11))
+        }
+        .foregroundStyle(color)
     }
 }

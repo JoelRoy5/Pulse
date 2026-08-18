@@ -149,9 +149,12 @@ final class NotificationService: NSObject {
             predicate: #Predicate { $0.id == deliveryID }
         )
         if let delivery = try? context.fetch(descriptor).first {
-            delivery.userReaction = reaction
             delivery.engagedAt = .now
-            if reaction == .saved { delivery.savedAt = .now }
+            switch reaction {
+            case .loved: delivery.lovedAt = delivery.isLoved ? nil : .now
+            case .saved: delivery.savedAt = delivery.isSaved ? nil : .now
+            default:     delivery.userReaction = reaction
+            }
             try? context.save()
             logger.info("Reaction '\(reaction.rawValue, privacy: .public)' saved for delivery \(deliveryID, privacy: .public)")
         }

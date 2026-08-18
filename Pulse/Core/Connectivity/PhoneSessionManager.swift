@@ -226,8 +226,13 @@ final class PhoneSessionManager: NSObject {
                 return
             }
 
-            delivery.userReaction = VerseReaction(rawValue: reactionRaw)
-            delivery.engagedAt    = Date()
+            delivery.engagedAt = Date()
+            // Love / Save are independent toggles; other reactions use the single field.
+            switch VerseReaction(rawValue: reactionRaw) {
+            case .loved: delivery.lovedAt = delivery.isLoved ? nil : Date()
+            case .saved: delivery.savedAt = delivery.isSaved ? nil : Date()
+            default:     delivery.userReaction = VerseReaction(rawValue: reactionRaw)
+            }
             do {
                 try context.save()
                 logger.info("persistReaction: updated delivery \(deliveryIDString, privacy: .public) → \(reactionRaw, privacy: .public)")
