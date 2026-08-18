@@ -85,19 +85,24 @@ struct PrayerTimeView: View {
         VStack(spacing: 10) {
             Spacer(minLength: 4)
 
-            // Heartbeat ring
+            // Heartbeat circle — contracts on each beat, at the live (winding-down)
+            // heart rate. A static outer ring shows the full size to make the
+            // close read clearly.
             ZStack {
                 Circle()
-                    .stroke(Color.white.opacity(0.25), lineWidth: 2)
+                    .stroke(Color.white.opacity(0.18), lineWidth: 2)
                 Circle()
-                    .stroke(Color.white.opacity(0.7), lineWidth: 3)
+                    .fill(Color.white.opacity(0.08))
+                    .scaleEffect(beatScale)
+                Circle()
+                    .stroke(Color.white.opacity(0.85), lineWidth: 3)
                     .scaleEffect(beatScale)
                 Image(systemName: "heart.fill")
-                    .font(.system(size: 20))
-                    .foregroundStyle(.white.opacity(0.9))
+                    .font(.system(size: 24))
+                    .foregroundStyle(.white)
                     .scaleEffect(beatScale)
             }
-            .frame(width: 74, height: 74)
+            .frame(width: 104, height: 104)
 
             // Rotating prayer prompt
             Text(prompts.isEmpty ? "" : prompts[promptIndex])
@@ -169,8 +174,9 @@ struct PrayerTimeView: View {
         self.player = player
         player.start {
             guard !reduceMotion else { return }
-            withAnimation(.easeOut(duration: 0.16)) { beatScale = 1.18 }
-            withAnimation(.easeIn(duration: 0.45).delay(0.16)) { beatScale = 1.0 }
+            // Quick close on the beat, then ease back open until the next beat.
+            withAnimation(.easeIn(duration: 0.12)) { beatScale = 0.8 }
+            withAnimation(.easeOut(duration: 0.5).delay(0.12)) { beatScale = 1.0 }
         }
     }
 
