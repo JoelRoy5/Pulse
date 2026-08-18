@@ -130,6 +130,8 @@ struct PulseApp: App {
             .environment(scriptureEngine)
             .environment(votdScheduler)
             .task {
+                // Run one-time data backfills before anything reads the store.
+                DataMigrations.runOnLaunch(container.mainContext)
                 // Wire onClassification hook ONCE
                 healthEngine.onClassification = { [se = scriptureEngine] result in
                     await se.processStateChange(result)

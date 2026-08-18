@@ -42,6 +42,7 @@
 		84A2F60B3521417E25F1CEB8 /* AppConfig.swift in Sources */ = {isa = PBXBuildFile; fileRef = E7059FABA65645A103CAF056 /* AppConfig.swift */; };
 		857E8E850DF155A4D22DB125 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 6F083BA414BA913FD2B9FA6D /* Assets.xcassets */; };
 		89D3B6B6CB8C6DAC31EBCEC4 /* HistoryView.swift in Sources */ = {isa = PBXBuildFile; fileRef = DBBB7FDB243B4CA672E7FF03 /* HistoryView.swift */; };
+		89EB9B5CEBE088D6A8B2C6E5 /* DataMigrations.swift in Sources */ = {isa = PBXBuildFile; fileRef = 53E8ABE4D8C80C4EF0D9E1A3 /* DataMigrations.swift */; };
 		8C516DA412FFF75038F61FF3 /* PulseSchema.swift in Sources */ = {isa = PBXBuildFile; fileRef = 935401AC9AF178CA8A14AB97 /* PulseSchema.swift */; };
 		90A3E45D156D49DCBD18CF2E /* VerseDetailSheet.swift in Sources */ = {isa = PBXBuildFile; fileRef = 29FA64B0180D4CDBFC838B54 /* VerseDetailSheet.swift */; };
 		94B8EC034C1765D77212F1DC /* HistoryViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 61351325E55F640F3125EDCC /* HistoryViewModel.swift */; };
@@ -146,6 +147,7 @@
 		49CAB3507692A5788EDD021C /* MainView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MainView.swift; sourceTree = "<group>"; };
 		4AA54FFD5368F70522460346 /* HistoryRowView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HistoryRowView.swift; sourceTree = "<group>"; };
 		4BDC583C372415D61AC4D617 /* StreakWidget.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StreakWidget.swift; sourceTree = "<group>"; };
+		53E8ABE4D8C80C4EF0D9E1A3 /* DataMigrations.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DataMigrations.swift; sourceTree = "<group>"; };
 		5414380F98EE676E0E738DBC /* OnboardingFlow.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OnboardingFlow.swift; sourceTree = "<group>"; };
 		5B90EB55056AFBCB2A9DF40F /* StateChipView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StateChipView.swift; sourceTree = "<group>"; };
 		5D58FF5DF89E2161D951DF1A /* PulseRing.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PulseRing.swift; sourceTree = "<group>"; };
@@ -301,6 +303,7 @@
 		2FAB7FD1C04A37EC2B7D16E4 /* Persistence */ = {
 			isa = PBXGroup;
 			children = (
+				53E8ABE4D8C80C4EF0D9E1A3 /* DataMigrations.swift */,
 				FF94ABC9A97854F7CC080CE4 /* ModelContainer+Setup.swift */,
 				935401AC9AF178CA8A14AB97 /* PulseSchema.swift */,
 			);
@@ -710,6 +713,7 @@
 				84A2F60B3521417E25F1CEB8 /* AppConfig.swift in Sources */,
 				9E7FC8D4372D7D6477B1E1CE /* AppDelegate.swift in Sources */,
 				CF6B745A25EAC8BE8B7F7D6A /* CurrentVerseCard.swift in Sources */,
+				89EB9B5CEBE088D6A8B2C6E5 /* DataMigrations.swift in Sources */,
 				8040CE25D98384C6828816C2 /* DeliveryScheduler.swift in Sources */,
 				C802F2996F9DC7F8B40490A7 /* HealthDataProviding.swift in Sources */,
 				A5C54ADE0C5514A00DA4DCFA /* HealthEngine.swift in Sources */,
@@ -824,7 +828,7 @@
 				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
 				COPY_PHASE_STRIP = NO;
-				CURRENT_PROJECT_VERSION = 2;
+				CURRENT_PROJECT_VERSION = 3;
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
 				DEVELOPMENT_TEAM = APQT8U28NL;
 				ENABLE_NS_ASSERTIONS = NO;
@@ -968,7 +972,7 @@
 				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
 				COPY_PHASE_STRIP = NO;
-				CURRENT_PROJECT_VERSION = 2;
+				CURRENT_PROJECT_VERSION = 3;
 				DEBUG_INFORMATION_FORMAT = dwarf;
 				DEVELOPMENT_TEAM = APQT8U28NL;
 				ENABLE_STRICT_OBJC_MSGSEND = YES;
