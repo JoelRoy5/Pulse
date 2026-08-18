@@ -82,9 +82,9 @@ final class ScriptureEngine {
     /// Onboarding / debug path — bypasses scheduler rules. Always yields a verse.
     /// Pass `mockState` to override the biometric state used for verse selection (used by -PulseMockState).
     @discardableResult
-    func deliverFirstVerse(mockState: BiometricState? = nil) async -> VerseDelivery {
+    func deliverFirstVerse(mockState: BiometricState? = nil, suppressNotification: Bool = false) async -> VerseDelivery {
         let result = makeSyntheticResult(state: mockState)
-        return await runPipeline(result: result)
+        return await runPipeline(result: result, suppressNotification: suppressNotification)
     }
 
     /// Updates the active bible translation used for all subsequent fetch calls.
@@ -100,7 +100,7 @@ final class ScriptureEngine {
 
     /// Runs the full pipeline. Returns the persisted `VerseDelivery`.
     @discardableResult
-    private func runPipeline(result: ClassificationResult) async -> VerseDelivery {
+    private func runPipeline(result: ClassificationResult, suppressNotification: Bool = false) async -> VerseDelivery {
         isLoading = true
         defer { isLoading = false }
 
@@ -109,7 +109,7 @@ final class ScriptureEngine {
         if isOffline {
             logger.info("Offline mode — using fallback for state: \(result.state.rawValue, privacy: .public)")
             let delivery = await offlineDelivery(result: result)
-            await persistDelivery(delivery)
+            await persistDelivery(delivery, suppressNotification: suppressNotification)
             return delivery
         }
 
@@ -125,12 +125,12 @@ final class ScriptureEngine {
                 rationale: selection.rationale,
                 isOfflineFallback: selection.isFallback
             )
-            await persistDelivery(delivery)
+            await persistDelivery(delivery, suppressNotification: suppressNotification)
             return delivery
         } catch {
             logger.warning("Live pipeline failed (\(error.localizedDescription, privacy: .public)) — entering fallback chain")
             let delivery = await fallbackChain(result: result)
-            await persistDelivery(delivery)
+            await persistDelivery(delivery, suppressNotification: suppressNotification)
             return delivery
         }
     }
@@ -263,16 +263,20 @@ final class ScriptureEngine {
 
     // MARK: - Persistence & Side-Effects
 
-    private func persistDelivery(_ delivery: VerseDelivery) async {
+    private func persistDelivery(_ delivery: VerseDelivery, suppressNotification: Bool = false) async {
         cache.saveDelivery(delivery)
         currentDelivery = delivery
 
         // Notify Watch (Task 11 hook)
         onDelivery?(delivery)
 
-        // Local notification — pass notificationStyle preference through
+        // Local notification — pass notificationStyle preference through. Skipped
+        // for user-initiated requests (feeling picker, watch request) since the
+        // user is already looking at the verse.
         let notificationStyle = cache.fetchUserPreferences().notificationStyle
-        await notificationService.scheduleVerseNotification(delivery, style: notificationStyle)
+        if !suppressNotification {
+            await notificationService.scheduleVerseNotification(delivery, style: notificationStyle)
+        }
 
         // Widget / complication update
         WidgetKit.WidgetCenter.shared.reloadAllTimelines()

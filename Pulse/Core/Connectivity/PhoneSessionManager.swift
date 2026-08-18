@@ -184,7 +184,9 @@ final class PhoneSessionManager: NSObject {
             logger.warning("deliverVerseForState: missing state or scriptureEngine")
             return nil
         }
-        let delivery = await engine.deliverFirstVerse(mockState: state)
+        // No phone notification for a watch-initiated request — the user is
+        // already looking at the verse on their wrist.
+        let delivery = await engine.deliverFirstVerse(mockState: state, suppressNotification: true)
         return payloadDict(from: delivery)
     }
 

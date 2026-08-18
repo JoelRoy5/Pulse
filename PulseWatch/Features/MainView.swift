@@ -40,7 +40,6 @@ struct MainView: View {
             if showHint && selectedTab == 0 {
                 scrollHint
                     .transition(.move(edge: .top).combined(with: .opacity))
-                    .allowsHitTesting(false)
             }
         }
         .onAppear {
@@ -62,19 +61,28 @@ struct MainView: View {
         }
     }
 
-    // First-run affordance: turn the crown to reach the other tabs.
+    // First-run affordance: tap (or turn the crown) to reach the other tabs.
     private var scrollHint: some View {
-        HStack(spacing: 4) {
-            Text("Turn crown for more")
-                .font(.system(size: 10, weight: .semibold, design: .rounded))
-            Image(systemName: "chevron.compact.down")
-                .font(.system(size: 12, weight: .bold))
-                .symbolEffect(.bounce, options: reduceMotion ? .nonRepeating : .repeating)
+        Button {
+            hasDiscoveredTabs = true
+            withAnimation(.easeInOut(duration: 0.35)) {
+                selectedTab = 1
+                showHint = false
+            }
+        } label: {
+            HStack(spacing: 4) {
+                Text("Scroll for more")
+                    .font(.system(size: 10, weight: .semibold, design: .rounded))
+                Image(systemName: "chevron.compact.down")
+                    .font(.system(size: 12, weight: .bold))
+                    .symbolEffect(.bounce, options: reduceMotion ? .nonRepeating : .repeating)
+            }
+            .foregroundStyle(Color.psDeepNavy)
+            .padding(.horizontal, 10)
+            .padding(.vertical, 4)
+            .background(Color.psAccent, in: Capsule())
+            .padding(.top, 2)
         }
-        .foregroundStyle(Color.psDeepNavy)
-        .padding(.horizontal, 10)
-        .padding(.vertical, 4)
-        .background(Color.psAccent, in: Capsule())
-        .padding(.top, 2)
+        .buttonStyle(.plain)
     }
 }

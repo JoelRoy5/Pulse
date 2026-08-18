@@ -229,8 +229,9 @@ struct HomeView: View {
         .sheet(isPresented: $showFeelingPicker) {
             FeelingPickerView { state in
                 // Manual request — bypasses the scheduler and runs the live
-                // pipeline for the chosen state (syncs to watch + history).
-                Task { await scriptureEngine.deliverFirstVerse(mockState: state) }
+                // pipeline for the chosen state (syncs to watch + history). No
+                // notification: the user is already looking at the app.
+                Task { await scriptureEngine.deliverFirstVerse(mockState: state, suppressNotification: true) }
             }
         }
     }
