@@ -33,6 +33,7 @@ struct HomeView: View {
     @State private var showingDetail = false
     @State private var shareItem: ShareItem?
     @State private var shareCardDelivery: VerseDelivery?
+    @State private var showFeelingPicker = false
 
     // MARK: - Derived
 
@@ -117,6 +118,26 @@ struct HomeView: View {
 
                     // 2. Verse Card (skeleton / empty / current)
                     verseCardSection
+
+                    // 2b. Manual "how are you feeling" verse request
+                    Button {
+                        showFeelingPicker = true
+                    } label: {
+                        HStack(spacing: PSSpacing.sm) {
+                            Image(systemName: "heart.text.square")
+                            Text("How are you feeling?")
+                                .font(PSFont.label(size: 15, weight: .semibold))
+                            Spacer()
+                            Image(systemName: "chevron.right")
+                                .font(.system(size: 12))
+                                .foregroundStyle(Color.psGrayMuted)
+                        }
+                        .foregroundStyle(Color.psWhite)
+                        .padding(PSSpacing.md)
+                        .background(Color.psNavy)
+                        .clipShape(RoundedRectangle(cornerRadius: PSRadius.md))
+                    }
+                    .buttonStyle(.plain)
 
                     // 3. Metrics Grid
                     if healthEngine.currentSnapshot != nil {
@@ -204,6 +225,13 @@ struct HomeView: View {
         }
         .sheet(item: $shareItem) { item in
             ShareSheet(text: item.text)
+        }
+        .sheet(isPresented: $showFeelingPicker) {
+            FeelingPickerView { state in
+                // Manual request — bypasses the scheduler and runs the live
+                // pipeline for the chosen state (syncs to watch + history).
+                Task { await scriptureEngine.deliverFirstVerse(mockState: state) }
+            }
         }
     }
 
