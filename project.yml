@@ -14,7 +14,7 @@ settings:
     CODE_SIGN_IDENTITY: "Apple Development"
     CODE_SIGN_STYLE: Automatic
     SWIFT_VERSION: "5.0"
-    CURRENT_PROJECT_VERSION: 1
+    CURRENT_PROJECT_VERSION: 2
     MARKETING_VERSION: 1.0
 packages:
   PulseShared:
@@ -41,6 +41,8 @@ targets:
     info:
       path: Pulse/Resources/Info.plist
       properties:
+        CFBundleShortVersionString: $(MARKETING_VERSION)
+        CFBundleVersion: $(CURRENT_PROJECT_VERSION)
         UILaunchScreen: {}
         UISupportedInterfaceOrientations: [UIInterfaceOrientationPortrait]
         ITSAppUsesNonExemptEncryption: false
@@ -76,6 +78,8 @@ targets:
     info:
       path: PulseWatch/Resources/Info.plist
       properties:
+        CFBundleShortVersionString: $(MARKETING_VERSION)
+        CFBundleVersion: $(CURRENT_PROJECT_VERSION)
         WKApplication: true
         WKCompanionAppBundleIdentifier: com.joelroy.pulse
         NSHealthShareUsageDescription: "Pulse reads your health data on Apple Watch to deliver contextual scripture to your wrist."
@@ -97,5 +101,7 @@ targets:
       path: PulseWatchWidgets/Resources/Info.plist
       properties:
         CFBundleDisplayName: Pulse
+        CFBundleShortVersionString: $(MARKETING_VERSION)
+        CFBundleVersion: $(CURRENT_PROJECT_VERSION)
         NSExtension:
           NSExtensionPointIdentifier: com.apple.widgetkit-extension
