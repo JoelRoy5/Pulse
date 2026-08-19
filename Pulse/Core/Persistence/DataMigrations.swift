@@ -1,5 +1,6 @@
 import Foundation
 import SwiftData
+import PulseShared
 import os.log
 
 private let logger = Logger(subsystem: "com.joelroy.pulse", category: "DataMigrations")
@@ -50,7 +51,7 @@ enum DataMigrations {
         )
         guard let stale = try? context.fetch(descriptor), !stale.isEmpty else { return }
         for delivery in stale {
-            delivery.emotionRaw = delivery.biometricState?.defaultEmotion.rawValue
+            delivery.emotionRaw = delivery.biometricState?.defaultEmotion.rawValue ?? Emotion.steady.rawValue
         }
         try? context.save()
         logger.info("Backfilled emotionRaw for \(stale.count, privacy: .public) deliveries")
