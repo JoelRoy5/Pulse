@@ -12,38 +12,12 @@ struct FeelingPickerView: View {
 
     @Environment(\.dismiss) private var dismiss
 
-    enum Feeling: String, CaseIterable, Identifiable {
-        case grateful = "Grateful"
-        case anxious  = "Anxious"
-        case weary    = "Weary"
-        case sad      = "Sad"
-        case atPeace  = "At Peace"
-        case joyful   = "Joyful"
-
-        var id: String { rawValue }
-
-        var state: BiometricState {
-            switch self {
-            case .grateful: return .deepRestRecovered
-            case .anxious:  return .stressedAnxious
-            case .weary:    return .exhaustedDepleted
-            case .sad:      return .sadWithdrawn
-            case .atPeace:  return .peacefulSteady
-            case .joyful:   return .energizedPostWorkout
-            }
-        }
-
-        var systemImage: String {
-            switch self {
-            case .grateful: return "hands.and.sparkles.fill"
-            case .anxious:  return "wind"
-            case .weary:    return "moon.zzz.fill"
-            case .sad:      return "cloud.rain.fill"
-            case .atPeace:  return "leaf.fill"
-            case .joyful:   return "sun.max.fill"
-            }
-        }
-    }
+    // The 9 picker emotions — all Emotion cases except .unwell (auto-detected only).
+    private static let pickerEmotions: [Emotion] = [
+        .drained, .restful, .content,
+        .weighedDown, .steady, .grateful,
+        .stressed, .driven, .energized
+    ]
 
     private let columns = [GridItem(.flexible(), spacing: PSSpacing.md),
                            GridItem(.flexible(), spacing: PSSpacing.md)]
@@ -64,16 +38,16 @@ struct FeelingPickerView: View {
                             .foregroundStyle(Color.psGrayMuted)
 
                         LazyVGrid(columns: columns, spacing: PSSpacing.md) {
-                            ForEach(Feeling.allCases) { feeling in
+                            ForEach(Self.pickerEmotions) { emotion in
                                 Button {
-                                    onSelect(feeling.state)
+                                    onSelect(emotion.biometricState)
                                     dismiss()
                                 } label: {
                                     VStack(spacing: PSSpacing.sm) {
-                                        Image(systemName: feeling.systemImage)
+                                        Image(systemName: emotion.systemImage)
                                             .font(.system(size: 26))
                                             .foregroundStyle(Color.psAccent)
-                                        Text(feeling.rawValue)
+                                        Text(emotion.displayName)
                                             .font(PSFont.label(size: 15, weight: .semibold))
                                             .foregroundStyle(Color.psWhite)
                                     }

@@ -51,6 +51,21 @@ public enum Emotion: String, Codable, CaseIterable, Identifiable, Sendable {
         }
     }
 
+    public var systemImage: String {
+        switch self {
+        case .drained:     return "moon.zzz.fill"
+        case .restful:     return "leaf.fill"
+        case .content:     return "sun.horizon.fill"
+        case .weighedDown: return "cloud.rain.fill"
+        case .steady:      return "equal.circle.fill"
+        case .grateful:    return "hands.and.sparkles.fill"
+        case .stressed:    return "wind"
+        case .driven:      return "bolt.fill"
+        case .energized:   return "sun.max.fill"
+        case .unwell:      return "cross.fill"
+        }
+    }
+
     public var energy: EnergyLevel {
         switch self {
         case .drained, .restful, .content:
