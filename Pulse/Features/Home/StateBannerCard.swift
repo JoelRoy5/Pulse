@@ -7,18 +7,26 @@ struct StateBannerCard: View {
     let state: BiometricState
     let confidence: Double
     let snapshot: HealthSnapshot?
+    var emotion: Emotion
+
+    init(state: BiometricState, confidence: Double, snapshot: HealthSnapshot?, emotion: Emotion? = nil) {
+        self.state = state
+        self.confidence = confidence
+        self.snapshot = snapshot
+        self.emotion = emotion ?? state.defaultEmotion
+    }
 
     var body: some View {
         PSCard(style: .state(state)) {
             VStack(alignment: .leading, spacing: PSSpacing.sm) {
 
-                // Row 1: state symbol + state name + confidence
+                // Row 1: state symbol + emotion name + confidence
                 HStack(alignment: .firstTextBaseline) {
                     Image(systemName: state.systemImageName)
                         .font(.system(size: 30))
                         .foregroundStyle(.white)
                     VStack(alignment: .leading, spacing: 2) {
-                        Text(state.displayName.uppercased())
+                        Text(emotion.displayName.uppercased())
                             .font(PSFont.label(size: 18, weight: .bold))
                             .foregroundStyle(.white)
                             .kerning(1.2)
@@ -40,7 +48,7 @@ struct StateBannerCard: View {
             }
         }
         .accessibilityElement(children: .combine)
-        .accessibilityLabel("\(state.displayName), \(Int(confidence * 100))% match. \(state.bodyInterpretation)")
+        .accessibilityLabel("\(emotion.displayName), \(Int(confidence * 100))% match. \(state.bodyInterpretation)")
     }
 }
 
@@ -106,7 +114,8 @@ private struct MetricChip: View {
                 heartRateVariability: 31,
                 oxygenSaturation: 0.97,
                 sleepEfficiency: 0.68
-            )
+            ),
+            emotion: .drained
         )
         .padding(PSSpacing.screenHorizontal)
     }

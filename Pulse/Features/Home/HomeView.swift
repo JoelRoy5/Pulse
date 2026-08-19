@@ -112,7 +112,8 @@ struct HomeView: View {
                             state: state,
                             confidence: healthEngine.currentClassification?.confidence
                                 ?? currentDelivery?.stateConfidence ?? 0,
-                            snapshot: healthEngine.currentSnapshot
+                            snapshot: healthEngine.currentSnapshot,
+                            emotion: currentDelivery?.emotion ?? state.defaultEmotion
                         )
                     }
 

@@ -35,7 +35,7 @@ struct HistoryDetailView: View {
 
                 // State chip row
                 HStack {
-                    StateChip(state: state, showConfidence: true, confidence: delivery.stateConfidence)
+                    StateChip(state: state, showConfidence: true, confidence: delivery.stateConfidence, emotion: delivery.emotion)
                     Spacer()
                 }
 

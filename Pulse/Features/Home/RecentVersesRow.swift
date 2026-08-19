@@ -70,7 +70,7 @@ private struct RecentVerseCard: View {
                 Image(systemName: state.systemImageName)
                     .font(.system(size: 11))
                     .foregroundStyle(state.primaryColor)
-                Text(state.abbreviation.uppercased())
+                Text(delivery.emotion.displayName.uppercased())
                     .font(PSFont.label(size: 10, weight: .semibold))
                     .foregroundStyle(state.primaryColor)
                     .kerning(0.8)
@@ -101,7 +101,7 @@ private struct RecentVerseCard: View {
         .clipShape(RoundedRectangle(cornerRadius: PSRadius.sm))
         .psSubtleShadow()
         .accessibilityElement(children: .combine)
-        .accessibilityLabel("\(delivery.verseReference), \(state.displayName), \(dateLabel)")
+        .accessibilityLabel("\(delivery.verseReference), \(delivery.emotion.displayName), \(dateLabel)")
         .accessibilityAddTraits(.isButton)
     }
 }

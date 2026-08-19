@@ -14,7 +14,7 @@ struct TodayPlaceholderView: View {
 
                 // --- Health State ---
                 Group {
-                    Text(healthEngine.currentClassification?.state.displayName ?? "—")
+                    Text(healthEngine.currentClassification.map { $0.state.defaultEmotion.displayName } ?? "—")
                         .font(.largeTitle)
                         .bold()
 

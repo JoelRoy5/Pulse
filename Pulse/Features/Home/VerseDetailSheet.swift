@@ -36,7 +36,7 @@ struct VerseDetailSheet: View {
                 .padding(.top, PSSpacing.sm)
 
                 // Small state banner
-                SmallStateBanner(state: state, confidence: delivery.stateConfidence)
+                SmallStateBanner(state: state, confidence: delivery.stateConfidence, emotion: delivery.emotion)
 
                 // Verse text (22pt serif) — cream/paper aesthetic per spec
                 PSCard(style: .verse) {
@@ -95,11 +95,12 @@ struct VerseDetailSheet: View {
 private struct SmallStateBanner: View {
     let state: BiometricState
     let confidence: Double
+    let emotion: Emotion
 
     var body: some View {
         PSCard(style: .state(state)) {
             HStack {
-                StateChip(state: state, showConfidence: true, confidence: confidence)
+                StateChip(state: state, showConfidence: true, confidence: confidence, emotion: emotion)
                 Spacer()
             }
         }
