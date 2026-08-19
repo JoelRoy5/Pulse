@@ -294,8 +294,10 @@ final class ScriptureEngine {
             dataCompleteness: 1.0
         )
         let hour = Calendar.current.component(.hour, from: .now)
+        let resolvedState = state ?? .peacefulSteady
         return ClassificationResult(
-            state: state ?? .peacefulSteady,
+            state: resolvedState,
+            emotion: resolvedState.defaultEmotion,
             confidence: 1.0,
             snapshot: snapshot,
             subScores: BiometricSubScores(

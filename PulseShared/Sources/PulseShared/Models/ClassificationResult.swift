@@ -2,6 +2,7 @@ import Foundation
 
 public struct ClassificationResult: Codable, Sendable {
     public let state: BiometricState
+    public let emotion: Emotion
     public let confidence: Double
     public let snapshot: HealthSnapshot
     public let classifiedAt: Date
@@ -12,12 +13,14 @@ public struct ClassificationResult: Codable, Sendable {
 
     public init(
         state: BiometricState,
+        emotion: Emotion,
         confidence: Double,
         snapshot: HealthSnapshot,
         classifiedAt: Date = .now,
         subScores: BiometricSubScores
     ) {
         self.state = state
+        self.emotion = emotion
         self.confidence = confidence
         self.snapshot = snapshot
         self.classifiedAt = classifiedAt

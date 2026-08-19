@@ -8,7 +8,8 @@ final class DeliveryRulesEngineTests: XCTestCase {
         var snap = HealthSnapshot(); snap.dataCompleteness = completeness
         let scores = BiometricSubScores(hrStress: 0.5, hrvRecovery: 0.5, sleepQuality: 0.5,
             oxygenLevel: 0.7, activityLevel: 0.5, respiratoryStress: 0.5, timeOfDay: .afternoon)
-        return ClassificationResult(state: state, confidence: confidence,
+        return ClassificationResult(state: state, emotion: state.defaultEmotion,
+                                    confidence: confidence,
                                     snapshot: snap, subScores: scores)
     }
     private func at(hour: Int) -> Date {

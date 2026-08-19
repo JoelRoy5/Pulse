@@ -36,4 +36,11 @@ final class EmotionDeriverTests: XCTestCase {
                                  subScores: scores(hrStress: 0.9, hrvRecovery: 0.2, sleepQuality: 0.2, activity: 0.2)),
                        .stressed)
     }
+
+    func testClassifierPopulatesEmotion() {
+        var snap = HealthSnapshot()
+        snap.heartRate = 120; snap.activeEnergyBurned = 500; snap.stepCount = 8000
+        let r = StateClassifier().classify(snap, at: Date(), calendar: .current)
+        XCTAssertEqual(r.emotion, EmotionDeriver().emotion(for: r.state, subScores: r.subScores))
+    }
 }
