@@ -41,6 +41,10 @@ final class ScriptureEngine {
     private let fallback: FallbackVerseProvider
     private let notificationService: NotificationService
 
+    /// On-device personalization (mood bias + per-emotion verse avoid-list).
+    /// Set by `PulseApp` after init; nil disables personalization (no-op).
+    var personalization: PersonalizationStore?
+
     /// Preferred bible ID (YouVersion numeric) — sourced from `UserPreferences`.
     /// Updated in-session via `reconfigure(bibleID:abbreviation:)` after onboarding.
     private var preferredBibleID: Int
@@ -139,6 +143,8 @@ final class ScriptureEngine {
 
     private func fetchGlooSelection(for result: ClassificationResult) async throws -> VerseSelection {
         let recentRefs = cache.recentReferences(limit: 10)
+        let downweighted = personalization?.downweightedReferences(for: result.emotion) ?? []
+        let avoidRefs = recentRefs + downweighted
         let prefs = cache.fetchUserPreferences()
         let context = VerseSelectionContext(
             state: result.state,
@@ -147,7 +153,7 @@ final class ScriptureEngine {
             recentStates: [],
             translationAbbreviation: preferredBibleAbbreviation,
             preferredThemes: prefs.preferredThemes,
-            avoidRepeats: recentRefs
+            avoidRepeats: avoidRefs
         )
         return try await verseSelector.selectVerse(for: context)
     }
@@ -249,7 +255,12 @@ final class ScriptureEngine {
             wasPostWorkout: result.state == .energizedPostWorkout,
             isOfflineFallback: isOfflineFallback
         )
-        delivery.emotionRaw = result.emotion.rawValue
+        let displayEmotion = EmotionDeriver().emotion(
+            for: result.state,
+            subScores: result.subScores,
+            moodBias: personalization?.currentMoodBias() ?? 0
+        )
+        delivery.emotionRaw = displayEmotion.rawValue
         delivery.heartRateAtDelivery = snapshot.heartRate
         delivery.hrvAtDelivery = snapshot.heartRateVariability
         delivery.restingHRAtDelivery = snapshot.restingHeartRate
