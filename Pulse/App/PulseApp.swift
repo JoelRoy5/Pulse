@@ -22,7 +22,7 @@ struct PulseApp: App {
             container = try ModelContainer.makePulseContainer()
         } catch {
             logger.error("ModelContainer init failed: \(error.localizedDescription, privacy: .public). Using in-memory fallback.")
-            let schema = Schema([VerseDelivery.self, CachedVerse.self, UserPreferences.self])
+            let schema = Schema([VerseDelivery.self, CachedVerse.self, UserPreferences.self, EmotionFeedback.self])
             let config = ModelConfiguration(schema: schema, isStoredInMemoryOnly: true)
             container = (try? ModelContainer(for: schema, configurations: [config]))
                 ?? { fatalError("Cannot create even an in-memory ModelContainer") }()

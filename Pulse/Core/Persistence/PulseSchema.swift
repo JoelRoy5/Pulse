@@ -2,6 +2,40 @@ import Foundation
 import SwiftData
 import PulseShared
 
+// MARK: - EmotionFeedback
+
+@Model
+final class EmotionFeedback {
+    var id: UUID
+    var createdAt: Date
+    var shownEmotionRaw: String
+    var wasAccurate: Bool
+    var correctedEmotionRaw: String?
+    var verseReference: String
+    var verseID: String
+    var wasHelpful: Bool
+
+    init(
+        id: UUID = UUID(),
+        createdAt: Date = .now,
+        shownEmotionRaw: String,
+        wasAccurate: Bool,
+        correctedEmotionRaw: String? = nil,
+        verseReference: String,
+        verseID: String,
+        wasHelpful: Bool
+    ) {
+        self.id = id
+        self.createdAt = createdAt
+        self.shownEmotionRaw = shownEmotionRaw
+        self.wasAccurate = wasAccurate
+        self.correctedEmotionRaw = correctedEmotionRaw
+        self.verseReference = verseReference
+        self.verseID = verseID
+        self.wasHelpful = wasHelpful
+    }
+}
+
 // MARK: - VerseDelivery
 
 @Model
