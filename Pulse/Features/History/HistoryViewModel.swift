@@ -34,7 +34,7 @@ final class HistoryViewModel {
     // MARK: - State
 
     var filter: HistoryFilter = .all
-    var stateFilter: BiometricState? = nil
+    var emotionFilter: Emotion? = nil
 
     // MARK: - Context
 
@@ -59,10 +59,10 @@ final class HistoryViewModel {
                 passesReaction = delivery.isSaved
             }
 
-            // State filter
+            // Emotion filter
             let passesState: Bool
-            if let stateFilter {
-                passesState = delivery.biometricStateRaw == stateFilter.rawValue
+            if let emotionFilter {
+                passesState = delivery.emotion == emotionFilter
             } else {
                 passesState = true
             }

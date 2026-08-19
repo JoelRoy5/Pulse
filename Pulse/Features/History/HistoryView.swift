@@ -18,7 +18,6 @@ struct HistoryView: View {
     @State private var viewModel: HistoryViewModel?
     @State private var selectedDelivery: VerseDelivery?
     @State private var shareDelivery: VerseDelivery?
-    @State private var showingStateMenu = false
 
     // -PulseShowHistoryDetail YES — auto-present detail for most recent delivery on appear
     private let showDetailOnAppear: Bool = {
@@ -172,33 +171,33 @@ struct HistoryView: View {
     @ToolbarContentBuilder
     private var filterToolbar: some ToolbarContent {
         ToolbarItem(placement: .navigationBarTrailing) {
-            // State filter menu
+            // Emotion filter menu
             Menu {
-                Button("All States") {
-                    viewModel?.stateFilter = nil
+                Button("All Emotions") {
+                    viewModel?.emotionFilter = nil
                 }
                 Divider()
-                ForEach(BiometricState.allCases) { state in
+                ForEach(Emotion.allCases) { emotion in
                     Button {
-                        viewModel?.stateFilter = state
+                        viewModel?.emotionFilter = emotion
                     } label: {
                         Label(
-                            state.displayName,
-                            systemImage: viewModel?.stateFilter == state ? "checkmark" : ""
+                            emotion.displayName,
+                            systemImage: viewModel?.emotionFilter == emotion ? "checkmark" : ""
                         )
                     }
                 }
             } label: {
                 HStack(spacing: 4) {
                     Image(systemName: "line.3.horizontal.decrease.circle")
-                    if let stateFilter = viewModel?.stateFilter {
-                        Text(stateFilter.abbreviation)
+                    if let emotionFilter = viewModel?.emotionFilter {
+                        Text(emotionFilter.displayName)
                             .font(PSFont.label(size: 12, weight: .medium))
                     }
                 }
-                .foregroundStyle(viewModel?.stateFilter != nil ? Color.psAccent : Color.psWhite.opacity(0.7))
+                .foregroundStyle(viewModel?.emotionFilter != nil ? Color.psAccent : Color.psWhite.opacity(0.7))
             }
-            .accessibilityLabel("Filter by state")
+            .accessibilityLabel("Filter by emotion")
         }
     }
 }
