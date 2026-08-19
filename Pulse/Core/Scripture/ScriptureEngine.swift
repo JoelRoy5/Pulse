@@ -249,6 +249,7 @@ final class ScriptureEngine {
             wasPostWorkout: result.state == .energizedPostWorkout,
             isOfflineFallback: isOfflineFallback
         )
+        delivery.emotionRaw = result.emotion.rawValue
         delivery.heartRateAtDelivery = snapshot.heartRate
         delivery.hrvAtDelivery = snapshot.heartRateVariability
         delivery.restingHRAtDelivery = snapshot.restingHeartRate

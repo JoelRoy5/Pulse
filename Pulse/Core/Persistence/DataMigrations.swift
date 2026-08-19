@@ -18,6 +18,7 @@ enum DataMigrations {
     @MainActor
     static func runOnLaunch(_ context: ModelContext) {
         backfillLovedAt(context)
+        backfillEmotionRaw(context)
     }
 
     /// Love state used to live in the shared `userReactionRaw` field; it now has
@@ -36,5 +37,22 @@ enum DataMigrations {
         }
         try? context.save()
         logger.info("Backfilled lovedAt for \(stale.count, privacy: .public) deliveries")
+    }
+
+    /// Backfills `emotionRaw` for deliveries created before the field existed.
+    /// For each row where `emotionRaw == nil`, derives the emotion from the stored
+    /// `biometricStateRaw` via `BiometricState.defaultEmotion`. Idempotent: after the
+    /// first run no rows match the predicate.
+    @MainActor
+    private static func backfillEmotionRaw(_ context: ModelContext) {
+        let descriptor = FetchDescriptor<VerseDelivery>(
+            predicate: #Predicate { $0.emotionRaw == nil }
+        )
+        guard let stale = try? context.fetch(descriptor), !stale.isEmpty else { return }
+        for delivery in stale {
+            delivery.emotionRaw = delivery.biometricState?.defaultEmotion.rawValue
+        }
+        try? context.save()
+        logger.info("Backfilled emotionRaw for \(stale.count, privacy: .public) deliveries")
     }
 }

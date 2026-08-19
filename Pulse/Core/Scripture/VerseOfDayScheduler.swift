@@ -134,6 +134,7 @@ final class VerseOfDayScheduler {
             isOfflineFallback: isOffline
         )
 
+        delivery.emotionRaw = BiometricState.morningAwakening.defaultEmotion.rawValue
         cache.saveDelivery(delivery)
         cache.store(verse)
         logger.info("VOTD persisted: \(verse.reference, privacy: .public) offline=\(isOffline, privacy: .public)")

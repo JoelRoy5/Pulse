@@ -47,6 +47,9 @@ final class VerseDelivery {
     var savedAt: Date?
     var lovedAt: Date?
 
+    // Emotion (derived from classification; stored for history / analytics)
+    var emotionRaw: String?
+
     // AI metadata
     var glooRationale: String?
     var isOfflineFallback: Bool
@@ -86,6 +89,10 @@ final class VerseDelivery {
     // Computed helpers
     var biometricState: BiometricState? {
         BiometricState(rawValue: biometricStateRaw)
+    }
+
+    var emotion: Emotion {
+        emotionRaw.flatMap(Emotion.init(rawValue:)) ?? biometricState?.defaultEmotion ?? .steady
     }
 
     var userReaction: VerseReaction? {
