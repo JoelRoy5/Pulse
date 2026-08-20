@@ -49,20 +49,26 @@ final class PersonalizationStore {
     /// Returns the deduplicated verse references the user has flagged as not helpful
     /// for a given emotion.
     ///
+    /// Fetches all feedback rows for the given emotion, then filters in Swift for
+    /// `wasHelpful == false` (explicitly false, ignoring nil/"unanswered").
+    ///
     /// - Parameter emotion: The shown emotion to filter on.
     /// - Returns: A deduplicated array of `verseReference` strings.
     func downweightedReferences(for emotion: Emotion) -> [String] {
         let emotionRaw = emotion.rawValue
         let descriptor = FetchDescriptor<EmotionFeedback>(
             predicate: #Predicate { row in
-                row.wasHelpful == false && row.shownEmotionRaw == emotionRaw
+                row.shownEmotionRaw == emotionRaw
             }
         )
         let results = (try? context.fetch(descriptor)) ?? []
 
+        // Filter in Swift: only rows where the user explicitly said "not helpful"
+        let notHelpful = results.filter { $0.wasHelpful == false }
+
         // Deduplicate while preserving order
         var seen: Set<String> = []
-        return results.compactMap { row in
+        return notHelpful.compactMap { row in
             seen.insert(row.verseReference).inserted ? row.verseReference : nil
         }
     }

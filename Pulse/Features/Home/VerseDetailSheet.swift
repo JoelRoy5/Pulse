@@ -26,12 +26,34 @@ struct VerseDetailSheet: View {
     @State private var helpfulAnswer: HelpfulAnswer? = nil
     @State private var showingFeelingPicker = false
 
+    /// Single feedback row for this session. Lazily created on first answer.
+    @State private var feedbackRecord: EmotionFeedback? = nil
+
     private var state: BiometricState {
         delivery.biometricState ?? .peacefulSteady
     }
 
     private var chapterURL: URL {
         HomeViewModel.chapterURL(for: delivery, bibleID: preferredBibleID)
+    }
+
+    /// Returns the existing session feedback row, or creates and inserts exactly one new
+    /// row on first call. All subsequent taps update the SAME row to avoid conflicting records.
+    @discardableResult
+    private func getOrCreateFeedback() -> EmotionFeedback {
+        if let existing = feedbackRecord { return existing }
+        let row = EmotionFeedback(
+            shownEmotionRaw: delivery.emotion.rawValue,
+            wasAccurate: nil,
+            correctedEmotionRaw: nil,
+            verseReference: delivery.verseReference,
+            verseID: delivery.verseID,
+            wasHelpful: nil
+        )
+        modelContext.insert(row)
+        try? modelContext.save()
+        feedbackRecord = row
+        return row
     }
 
     var body: some View {
@@ -94,10 +116,24 @@ struct VerseDetailSheet: View {
 
                 // Feedback row
                 VerseFeedbackRow(
-                    delivery: delivery,
                     fitAnswer: $fitAnswer,
                     helpfulAnswer: $helpfulAnswer,
-                    showingFeelingPicker: $showingFeelingPicker
+                    showingFeelingPicker: $showingFeelingPicker,
+                    onFitYes: {
+                        let row = getOrCreateFeedback()
+                        row.wasAccurate = true
+                        try? modelContext.save()
+                    },
+                    onHelpfulYes: {
+                        let row = getOrCreateFeedback()
+                        row.wasHelpful = true
+                        try? modelContext.save()
+                    },
+                    onHelpfulNo: {
+                        let row = getOrCreateFeedback()
+                        row.wasHelpful = false
+                        try? modelContext.save()
+                    }
                 )
 
                 // Bottom safe area buffer
@@ -110,17 +146,11 @@ struct VerseDetailSheet: View {
         .presentationDragIndicator(.hidden) // we draw our own
         .sheet(isPresented: $showingFeelingPicker) {
             FeelingPickerView { emotion in
-                // Record: emotion was not accurate, user corrected to chosen emotion
-                let helpful = helpfulAnswer.map { $0 == .yes } ?? true
-                let feedback = EmotionFeedback(
-                    shownEmotionRaw: delivery.emotion.rawValue,
-                    wasAccurate: false,
-                    correctedEmotionRaw: emotion.rawValue,
-                    verseReference: delivery.verseReference,
-                    verseID: delivery.verseID,
-                    wasHelpful: helpful
-                )
-                PersonalizationStore(context: modelContext).record(feedback)
+                // Update the single session row: mark not accurate, record correction
+                let row = getOrCreateFeedback()
+                row.wasAccurate = false
+                row.correctedEmotionRaw = emotion.rawValue
+                try? modelContext.save()
                 dismiss()
                 Task {
                     await scriptureEngine.deliverFirstVerse(
@@ -136,12 +166,16 @@ struct VerseDetailSheet: View {
 // MARK: - VerseFeedbackRow
 
 private struct VerseFeedbackRow: View {
-    let delivery: VerseDelivery
     @Binding var fitAnswer: FitAnswer?
     @Binding var helpfulAnswer: HelpfulAnswer?
     @Binding var showingFeelingPicker: Bool
 
-    @Environment(\.modelContext) private var modelContext
+    /// Called when user taps "Did this fit? Yes"
+    let onFitYes: () -> Void
+    /// Called when user taps "Was this helpful? Yes"
+    let onHelpfulYes: () -> Void
+    /// Called when user taps "Was this helpful? No"
+    let onHelpfulNo: () -> Void
 
     var body: some View {
         VStack(spacing: PSSpacing.md) {
@@ -160,8 +194,7 @@ private struct VerseFeedbackRow: View {
                         isDisabled: fitAnswer != nil
                     ) {
                         fitAnswer = .yes
-                        let helpful = helpfulAnswer.map { $0 == .yes } ?? true
-                        recordFeedback(wasAccurate: true, correctedEmotionRaw: nil, wasHelpful: helpful)
+                        onFitYes()
                     }
 
                     FeedbackChip(
@@ -172,7 +205,7 @@ private struct VerseFeedbackRow: View {
                     ) {
                         fitAnswer = .notQuite
                         showingFeelingPicker = true
-                        // Actual recording happens in the FeelingPickerView callback
+                        // Row update happens in the FeelingPickerView callback
                     }
 
                     Spacer()
@@ -196,8 +229,7 @@ private struct VerseFeedbackRow: View {
                         isDisabled: helpfulAnswer != nil
                     ) {
                         helpfulAnswer = .yes
-                        let accurate = fitAnswer.map { $0 == .yes } ?? true
-                        recordFeedback(wasAccurate: accurate, correctedEmotionRaw: nil, wasHelpful: true)
+                        onHelpfulYes()
                     }
 
                     FeedbackChip(
@@ -207,8 +239,7 @@ private struct VerseFeedbackRow: View {
                         isDisabled: helpfulAnswer != nil
                     ) {
                         helpfulAnswer = .no
-                        let accurate = fitAnswer.map { $0 == .yes } ?? true
-                        recordFeedback(wasAccurate: accurate, correctedEmotionRaw: nil, wasHelpful: false)
+                        onHelpfulNo()
                     }
 
                     Spacer()
@@ -218,18 +249,6 @@ private struct VerseFeedbackRow: View {
         .padding(PSSpacing.md)
         .background(Color.psNavy)
         .clipShape(RoundedRectangle(cornerRadius: PSRadius.md))
-    }
-
-    private func recordFeedback(wasAccurate: Bool, correctedEmotionRaw: String?, wasHelpful: Bool) {
-        let feedback = EmotionFeedback(
-            shownEmotionRaw: delivery.emotion.rawValue,
-            wasAccurate: wasAccurate,
-            correctedEmotionRaw: correctedEmotionRaw,
-            verseReference: delivery.verseReference,
-            verseID: delivery.verseID,
-            wasHelpful: wasHelpful
-        )
-        PersonalizationStore(context: modelContext).record(feedback)
     }
 }
 

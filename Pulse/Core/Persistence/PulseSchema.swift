@@ -9,21 +9,21 @@ final class EmotionFeedback {
     var id: UUID
     var createdAt: Date
     var shownEmotionRaw: String
-    var wasAccurate: Bool
+    var wasAccurate: Bool?
     var correctedEmotionRaw: String?
     var verseReference: String
     var verseID: String
-    var wasHelpful: Bool
+    var wasHelpful: Bool?
 
     init(
         id: UUID = UUID(),
         createdAt: Date = .now,
         shownEmotionRaw: String,
-        wasAccurate: Bool,
+        wasAccurate: Bool? = nil,
         correctedEmotionRaw: String? = nil,
         verseReference: String,
         verseID: String,
-        wasHelpful: Bool
+        wasHelpful: Bool? = nil
     ) {
         self.id = id
         self.createdAt = createdAt
