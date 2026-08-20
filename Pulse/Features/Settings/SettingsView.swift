@@ -543,7 +543,9 @@ private struct SettingsContentView: View {
                     .onChange(of: vm.analyticsEnabled) { _, newValue in
                         Analytics.shared.setEnabled(newValue)
                         vm.save()
-                        Analytics.shared.track(.settingChanged(setting: "analytics"))
+                        if newValue {
+                            Analytics.shared.track(.settingChanged(setting: "analytics"))
+                        }
                     }
             }
             .frame(minHeight: 44)
