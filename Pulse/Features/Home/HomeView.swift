@@ -228,11 +228,11 @@ struct HomeView: View {
             ShareSheet(text: item.text)
         }
         .sheet(isPresented: $showFeelingPicker) {
-            FeelingPickerView { state in
+            FeelingPickerView { emotion in
                 // Manual request — bypasses the scheduler and runs the live
                 // pipeline for the chosen state (syncs to watch + history). No
                 // notification: the user is already looking at the app.
-                Task { await scriptureEngine.deliverFirstVerse(mockState: state, suppressNotification: true) }
+                Task { await scriptureEngine.deliverFirstVerse(mockState: emotion.biometricState, suppressNotification: true) }
             }
         }
     }

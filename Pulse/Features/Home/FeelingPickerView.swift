@@ -8,7 +8,7 @@ import PulseShared
 /// verse pipeline on the phone (full variety, avoids recent repeats), then syncs
 /// to the watch and history like any other delivery.
 struct FeelingPickerView: View {
-    let onSelect: (BiometricState) -> Void
+    let onSelect: (Emotion) -> Void
 
     @Environment(\.dismiss) private var dismiss
 
@@ -40,7 +40,7 @@ struct FeelingPickerView: View {
                         LazyVGrid(columns: columns, spacing: PSSpacing.md) {
                             ForEach(Self.pickerEmotions) { emotion in
                                 Button {
-                                    onSelect(emotion.biometricState)
+                                    onSelect(emotion)
                                     dismiss()
                                 } label: {
                                     VStack(spacing: PSSpacing.sm) {
