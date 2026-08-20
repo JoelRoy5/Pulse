@@ -64,7 +64,10 @@ struct PrayerTimeView: View {
             }
         }
         .navigationBarBackButtonHidden(true)
-        .onAppear { startSession() }
+        .onAppear {
+            startSession()
+            Task { @MainActor in WatchAnalytics.shared.track(.prayerStarted) }
+        }
         .onDisappear { player?.stop() }
         .onReceive(ticker) { _ in
             guard !isClosing else { return }
@@ -183,12 +186,15 @@ struct PrayerTimeView: View {
     /// Amen tapped — finalize and leave immediately.
     private func endEarly() {
         WKInterfaceDevice.current().play(.success)
+        Task { @MainActor in WatchAnalytics.shared.track(.prayerAmenEarly) }
         finalize()
         dismiss()
     }
 
     /// Full duration reached — finalize and show the closing screen.
     private func completeSession() {
+        let durationS = Int(elapsed)
+        Task { @MainActor in WatchAnalytics.shared.track(.prayerCompleted(durationS: durationS)) }
         finalize()
         withAnimation(.easeInOut(duration: 0.5)) { isClosing = true }
     }

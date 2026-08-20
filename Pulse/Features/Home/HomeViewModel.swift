@@ -31,14 +31,17 @@ final class HomeViewModel {
             // Independent toggle — does not affect Save.
             delivery.lovedAt = delivery.isLoved ? nil : .now
             delivery.engagedAt = .now
+            Analytics.shared.track(.verseLoved)
         case .saved:
             // Independent toggle — does not affect Love.
             delivery.savedAt = delivery.isSaved ? nil : .now
             delivery.engagedAt = .now
+            Analytics.shared.track(.verseSaved)
         case .shared:
             delivery.userReaction = .shared
             delivery.engagedAt = .now
             delivery.sharedAt = .now
+            Analytics.shared.track(.verseShared)
         case .dismissed:
             // Dismissed: record engagement but do not overwrite a more positive timestamp
             if delivery.engagedAt == nil {

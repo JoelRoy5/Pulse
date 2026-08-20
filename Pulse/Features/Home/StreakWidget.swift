@@ -81,6 +81,9 @@ struct StreakWidget: View {
                 }
             }
         }
+        .onAppear {
+            Analytics.shared.track(.streakViewed)
+        }
     }
 }
 

@@ -109,14 +109,17 @@ final class HistoryViewModel {
             // Independent toggle — does not affect Save.
             delivery.lovedAt = delivery.isLoved ? nil : .now
             delivery.engagedAt = .now
+            Analytics.shared.track(.verseLoved)
         case .saved:
             // Independent toggle — does not affect Love.
             delivery.savedAt = delivery.isSaved ? nil : .now
             delivery.engagedAt = .now
+            Analytics.shared.track(.verseSaved)
         case .shared:
             delivery.userReaction = .shared
             delivery.engagedAt = .now
             delivery.sharedAt = .now
+            Analytics.shared.track(.verseShared)
         default:
             delivery.userReaction = reaction
             delivery.engagedAt = delivery.engagedAt ?? .now

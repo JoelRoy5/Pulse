@@ -40,6 +40,7 @@ struct FeelingPickerView: View {
                         LazyVGrid(columns: columns, spacing: PSSpacing.md) {
                             ForEach(Self.pickerEmotions) { emotion in
                                 Button {
+                                    Analytics.shared.track(.feelingPicked(emotion: emotion.rawValue))
                                     onSelect(emotion)
                                     dismiss()
                                 } label: {
@@ -72,5 +73,8 @@ struct FeelingPickerView: View {
             }
         }
         .preferredColorScheme(.dark)
+        .onAppear {
+            Analytics.shared.track(.feelingPickerOpened)
+        }
     }
 }

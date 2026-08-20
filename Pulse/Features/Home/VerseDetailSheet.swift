@@ -109,6 +109,9 @@ struct VerseDetailSheet: View {
                     .background(Color.psNavy)
                     .clipShape(RoundedRectangle(cornerRadius: PSRadius.md))
                 }
+                .simultaneousGesture(TapGesture().onEnded {
+                    Analytics.shared.track(.verseReadMore)
+                })
                 .accessibilityLabel("Read Full Chapter on Bible.com")
 
                 // Action row
@@ -123,16 +126,22 @@ struct VerseDetailSheet: View {
                         let row = getOrCreateFeedback()
                         row.wasAccurate = true
                         try? modelContext.save()
+                        Analytics.shared.track(.feedbackFit(answer: "yes"))
+                    },
+                    onFitNotQuite: {
+                        Analytics.shared.track(.feedbackFit(answer: "not_quite"))
                     },
                     onHelpfulYes: {
                         let row = getOrCreateFeedback()
                         row.wasHelpful = true
                         try? modelContext.save()
+                        Analytics.shared.track(.feedbackHelpful(answer: "yes"))
                     },
                     onHelpfulNo: {
                         let row = getOrCreateFeedback()
                         row.wasHelpful = false
                         try? modelContext.save()
+                        Analytics.shared.track(.feedbackHelpful(answer: "no"))
                     }
                 )
 
@@ -151,6 +160,7 @@ struct VerseDetailSheet: View {
                 row.wasAccurate = false
                 row.correctedEmotionRaw = emotion.rawValue
                 try? modelContext.save()
+                Analytics.shared.track(.feedbackCorrection(emotion: emotion.rawValue))
                 dismiss()
                 Task {
                     await scriptureEngine.deliverFirstVerse(
@@ -159,6 +169,9 @@ struct VerseDetailSheet: View {
                     )
                 }
             }
+        }
+        .onAppear {
+            Analytics.shared.track(.verseDetailOpened)
         }
         .trackScreen("VerseDetail")
     }
@@ -173,6 +186,8 @@ private struct VerseFeedbackRow: View {
 
     /// Called when user taps "Did this fit? Yes"
     let onFitYes: () -> Void
+    /// Called when user taps "Did this fit? Not quite" (before feeling picker opens)
+    var onFitNotQuite: (() -> Void)? = nil
     /// Called when user taps "Was this helpful? Yes"
     let onHelpfulYes: () -> Void
     /// Called when user taps "Was this helpful? No"
@@ -205,6 +220,7 @@ private struct VerseFeedbackRow: View {
                         isDisabled: fitAnswer != nil
                     ) {
                         fitAnswer = .notQuite
+                        onFitNotQuite?()
                         showingFeelingPicker = true
                         // Row update happens in the FeelingPickerView callback
                     }
