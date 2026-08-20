@@ -8,6 +8,7 @@ public enum WatchMessage {
         case settingsUpdate = "settings_update"
         case requestLatestVerse = "request_latest_verse"
         case requestVerseForState = "request_verse_for_state"
+        case analyticsEvent = "analytics_event"
     }
 
     public protocol WatchPayload: Codable {

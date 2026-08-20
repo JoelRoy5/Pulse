@@ -171,6 +171,18 @@ final class PhoneSessionManager: NSObject {
                 replyHandler?(dict ?? [:])
             }
 
+        case .analyticsEvent:
+            let name = message["name"] as? String ?? ""
+            let props = message["props"] as? [String: Any] ?? [:]
+            guard !name.isEmpty else {
+                replyHandler?([:])
+                return
+            }
+            Task { @MainActor in
+                Analytics.shared.trackForwarded(name: name, properties: props, platform: "watchos")
+            }
+            replyHandler?([:])
+
         default:
             replyHandler?([:])
         }

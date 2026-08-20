@@ -58,6 +58,17 @@ struct MainView: View {
                 hasDiscoveredTabs = true
                 withAnimation(.easeOut(duration: 0.3)) { showHint = false }
             }
+            let tabName: String
+            switch newValue {
+            case 0: tabName = "verse"
+            case 1: tabName = "vitals"
+            case 2: tabName = "history"
+            case 3: tabName = "prayer"
+            default: tabName = "\(newValue)"
+            }
+            Task { @MainActor in
+                WatchAnalytics.shared.track(.watchTabViewed(tab: tabName))
+            }
         }
     }
 

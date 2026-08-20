@@ -136,6 +136,41 @@ final class Analytics {
         }
     }
 
+    /// Record an analytics event forwarded from the Apple Watch.
+    ///
+    /// The watch sends raw name + properties; the phone rebuilds the full
+    /// PostHog payload using its own `distinctID` and `appVersion`.
+    /// Respects the opt-out gate — silently no-ops when analytics is disabled.
+    func trackForwarded(name: String, properties: [String: Any], platform: String) {
+        guard isEnabled, AnalyticsConfig.isConfigured else { return }
+
+        let iso8601 = ISO8601DateFormatter().string(from: Date())
+
+        var mergedProps = properties
+        mergedProps["platform"] = platform
+        mergedProps["$app_version"] = appVersion
+        mergedProps["$lib"] = "pulse"
+
+        let payload: [String: Any] = [
+            "event": name,
+            "distinct_id": distinctID,
+            "properties": mergedProps,
+            "timestamp": iso8601
+        ]
+
+        guard let data = try? JSONSerialization.data(withJSONObject: payload) else {
+            logger.debug("Analytics: failed to JSON-encode forwarded event '\(name, privacy: .public)'")
+            return
+        }
+
+        queue.enqueue(data)
+        queue.persist(to: queueURL)
+
+        if queue.count >= Analytics.autoFlushThreshold {
+            Task { await flush() }
+        }
+    }
+
     /// Send all queued events to PostHog in a single batch request.
     /// On 2xx response the sent events are removed; on failure they remain
     /// queued for the next attempt. Never throws or crashes.
