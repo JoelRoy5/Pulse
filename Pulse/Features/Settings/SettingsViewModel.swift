@@ -50,6 +50,20 @@ final class SettingsViewModel {
     var clearHistorySuccess: Bool = false
     var isSaving: Bool = false
 
+    // MARK: - Reflection Stats (private, computed from EmotionFeedback)
+
+    /// Count of rows where wasAccurate != nil (user answered the accuracy question)
+    var accuracyAnsweredCount: Int = 0
+    /// Count of rows where wasAccurate == true
+    var accuracyConfirmedCount: Int = 0
+    /// Count of rows where wasHelpful != nil (user answered the helpfulness question)
+    var helpfulAnsweredCount: Int = 0
+    /// Count of rows where wasHelpful == true
+    var helpfulYesCount: Int = 0
+
+    /// True when no feedback has been recorded at all (both answered counts are 0)
+    var hasNoReflections: Bool { accuracyAnsweredCount == 0 && helpfulAnsweredCount == 0 }
+
     // MARK: - Dependencies
 
     private let modelContext: ModelContext
@@ -101,6 +115,21 @@ final class SettingsViewModel {
 
         // Load translations for the picker
         await loadTranslations()
+
+        // Compute reflection stats from EmotionFeedback
+        loadReflectionStats()
+    }
+
+    // MARK: - Reflection Stats
+
+    func loadReflectionStats() {
+        let descriptor = FetchDescriptor<EmotionFeedback>()
+        guard let all = try? modelContext.fetch(descriptor) else { return }
+        // Filter in Swift — avoid optional comparisons inside #Predicate
+        accuracyAnsweredCount = all.filter { $0.wasAccurate != nil }.count
+        accuracyConfirmedCount = all.filter { $0.wasAccurate == true }.count
+        helpfulAnsweredCount = all.filter { $0.wasHelpful != nil }.count
+        helpfulYesCount = all.filter { $0.wasHelpful == true }.count
     }
 
     // MARK: - Save

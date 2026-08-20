@@ -33,7 +33,7 @@ struct HistoryRowView: View {
                 Image(systemName: state.systemImageName)
                     .font(.system(size: 12))
                     .foregroundStyle(state.primaryColor)
-                Text(state.displayName)
+                Text(delivery.emotion.displayName)
                     .font(PSFont.label(size: 13, weight: .semibold))
                     .foregroundStyle(state.primaryColor)
                 Text("·")
@@ -79,7 +79,7 @@ struct HistoryRowView: View {
             }
         }
         .accessibilityElement(children: .combine)
-        .accessibilityLabel("\(state.displayName), \(delivery.verseReference), \(delivery.verseText)")
+        .accessibilityLabel("\(delivery.emotion.displayName), \(delivery.verseReference), \(delivery.verseText)")
     }
 
     private func reactionColor(for reaction: VerseReaction) -> Color {

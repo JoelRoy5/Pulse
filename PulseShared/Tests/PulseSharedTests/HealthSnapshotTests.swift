@@ -48,11 +48,13 @@ final class HealthSnapshotTests: XCTestCase {
             translationAbbreviation: "NIV", stateRaw: "exhausted_depleted",
             stateDisplayName: "Weary Soul", stateSymbol: "moon.fill",
             stateBodyText: "Your body is asking for rest. Come and lay it down.",
-            primaryColor: "#6366F1", timestamp: 123.0)
+            primaryColor: "#6366F1", timestamp: 123.0,
+            emotionName: "Stressed")
         let dict = payload.dictionary(type: .verseDelivery)
         XCTAssertEqual(dict["type"] as? String, "verse_delivery")
         let decoded = WatchMessage.VerseDeliveryPayload.from(dict)
         XCTAssertEqual(decoded?.verseReference, "Matthew 11:28")
+        XCTAssertEqual(decoded?.emotionName, "Stressed")
     }
 
     /// Back-compat: payloads persisted/sent before the stateEmoji→stateSymbol rename
@@ -79,6 +81,30 @@ final class HealthSnapshotTests: XCTestCase {
         XCTAssertEqual(decoded?.verseReference, "Matthew 11:28")
         // Derived from stateRaw == exhausted_depleted.
         XCTAssertEqual(decoded?.stateSymbol, BiometricState.exhaustedDepleted.systemImageName)
+    }
+
+    /// Back-compat: payloads written before `emotionName` was added have no such key.
+    /// Decoding must not throw; the name is derived from `stateRaw` via `defaultEmotion`.
+    func testLegacyPayloadWithoutEmotionNameDecodes() {
+        let legacyJSON = """
+        {
+          "deliveryID": "old-2",
+          "verseText": "Come to me",
+          "verseReference": "Matthew 11:28",
+          "translationAbbreviation": "NIV",
+          "stateRaw": "stressed_anxious",
+          "stateDisplayName": "Stressed",
+          "stateSymbol": "wind",
+          "stateBodyText": "Breathe. You are not alone.",
+          "primaryColor": "#EF4444",
+          "timestamp": 456.0
+        }
+        """
+        let decoded = try? JSONDecoder().decode(
+            WatchMessage.VerseDeliveryPayload.self, from: Data(legacyJSON.utf8))
+        XCTAssertNotNil(decoded, "legacy payload without emotionName should still decode")
+        // Derived from stateRaw == stressed_anxious → defaultEmotion == .stressed → "Stressed"
+        XCTAssertEqual(decoded?.emotionName, BiometricState.stressedAnxious.defaultEmotion.displayName)
     }
 
     func testSleepBreakdownQualityBands() {

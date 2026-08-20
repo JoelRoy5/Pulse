@@ -170,7 +170,8 @@ private let sampleVerse = WatchMessage.VerseDeliveryPayload(
     stateSymbol: "moon.fill",
     stateBodyText: "Your body is asking for rest.",
     primaryColor: "#6366F1",
-    timestamp: Date().timeIntervalSince1970
+    timestamp: Date().timeIntervalSince1970,
+    emotionName: "Drained"
 )
 
 #Preview("Rectangular", as: .accessoryRectangular) {

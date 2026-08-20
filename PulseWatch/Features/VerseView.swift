@@ -152,7 +152,7 @@ private struct FullVerseView: View {
             Image(systemName: verse.stateSymbol)
                 .font(.system(size: 10))
                 .foregroundStyle(stateColor)
-            Text((BiometricState(rawValue: verse.stateRaw)?.abbreviation ?? verse.stateDisplayName).uppercased())
+            Text(verse.emotionName.uppercased())
                 .font(.system(size: 9, weight: .semibold, design: .rounded))
                 .lineLimit(1)
         }

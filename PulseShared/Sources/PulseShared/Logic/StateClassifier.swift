@@ -36,8 +36,10 @@ public struct StateClassifier {
         // Safe unwrap: array is non-empty literal, but avoid force-unwrap per spec
         guard let best = candidates.max(by: { $0.1 < $1.1 }) else {
             let fallback = timeOfDayFallback(scores.timeOfDay)
+            let emotion = EmotionDeriver().emotion(for: fallback, subScores: scores)
             return ClassificationResult(
                 state: fallback,
+                emotion: emotion,
                 confidence: 0.5,
                 snapshot: snapshot,
                 subScores: scores
@@ -45,16 +47,21 @@ public struct StateClassifier {
         }
 
         if best.1 >= 0.65 {
+            let state = best.0
+            let emotion = EmotionDeriver().emotion(for: state, subScores: scores)
             return ClassificationResult(
-                state: best.0,
+                state: state,
+                emotion: emotion,
                 confidence: best.1,
                 snapshot: snapshot,
                 subScores: scores
             )
         } else {
             let fallback = timeOfDayFallback(scores.timeOfDay)
+            let emotion = EmotionDeriver().emotion(for: fallback, subScores: scores)
             return ClassificationResult(
                 state: fallback,
+                emotion: emotion,
                 confidence: 0.5,
                 snapshot: snapshot,
                 subScores: scores

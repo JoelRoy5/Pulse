@@ -27,6 +27,9 @@ public enum WatchMessage {
         public let stateBodyText: String
         public let primaryColor: String
         public let timestamp: Double
+        /// Plain human-readable emotion name (e.g. "Stressed", "Grateful").
+        /// Added in v2; old payloads without this key derive it from `stateRaw`.
+        public let emotionName: String
 
         // Optional vitals captured at delivery time — nil when unavailable.
         // These fields are optional so that old JSON (without them) decodes cleanly.
@@ -45,6 +48,7 @@ public enum WatchMessage {
             stateBodyText: String,
             primaryColor: String,
             timestamp: Double,
+            emotionName: String,
             heartRate: Double? = nil,
             hrv: Double? = nil,
             sleepEfficiency: Double? = nil
@@ -59,6 +63,7 @@ public enum WatchMessage {
             self.stateBodyText = stateBodyText
             self.primaryColor = primaryColor
             self.timestamp = timestamp
+            self.emotionName = emotionName
             self.heartRate = heartRate
             self.hrv = hrv
             self.sleepEfficiency = sleepEfficiency
@@ -67,13 +72,14 @@ public enum WatchMessage {
         private enum CodingKeys: String, CodingKey {
             case deliveryID, verseText, verseReference, translationAbbreviation
             case stateRaw, stateDisplayName, stateSymbol, stateBodyText, primaryColor
-            case timestamp, heartRate, hrv, sleepEfficiency
+            case timestamp, emotionName, heartRate, hrv, sleepEfficiency
         }
 
         // Custom decode keeps backward compatibility with payloads written before the
         // `stateEmoji` → `stateSymbol` rename (App Group cache + in-flight WC messages):
         // older JSON has no `stateSymbol` key, so we derive a valid SF Symbol from
         // `stateRaw` rather than throwing `keyNotFound` and dropping the whole delivery.
+        // Similarly, `emotionName` was added later; old payloads derive it from `stateRaw`.
         public init(from decoder: Decoder) throws {
             let c = try decoder.container(keyedBy: CodingKeys.self)
             deliveryID = try c.decode(String.self, forKey: .deliveryID)
@@ -93,6 +99,8 @@ public enum WatchMessage {
             } else {
                 stateSymbol = BiometricState(rawValue: stateRaw)?.systemImageName ?? "sparkles"
             }
+            emotionName = try c.decodeIfPresent(String.self, forKey: .emotionName)
+                ?? (BiometricState(rawValue: stateRaw)?.defaultEmotion.displayName ?? stateDisplayName)
         }
     }
 

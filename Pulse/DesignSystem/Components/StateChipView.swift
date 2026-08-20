@@ -5,12 +5,20 @@ struct StateChip: View {
     let state: BiometricState
     let showConfidence: Bool
     let confidence: Double?
+    var emotion: Emotion
+
+    init(state: BiometricState, showConfidence: Bool, confidence: Double?, emotion: Emotion? = nil) {
+        self.state = state
+        self.showConfidence = showConfidence
+        self.confidence = confidence
+        self.emotion = emotion ?? state.defaultEmotion
+    }
 
     var body: some View {
         HStack(spacing: PSSpacing.xs) {
             Image(systemName: state.systemImageName)
                 .font(.system(size: 12))
-            Text(state.displayName.uppercased())
+            Text(emotion.displayName.uppercased())
                 .font(PSFont.label(size: 11, weight: .semibold))
                 .kerning(1.5)
             if showConfidence, let confidence {

@@ -22,7 +22,7 @@ struct ShareCardSnapshot: Sendable {
         self.verseReference = delivery.verseReference
         self.translationAbbreviation = delivery.translationAbbreviation
         let state = delivery.biometricState ?? .peacefulSteady
-        self.stateName = state.displayName
+        self.stateName = delivery.emotion.displayName
         self.stateSymbol = state.systemImageName
         self.contextLine = delivery.stateBodyText
         self.isOfflineFallback = delivery.isOfflineFallback

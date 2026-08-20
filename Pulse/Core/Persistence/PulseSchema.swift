@@ -2,6 +2,40 @@ import Foundation
 import SwiftData
 import PulseShared
 
+// MARK: - EmotionFeedback
+
+@Model
+final class EmotionFeedback {
+    var id: UUID
+    var createdAt: Date
+    var shownEmotionRaw: String
+    var wasAccurate: Bool?
+    var correctedEmotionRaw: String?
+    var verseReference: String
+    var verseID: String
+    var wasHelpful: Bool?
+
+    init(
+        id: UUID = UUID(),
+        createdAt: Date = .now,
+        shownEmotionRaw: String,
+        wasAccurate: Bool? = nil,
+        correctedEmotionRaw: String? = nil,
+        verseReference: String,
+        verseID: String,
+        wasHelpful: Bool? = nil
+    ) {
+        self.id = id
+        self.createdAt = createdAt
+        self.shownEmotionRaw = shownEmotionRaw
+        self.wasAccurate = wasAccurate
+        self.correctedEmotionRaw = correctedEmotionRaw
+        self.verseReference = verseReference
+        self.verseID = verseID
+        self.wasHelpful = wasHelpful
+    }
+}
+
 // MARK: - VerseDelivery
 
 @Model
@@ -47,6 +81,9 @@ final class VerseDelivery {
     var savedAt: Date?
     var lovedAt: Date?
 
+    // Emotion (derived from classification; stored for history / analytics)
+    var emotionRaw: String?
+
     // AI metadata
     var glooRationale: String?
     var isOfflineFallback: Bool
@@ -86,6 +123,10 @@ final class VerseDelivery {
     // Computed helpers
     var biometricState: BiometricState? {
         BiometricState(rawValue: biometricStateRaw)
+    }
+
+    var emotion: Emotion {
+        emotionRaw.flatMap(Emotion.init(rawValue:)) ?? biometricState?.defaultEmotion ?? .steady
     }
 
     var userReaction: VerseReaction? {

@@ -10,7 +10,7 @@ extension ModelContainer {
     /// Falls back to an in-memory store if the App Group path cannot be resolved
     /// or the on-disk store fails to initialise — never throws to the caller.
     static func makePulseContainer() throws -> ModelContainer {
-        let schema = Schema([VerseDelivery.self, CachedVerse.self, UserPreferences.self])
+        let schema = Schema([VerseDelivery.self, CachedVerse.self, UserPreferences.self, EmotionFeedback.self])
 
         // Attempt to use the shared App Group container URL
         if let groupURL = FileManager.default.containerURL(

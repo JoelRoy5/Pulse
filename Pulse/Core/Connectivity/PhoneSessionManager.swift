@@ -67,6 +67,7 @@ final class PhoneSessionManager: NSObject {
             stateBodyText:           delivery.stateBodyText,
             primaryColor:            primaryColor,
             timestamp:               delivery.deliveredAt.timeIntervalSince1970,
+            emotionName:             delivery.emotion.displayName,
             heartRate:               delivery.heartRateAtDelivery,
             hrv:                     delivery.hrvAtDelivery,
             sleepEfficiency:         delivery.sleepEfficiencyAtDelivery
@@ -227,6 +228,7 @@ final class PhoneSessionManager: NSObject {
             stateBodyText:           delivery.stateBodyText,
             primaryColor:            state?.primaryColorHex ?? "#C9A96E",
             timestamp:               delivery.deliveredAt.timeIntervalSince1970,
+            emotionName:             delivery.emotion.displayName,
             heartRate:               delivery.heartRateAtDelivery,
             hrv:                     delivery.hrvAtDelivery,
             sleepEfficiency:         delivery.sleepEfficiencyAtDelivery

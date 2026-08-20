@@ -56,6 +56,7 @@ private struct SettingsContentView: View {
                     notificationsSection
                     healthMetricsSection
                     scriptureSection
+                    reflectionsSection
                     privacySection
                     aboutSection
                 }
@@ -439,6 +440,63 @@ private struct SettingsContentView: View {
         }
         .buttonStyle(.plain)
         .animation(.easeInOut(duration: 0.15), value: isSelected)
+    }
+
+    // MARK: - Your Reflections Section
+
+    private var reflectionsSection: some View {
+        Section {
+            if vm.hasNoReflections {
+                HStack(spacing: PSSpacing.md) {
+                    Image(systemName: "bubble.left.and.bubble.right")
+                        .foregroundStyle(Color.psGrayMuted)
+                        .font(.system(size: 18))
+                        .frame(width: 28)
+                    Text("No reflections yet — your feedback will appear here.")
+                        .font(PSFont.label(size: 14))
+                        .foregroundStyle(Color.psGrayMuted)
+                }
+                .frame(minHeight: 44)
+                .listRowBackground(Color.psNavy)
+            } else {
+                // "You've confirmed the feeling N of M times"
+                HStack(spacing: PSSpacing.md) {
+                    Image(systemName: "checkmark.seal.fill")
+                        .foregroundStyle(Color.psAccent)
+                        .font(.system(size: 18))
+                        .frame(width: 28)
+                    Text("You've confirmed the feeling \(vm.accuracyConfirmedCount) of \(vm.accuracyAnsweredCount) times")
+                        .font(PSFont.label(size: 15))
+                        .foregroundStyle(Color.psWhite)
+                    Spacer()
+                }
+                .frame(minHeight: 44)
+                .listRowBackground(Color.psNavy)
+
+                // "Helpful verses: X of Y"
+                HStack(spacing: PSSpacing.md) {
+                    Image(systemName: "heart.text.square.fill")
+                        .foregroundStyle(Color.psAccent)
+                        .font(.system(size: 18))
+                        .frame(width: 28)
+                    Text("Helpful verses: \(vm.helpfulYesCount) of \(vm.helpfulAnsweredCount)")
+                        .font(PSFont.label(size: 15))
+                        .foregroundStyle(Color.psWhite)
+                    Spacer()
+                }
+                .frame(minHeight: 44)
+                .listRowBackground(Color.psNavy)
+            }
+        } header: {
+            sectionHeader("Your Reflections")
+        } footer: {
+            Text("Private to this device — your responses stay local and are never uploaded.")
+                .font(PSFont.label(size: 12))
+                .foregroundStyle(Color.psGrayMuted)
+        }
+        .onAppear {
+            vm.loadReflectionStats()
+        }
     }
 
     // MARK: - Privacy & Data Section
