@@ -522,6 +522,33 @@ private struct SettingsContentView: View {
             .padding(.vertical, PSSpacing.sm)
             .listRowBackground(Color.psNavy)
 
+            // Share anonymous usage
+            HStack {
+                Image(systemName: "chart.bar.fill")
+                    .foregroundStyle(Color.psAccent)
+                    .font(.system(size: 18))
+                    .frame(width: 28)
+                VStack(alignment: .leading, spacing: 2) {
+                    Text("Share anonymous usage")
+                        .font(PSFont.label(size: 16))
+                        .foregroundStyle(Color.psWhite)
+                    Text("Helps improve Pulse. Never includes your health data or verses.")
+                        .font(PSFont.label(size: 12))
+                        .foregroundStyle(Color.psGrayMuted)
+                }
+                Spacer()
+                Toggle("", isOn: $vm.analyticsEnabled)
+                    .tint(Color.psAccent)
+                    .labelsHidden()
+                    .onChange(of: vm.analyticsEnabled) { _, newValue in
+                        Analytics.shared.setEnabled(newValue)
+                        vm.save()
+                        Analytics.shared.track(.settingChanged(setting: "analytics"))
+                    }
+            }
+            .frame(minHeight: 44)
+            .listRowBackground(Color.psNavy)
+
             // Clear verse history
             Button {
                 vm.showClearHistoryAlert = true

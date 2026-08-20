@@ -84,6 +84,33 @@ final class Analytics {
 
     // MARK: - Public API
 
+    /// Enable or disable analytics tracking.
+    ///
+    /// When turning **OFF**: emits `analyticsOptOut`, flushes the queue so
+    /// the opt-out event is delivered, then sets `isEnabled = false` and
+    /// clears any remaining queued events.
+    ///
+    /// When turning **ON**: sets `isEnabled = true` (future events are tracked).
+    func setEnabled(_ on: Bool) {
+        if on {
+            isEnabled = true
+        } else {
+            // 1. Emit the opt-out event while still enabled.
+            track(.analyticsOptOut)
+            // 2. Flush so the event is sent before we go dark.
+            let url = queueURL
+            Task { [weak self] in
+                await self?.flush()
+                // 3. Disable and clear any remaining events.
+                await MainActor.run { [weak self] in
+                    self?.isEnabled = false
+                    self?.queue.clear()
+                    self?.queue.persist(to: url)
+                }
+            }
+        }
+    }
+
     /// Record a discrete analytics event. No-ops when analytics is disabled or
     /// PostHog is not configured (no key set).
     func track(_ event: AnalyticsEvent) {

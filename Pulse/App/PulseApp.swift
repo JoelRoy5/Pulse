@@ -131,6 +131,9 @@ struct PulseApp: App {
             .environment(scriptureEngine)
             .environment(votdScheduler)
             .task {
+                // Initialize analytics enabled state from persisted user preference.
+                let prefs = UserPreferences.current(in: container.mainContext)
+                Analytics.shared.isEnabled = prefs.analyticsEnabled
                 // Track app open
                 Analytics.shared.track(.appOpened)
                 // Run one-time data backfills before anything reads the store.
