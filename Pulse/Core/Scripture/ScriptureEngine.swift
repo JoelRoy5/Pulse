@@ -80,7 +80,7 @@ final class ScriptureEngine {
             logger.info("Delivery skipped by scheduler for state: \(result.state.rawValue, privacy: .public)")
             return
         }
-        await runPipeline(result: result)
+        await runPipeline(result: result, applyMoodBias: true)
     }
 
     /// Onboarding / debug path — bypasses scheduler rules. Always yields a verse.
@@ -88,7 +88,10 @@ final class ScriptureEngine {
     @discardableResult
     func deliverFirstVerse(mockState: BiometricState? = nil, suppressNotification: Bool = false) async -> VerseDelivery {
         let result = makeSyntheticResult(state: mockState)
-        return await runPipeline(result: result, suppressNotification: suppressNotification)
+        // applyMoodBias: false — synthetic results already carry the correct emotion
+        // (result.emotion = resolvedState.defaultEmotion). Re-deriving from 0.5/0.5
+        // sub-scores would always produce .weighedDown regardless of the picked state.
+        return await runPipeline(result: result, suppressNotification: suppressNotification, applyMoodBias: false)
     }
 
     /// Updates the active bible translation used for all subsequent fetch calls.
@@ -103,8 +106,12 @@ final class ScriptureEngine {
     // MARK: - Core Pipeline
 
     /// Runs the full pipeline. Returns the persisted `VerseDelivery`.
+    ///
+    /// - Parameter applyMoodBias: When `true` (real-classifier path), derives `emotionRaw`
+    ///   from sub-scores + mood bias. When `false` (manual/synthetic path), uses
+    ///   `result.emotion` as-is so the user's explicit choice is preserved.
     @discardableResult
-    private func runPipeline(result: ClassificationResult, suppressNotification: Bool = false) async -> VerseDelivery {
+    private func runPipeline(result: ClassificationResult, suppressNotification: Bool = false, applyMoodBias: Bool) async -> VerseDelivery {
         isLoading = true
         defer { isLoading = false }
 
@@ -112,7 +119,7 @@ final class ScriptureEngine {
 
         if isOffline {
             logger.info("Offline mode — using fallback for state: \(result.state.rawValue, privacy: .public)")
-            let delivery = await offlineDelivery(result: result)
+            let delivery = await offlineDelivery(result: result, applyMoodBias: applyMoodBias)
             await persistDelivery(delivery, suppressNotification: suppressNotification)
             return delivery
         }
@@ -127,13 +134,14 @@ final class ScriptureEngine {
                 theme: selection.theme,
                 themeDisplayName: selection.themeDisplayName,
                 rationale: selection.rationale,
-                isOfflineFallback: selection.isFallback
+                isOfflineFallback: selection.isFallback,
+                applyMoodBias: applyMoodBias
             )
             await persistDelivery(delivery, suppressNotification: suppressNotification)
             return delivery
         } catch {
             logger.warning("Live pipeline failed (\(error.localizedDescription, privacy: .public)) — entering fallback chain")
-            let delivery = await fallbackChain(result: result)
+            let delivery = await fallbackChain(result: result, applyMoodBias: applyMoodBias)
             await persistDelivery(delivery, suppressNotification: suppressNotification)
             return delivery
         }
@@ -178,7 +186,7 @@ final class ScriptureEngine {
     // MARK: - Fallback Chain
 
     /// Full fallback chain: fallbackReference → cache → YouVersion → emergency verse.
-    private func fallbackChain(result: ClassificationResult) async -> VerseDelivery {
+    private func fallbackChain(result: ClassificationResult, applyMoodBias: Bool) async -> VerseDelivery {
         let fallbackRef = FallbackVerseProvider.fallbackReference(for: result.state)
 
         // Try cache for fallback ref
@@ -189,7 +197,8 @@ final class ScriptureEngine {
                 theme: result.state.verseTheme,
                 themeDisplayName: result.state.displayName,
                 rationale: "Fallback (cache hit)",
-                isOfflineFallback: true
+                isOfflineFallback: true,
+                applyMoodBias: applyMoodBias
             )
         }
 
@@ -206,17 +215,18 @@ final class ScriptureEngine {
                 theme: result.state.verseTheme,
                 themeDisplayName: result.state.displayName,
                 rationale: "Fallback (YouVersion)",
-                isOfflineFallback: true
+                isOfflineFallback: true,
+                applyMoodBias: applyMoodBias
             )
         }
 
         // Emergency verse
         logger.warning("All live/cache paths failed — using emergency verse")
-        return await offlineDelivery(result: result)
+        return await offlineDelivery(result: result, applyMoodBias: applyMoodBias)
     }
 
     /// Returns a delivery using the bundled emergency verse (no network needed).
-    private func offlineDelivery(result: ClassificationResult) async -> VerseDelivery {
+    private func offlineDelivery(result: ClassificationResult, applyMoodBias: Bool) async -> VerseDelivery {
         let verse = fallback.emergencyVerse(for: result.state)
         return makeDelivery(
             verse: verse,
@@ -224,7 +234,8 @@ final class ScriptureEngine {
             theme: result.state.verseTheme,
             themeDisplayName: result.state.displayName,
             rationale: "Emergency offline fallback",
-            isOfflineFallback: true
+            isOfflineFallback: true,
+            applyMoodBias: applyMoodBias
         )
     }
 
@@ -236,7 +247,8 @@ final class ScriptureEngine {
         theme: String,
         themeDisplayName: String,
         rationale: String?,
-        isOfflineFallback: Bool
+        isOfflineFallback: Bool,
+        applyMoodBias: Bool
     ) -> VerseDelivery {
         let snapshot = result.snapshot
         let delivery = VerseDelivery(
@@ -255,12 +267,21 @@ final class ScriptureEngine {
             wasPostWorkout: result.state == .energizedPostWorkout,
             isOfflineFallback: isOfflineFallback
         )
-        let displayEmotion = EmotionDeriver().emotion(
-            for: result.state,
-            subScores: result.subScores,
-            moodBias: personalization?.currentMoodBias() ?? 0
-        )
-        delivery.emotionRaw = displayEmotion.rawValue
+        // On the real-classifier path, re-derive the display emotion from biometric
+        // sub-scores and the user's mood-bias correction history. On the manual/synthetic
+        // path (feeling picker, watch request, "Not quite" correction, onboarding),
+        // result.emotion is already the user's explicit choice — use it as-is so a user
+        // who picks "Grateful" never sees "Weighed Down" in the banner or history.
+        if applyMoodBias {
+            let displayEmotion = EmotionDeriver().emotion(
+                for: result.state,
+                subScores: result.subScores,
+                moodBias: personalization?.currentMoodBias() ?? 0
+            )
+            delivery.emotionRaw = displayEmotion.rawValue
+        } else {
+            delivery.emotionRaw = result.emotion.rawValue
+        }
         delivery.heartRateAtDelivery = snapshot.heartRate
         delivery.hrvAtDelivery = snapshot.heartRateVariability
         delivery.restingHRAtDelivery = snapshot.restingHeartRate
