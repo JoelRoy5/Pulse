@@ -37,16 +37,22 @@ final class OnboardingViewModel {
 
     func grantPermissions(healthEngine: HealthEngine) async {
         // HealthKit
+        var healthGranted = false
         do {
             try await healthEngine.requestAuthorization()
+            healthGranted = true
         } catch {
             permissionsLimited = true
         }
+        Analytics.shared.track(.permissionResult(kind: "health", granted: healthGranted))
+
         // Notifications
-        let granted = await NotificationService.shared.requestAuthorization()
-        if !granted {
+        let notifGranted = await NotificationService.shared.requestAuthorization()
+        if !notifGranted {
             permissionsLimited = true
         }
+        Analytics.shared.track(.permissionResult(kind: "notifications", granted: notifGranted))
+
         step = .translation
     }
 

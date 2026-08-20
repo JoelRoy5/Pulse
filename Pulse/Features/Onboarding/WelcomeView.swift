@@ -59,6 +59,7 @@ struct WelcomeView: View {
             }
         }
         .onAppear {
+            Analytics.shared.track(.onboardingStepViewed(step: "welcome"))
             if reduceMotion {
                 // Collapse stagger: all items appear immediately, no offsets
                 showTagline = true

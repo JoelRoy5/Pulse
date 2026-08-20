@@ -82,6 +82,9 @@ struct OnboardingCompleteView: View {
                 }
             }
         }
+        .onAppear {
+            Analytics.shared.track(.onboardingCompleted)
+        }
         .task {
             // 1.5s pause (or no pause when reduce motion), then show verse card + success haptic
             if !reduceMotion {

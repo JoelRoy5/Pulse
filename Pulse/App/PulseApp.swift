@@ -17,6 +17,7 @@ struct PulseApp: App {
     @State private var votdScheduler: VerseOfDayScheduler
     @State private var hasCompletedOnboarding: Bool
     @State private var onboardingStartStep: OnboardingViewModel.Step?
+    @State private var foregroundedAt: Date = Date()
 
     init() {
         do {
@@ -194,8 +195,15 @@ struct PulseApp: App {
                 #endif
             }
             .onChange(of: scenePhase) { _, newPhase in
-                if newPhase == .background {
+                switch newPhase {
+                case .active:
+                    foregroundedAt = Date()
+                case .background:
+                    let durationS = max(0, Int(Date().timeIntervalSince(foregroundedAt)))
+                    Analytics.shared.track(.sessionEnd(durationS: durationS))
                     Task { await Analytics.shared.flush() }
+                default:
+                    break
                 }
             }
         }
