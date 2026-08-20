@@ -114,7 +114,22 @@ final class Analytics {
     /// Record a discrete analytics event. No-ops when analytics is disabled or
     /// PostHog is not configured (no key set).
     func track(_ event: AnalyticsEvent) {
-        guard isEnabled, AnalyticsConfig.isConfigured else { return }
+        let willSend = isEnabled && AnalyticsConfig.isConfigured
+
+#if DEBUG
+        // Convert AnalyticsValue props to [String: Any] for the debug log.
+        let debugProps: [String: Any] = event.properties.reduce(into: [:]) { result, pair in
+            switch pair.value {
+            case .string(let s): result[pair.key] = s
+            case .int(let i): result[pair.key] = i
+            case .double(let d): result[pair.key] = d
+            case .bool(let b): result[pair.key] = b
+            }
+        }
+        AnalyticsDebugLog.shared.append(name: event.name, props: debugProps, wasSent: willSend)
+#endif
+
+        guard willSend else { return }
 
         let payload = event.payload(
             distinctID: distinctID,
@@ -142,7 +157,15 @@ final class Analytics {
     /// PostHog payload using its own `distinctID` and `appVersion`.
     /// Respects the opt-out gate — silently no-ops when analytics is disabled.
     func trackForwarded(name: String, properties: [String: Any], platform: String) {
-        guard isEnabled, AnalyticsConfig.isConfigured else { return }
+        let willSend = isEnabled && AnalyticsConfig.isConfigured
+
+#if DEBUG
+        var debugProps = properties
+        debugProps["platform"] = platform
+        AnalyticsDebugLog.shared.append(name: name, props: debugProps, wasSent: willSend)
+#endif
+
+        guard willSend else { return }
 
         let iso8601 = ISO8601DateFormatter().string(from: Date())
 

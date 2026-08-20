@@ -579,6 +579,25 @@ private struct SettingsContentView: View {
 
     private var aboutSection: some View {
         Section {
+            #if DEBUG
+            // DEBUG-only: Analytics event inspector
+            NavigationLink {
+                AnalyticsInspectorView()
+            } label: {
+                HStack {
+                    Image(systemName: "dot.radiowaves.right")
+                        .foregroundStyle(Color.psAccent)
+                        .font(.system(size: 18))
+                        .frame(width: 28)
+                    Text("Analytics Inspector")
+                        .font(PSFont.label(size: 16))
+                        .foregroundStyle(Color.psWhite)
+                }
+                .frame(minHeight: 44)
+            }
+            .listRowBackground(Color.psNavy)
+            #endif
+
             // Version
             HStack {
                 Image(systemName: "info.circle.fill")
