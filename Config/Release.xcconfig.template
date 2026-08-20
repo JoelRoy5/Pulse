@@ -2,4 +2,6 @@
 GLOO_CLIENT_ID = your_gloo_client_id_here
 GLOO_CLIENT_SECRET = your_gloo_client_secret_here
 YOUVERSION_APP_KEY = your_youversion_app_key_here
+POSTHOG_KEY = your_posthog_key_here
+POSTHOG_HOST = https://us.i.posthog.com
 SWIFT_ACTIVE_COMPILATION_CONDITIONS = RELEASE

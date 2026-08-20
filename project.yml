@@ -55,6 +55,8 @@ targets:
         GlooClientID: $(GLOO_CLIENT_ID)
         GlooClientSecret: $(GLOO_CLIENT_SECRET)
         YouVersionAppKey: $(YOUVERSION_APP_KEY)
+        PostHogKey: $(POSTHOG_KEY)
+        PostHogHost: $(POSTHOG_HOST)
         CFBundleURLTypes:
           - CFBundleURLName: com.joelroy.pulse
             CFBundleURLSchemes: [pulse]

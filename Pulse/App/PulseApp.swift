@@ -9,6 +9,7 @@ private let logger = Logger(subsystem: "com.joelroy.pulse", category: "PulseApp"
 struct PulseApp: App {
 
     @UIApplicationDelegateAdaptor(AppDelegate.self) private var appDelegate
+    @Environment(\.scenePhase) private var scenePhase
 
     private let container: ModelContainer
     @State private var healthEngine = HealthEngine()
@@ -130,6 +131,8 @@ struct PulseApp: App {
             .environment(scriptureEngine)
             .environment(votdScheduler)
             .task {
+                // Track app open
+                Analytics.shared.track(.appOpened)
                 // Run one-time data backfills before anything reads the store.
                 DataMigrations.runOnLaunch(container.mainContext)
                 // Wire onClassification hook ONCE
@@ -186,6 +189,11 @@ struct PulseApp: App {
                     _ = await NotificationService.shared.requestAuthorization()
                 }
                 #endif
+            }
+            .onChange(of: scenePhase) { _, newPhase in
+                if newPhase == .background {
+                    Task { await Analytics.shared.flush() }
+                }
             }
         }
         .modelContainer(container)
