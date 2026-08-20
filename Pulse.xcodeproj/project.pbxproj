@@ -16,6 +16,7 @@
 		2317F8D467AF9702B64D6F8D /* PrayerTimeView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 36104FAC6C30543319AEF429 /* PrayerTimeView.swift */; };
 		24C66624CCAFE5B675979021 /* PulseRing.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5D58FF5DF89E2161D951DF1A /* PulseRing.swift */; };
 		2B6434E400F64A228DE923EB /* HomeViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 69DBD08C32085CC637A1F35C /* HomeViewModel.swift */; };
+		2BB8FB662D6A18239FCAE2C6 /* TrackScreen.swift in Sources */ = {isa = PBXBuildFile; fileRef = 11C198F2586FF0D4891718A5 /* TrackScreen.swift */; };
 		2E13F6007A8F7449A8CFCC89 /* VerseView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3EABAF7E9F79AF4B72252E40 /* VerseView.swift */; };
 		3486367464537B6192F7C2AF /* PulseApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0AEE9CD05DD0A6FAA15E6014 /* PulseApp.swift */; };
 		3A8F65C6B42C3D6AE0118D32 /* PulseWatchApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = F76E0B0971A3D5FFE79D25DD /* PulseWatchApp.swift */; };
@@ -133,6 +134,7 @@
 		0AEE9CD05DD0A6FAA15E6014 /* PulseApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PulseApp.swift; sourceTree = "<group>"; };
 		0CF03F38EFF412C054E6B429 /* MainTabView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MainTabView.swift; sourceTree = "<group>"; };
 		106E207F452F51DA0DD90C08 /* VitalsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VitalsView.swift; sourceTree = "<group>"; };
+		11C198F2586FF0D4891718A5 /* TrackScreen.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TrackScreen.swift; sourceTree = "<group>"; };
 		13FEF2D2118D74C3572DF349 /* Pulse.app */ = {isa = PBXFileReference; includeInIndex = 0; lastKnownFileType = wrapper.application; path = Pulse.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		1461D6EBAE5EEE1FEFAA43C2 /* MetricsGridView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MetricsGridView.swift; sourceTree = "<group>"; };
 		14C9095CC4988578C90F000C /* PSCard.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PSCard.swift; sourceTree = "<group>"; };
@@ -354,6 +356,7 @@
 			children = (
 				493413F5EAA2B428D2611FE4 /* Analytics.swift */,
 				F04A156A8D42D420EE2280ED /* AnalyticsConfig.swift */,
+				11C198F2586FF0D4891718A5 /* TrackScreen.swift */,
 			);
 			path = Analytics;
 			sourceTree = "<group>";
@@ -782,6 +785,7 @@
 				E49A86E1663C6DB8722A0BF5 /* StateChipView.swift in Sources */,
 				9E2350D8E653EC18DA7F1E56 /* StreakWidget.swift in Sources */,
 				CDC2932EC564B24A26DB35F7 /* TodayPlaceholderView.swift in Sources */,
+				2BB8FB662D6A18239FCAE2C6 /* TrackScreen.swift in Sources */,
 				6829FB7CA37E1495674B8868 /* TranslationPickerView.swift in Sources */,
 				16875E44B5FDDBFB8155C6FC /* TranslationSettingsView.swift in Sources */,
 				5647EB4F9B143A99D0BB77FC /* VerseCache.swift in Sources */,

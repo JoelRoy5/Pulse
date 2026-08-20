@@ -160,6 +160,7 @@ struct VerseDetailSheet: View {
                 }
             }
         }
+        .trackScreen("VerseDetail")
     }
 }
 

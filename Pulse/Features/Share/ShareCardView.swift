@@ -167,6 +167,7 @@ struct ShareCardView: View {
             renderedImage = nil
             renderCard()
         }
+        .trackScreen("ShareCard")
     }
 
     // MARK: - Render

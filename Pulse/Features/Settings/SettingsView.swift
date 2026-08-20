@@ -37,6 +37,7 @@ struct SettingsView: View {
                 await newVM.load()
             }
         }
+        .trackScreen("Settings")
     }
 }
 

@@ -72,6 +72,7 @@ struct WelcomeView: View {
                 withAnimation(.easeOut(duration: 0.5).delay(0.7)) { showRow3 = true }
             }
         }
+        .trackScreen("Onboarding_Welcome")
     }
 
     private func featureRow(icon: String, text: String, visible: Bool) -> some View {

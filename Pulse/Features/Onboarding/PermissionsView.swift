@@ -99,5 +99,6 @@ struct PermissionsView: View {
                 .background(Color.psDeepNavy)
             }
         }
+        .trackScreen("Onboarding_Permissions")
     }
 }

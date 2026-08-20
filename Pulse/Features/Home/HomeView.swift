@@ -235,6 +235,7 @@ struct HomeView: View {
                 Task { await scriptureEngine.deliverFirstVerse(mockState: emotion.biometricState, suppressNotification: true) }
             }
         }
+        .trackScreen("Home")
     }
 
     // MARK: - Verse Card Section

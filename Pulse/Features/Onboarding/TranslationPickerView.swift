@@ -55,6 +55,7 @@ struct TranslationPickerView: View {
         .task {
             await vm.loadTranslations()
         }
+        .trackScreen("Onboarding_Translation")
     }
 
     // MARK: - Subviews
