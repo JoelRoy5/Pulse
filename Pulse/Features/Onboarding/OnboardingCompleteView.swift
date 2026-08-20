@@ -73,6 +73,14 @@ struct OnboardingCompleteView: View {
 
                 // Open Pulse button
                 if showVerseCard {
+                    // Privacy disclosure (non-blocking footnote)
+                    Text("Pulse collects anonymous usage to improve. Your health data never leaves your device — manage anytime in Settings.")
+                        .font(PSFont.label(size: 12))
+                        .foregroundStyle(Color.psGrayMuted)
+                        .multilineTextAlignment(.center)
+                        .padding(.horizontal, PSSpacing.screenHorizontal)
+                        .transition(reduceMotion ? .opacity : .psSlideUp)
+
                     PSButton(title: "Open Pulse", style: .primary) {
                         onComplete()
                     }
