@@ -69,4 +69,13 @@ final class VerseLibraryTests: XCTestCase {
                            "duplicate reference in \(emotion.rawValue)")
         }
     }
+
+    func testBundledLibraryPoolsMeetMinimumSize() throws {
+        let library = try VerseLibrary.load()
+        for emotion in Emotion.allCases {
+            let entry = try XCTUnwrap(library[emotion])
+            XCTAssertGreaterThanOrEqual(entry.verses.count, 45,
+                "pool for \(emotion.rawValue) has only \(entry.verses.count) verses")
+        }
+    }
 }
