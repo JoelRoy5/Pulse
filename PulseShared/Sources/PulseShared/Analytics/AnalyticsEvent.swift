@@ -150,8 +150,10 @@ public struct AnalyticsEvent: Sendable {
 
     // MARK: - PostHog Payload
 
+    private static let iso8601 = ISO8601DateFormatter()
+
     public func payload(distinctID: String, appVersion: String, platform: String, timestamp: Double) -> [String: Any] {
-        let iso8601 = ISO8601DateFormatter().string(from: Date(timeIntervalSince1970: timestamp))
+        let iso8601 = AnalyticsEvent.iso8601.string(from: Date(timeIntervalSince1970: timestamp))
 
         var mergedProps: [String: Any] = properties.mapValues { $0.json }
         mergedProps["platform"] = platform

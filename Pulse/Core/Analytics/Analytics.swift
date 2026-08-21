@@ -21,6 +21,7 @@ final class Analytics {
         static let installID = "pulse.analytics.installID"
     }
 
+    private static let iso8601 = ISO8601DateFormatter()
     private static let queueCapacity = 500
     private static let queueBatchSize = 20
     private static let autoFlushThreshold = 20
@@ -37,6 +38,7 @@ final class Analytics {
     private let queueURL: URL
     private let appVersion: String
     private var flushTimer: Timer?
+    private var isFlushing = false
 
     // MARK: - Init
 
@@ -167,7 +169,7 @@ final class Analytics {
 
         guard willSend else { return }
 
-        let iso8601 = ISO8601DateFormatter().string(from: Date())
+        let iso8601 = Analytics.iso8601.string(from: Date())
 
         var mergedProps = properties
         mergedProps["platform"] = platform
@@ -199,6 +201,9 @@ final class Analytics {
     /// queued for the next attempt. Never throws or crashes.
     func flush() async {
         guard AnalyticsConfig.isConfigured else { return }
+        guard !isFlushing else { return }
+        isFlushing = true
+        defer { isFlushing = false }
 
         let batch = queue.makeBatch()
         guard !batch.isEmpty else { return }
