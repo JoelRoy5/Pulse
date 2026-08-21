@@ -111,8 +111,10 @@ user-facing model.
 
 Content is drafted by Claude, reviewed and edited by the user:
 
-- Claude drafts **~25–40 well-known, pastorally-fitting references per emotion**
-  (~300 total), each a plain, valid reference.
+- Claude drafts a **generous pool of ~45–60 well-known, pastorally-fitting
+  references per emotion** (~500+ total) — err toward more verses than fewer, since
+  a larger pool means more variety and longer before any verse repeats. Each is a
+  plain, valid reference.
 - `VerseLibrary.json` **is** the review artifact — it is human-readable and grouped by
   emotion. Claude additionally generates a companion **`docs/verse-library.md`** table
   (emotion → theme → the list of references, one per line) so the user can skim and
