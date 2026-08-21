@@ -83,6 +83,7 @@ struct HistoryView: View {
                 viewModel?.markShared(delivery)
             }
         }
+        .trackScreen("History")
     }
 
     // MARK: - Content List

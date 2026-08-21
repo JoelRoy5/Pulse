@@ -20,3 +20,18 @@ Tracked non-blocking items deferred from completed work.
 - **[Minor] TodayPlaceholderView** emotion expression style nit.
 - **[Minor] Settings "Your reflections"** shows "0 of 0" for a question type the
   user hasn't answered; and swallows a fetch error silently.
+
+## Analytics (2026-08-20 branch `build/analytics`)
+
+- **[Minor] `AnalyticsQueue.removeBatch`** assumes the queue head is unchanged
+  since `makeBatch` — largely closed by the `isFlushing` guard, but keying
+  removal by event identity would be fully robust.
+- **[Minor] `Analytics.flushTimer`** never invalidated (harmless on a singleton);
+  `AnalyticsQueue.requeueFront` (no-op) has no test.
+- **[Minor] Debug inspector** relative-time labels can go stale while open with
+  no new events (debug-only view).
+- **[Manual] Live PostHog verification** — with the key configured (gitignored
+  xcconfig), do a device pass: confirm events land in the PostHog dashboard, then
+  toggle analytics off in Settings and confirm collection stops.
+- **[Release] App Store**: set the privacy nutrition labels + publish the privacy
+  policy analytics section (both drafted in `docs/privacy-analytics.md`).

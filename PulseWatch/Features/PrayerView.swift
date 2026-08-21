@@ -176,6 +176,10 @@ private struct PrayerResponseSheet: View {
         }
         .background(feeling.biometricState.gradient)
         .task {
+            // Track the feeling request before making it.
+            await MainActor.run {
+                WatchAnalytics.shared.track(.watchFeelingRequested())
+            }
             // Ask the phone for a live, varied verse; fall back locally if it's
             // unreachable or the request fails.
             let payload = await WatchSessionManager.shared.requestVerse(for: feeling.biometricState)

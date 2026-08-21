@@ -9,6 +9,7 @@ private let logger = Logger(subsystem: "com.joelroy.pulse", category: "PulseApp"
 struct PulseApp: App {
 
     @UIApplicationDelegateAdaptor(AppDelegate.self) private var appDelegate
+    @Environment(\.scenePhase) private var scenePhase
 
     private let container: ModelContainer
     @State private var healthEngine = HealthEngine()
@@ -16,6 +17,7 @@ struct PulseApp: App {
     @State private var votdScheduler: VerseOfDayScheduler
     @State private var hasCompletedOnboarding: Bool
     @State private var onboardingStartStep: OnboardingViewModel.Step?
+    @State private var foregroundedAt: Date = Date()
 
     init() {
         do {
@@ -130,6 +132,11 @@ struct PulseApp: App {
             .environment(scriptureEngine)
             .environment(votdScheduler)
             .task {
+                // Initialize analytics enabled state from persisted user preference.
+                let prefs = UserPreferences.current(in: container.mainContext)
+                Analytics.shared.isEnabled = prefs.analyticsEnabled
+                // Track app open
+                Analytics.shared.track(.appOpened)
                 // Run one-time data backfills before anything reads the store.
                 DataMigrations.runOnLaunch(container.mainContext)
                 // Wire onClassification hook ONCE
@@ -186,6 +193,18 @@ struct PulseApp: App {
                     _ = await NotificationService.shared.requestAuthorization()
                 }
                 #endif
+            }
+            .onChange(of: scenePhase) { _, newPhase in
+                switch newPhase {
+                case .active:
+                    foregroundedAt = Date()
+                case .background:
+                    let durationS = max(0, Int(Date().timeIntervalSince(foregroundedAt)))
+                    Analytics.shared.track(.sessionEnd(durationS: durationS))
+                    Task { await Analytics.shared.flush() }
+                default:
+                    break
+                }
             }
         }
         .modelContainer(container)

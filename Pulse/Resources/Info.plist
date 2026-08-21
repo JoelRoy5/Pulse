@@ -44,6 +44,10 @@
 	<string>Pulse reads your health data to find scripture that meets your current physical and emotional state. This data stays on your device.</string>
 	<key>NSHealthUpdateUsageDescription</key>
 	<string>Pulse can save your time of prayer to the Health app as a mindful minutes session.</string>
+	<key>PostHogHost</key>
+	<string>$(POSTHOG_HOST)</string>
+	<key>PostHogKey</key>
+	<string>$(POSTHOG_KEY)</string>
 	<key>UIBackgroundModes</key>
 	<array>
 		<string>fetch</string>

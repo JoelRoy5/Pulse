@@ -149,6 +149,7 @@ struct HomeView: View {
                     // 4. Verse of the Day Card
                     if includeVerseOfDay, let votd = todaysVOTDDelivery {
                         VerseOfDayCard(delivery: votd) {
+                            Analytics.shared.track(.votdOpened)
                             selectedDetailDelivery = votd
                             showingDetail = true
                         }
@@ -235,6 +236,7 @@ struct HomeView: View {
                 Task { await scriptureEngine.deliverFirstVerse(mockState: emotion.biometricState, suppressNotification: true) }
             }
         }
+        .trackScreen("Home")
     }
 
     // MARK: - Verse Card Section

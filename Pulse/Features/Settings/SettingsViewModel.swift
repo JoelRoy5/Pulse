@@ -31,6 +31,9 @@ final class SettingsViewModel {
     var includeVerseOfDay: Bool = true
     var preferredThemes: [String] = []
 
+    // Analytics
+    var analyticsEnabled: Bool = true
+
     // Health Metrics
     var useHeartRate: Bool = true
     var useHRV: Bool = true
@@ -100,6 +103,7 @@ final class SettingsViewModel {
         notificationStyle = prefs.notificationStyle
         includeVerseOfDay = prefs.includeVerseOfDay
         preferredThemes = prefs.preferredThemes
+        analyticsEnabled = prefs.analyticsEnabled
         useHeartRate = prefs.useHeartRate
         useHRV = prefs.useHRV
         useSleep = prefs.useSleep
@@ -148,6 +152,7 @@ final class SettingsViewModel {
         prefs.notificationStyle = notificationStyle
         prefs.includeVerseOfDay = includeVerseOfDay
         prefs.preferredThemes = preferredThemes
+        prefs.analyticsEnabled = analyticsEnabled
         prefs.useHeartRate = useHeartRate
         prefs.useHRV = useHRV
         prefs.useSleep = useSleep

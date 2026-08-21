@@ -52,9 +52,13 @@ struct TranslationPickerView: View {
                 .padding(.bottom, PSSpacing.xxl)
             }
         }
+        .onAppear {
+            Analytics.shared.track(.onboardingStepViewed(step: "translation"))
+        }
         .task {
             await vm.loadTranslations()
         }
+        .trackScreen("Onboarding_Translation")
     }
 
     // MARK: - Subviews

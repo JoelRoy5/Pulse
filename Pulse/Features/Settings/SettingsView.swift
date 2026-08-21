@@ -37,6 +37,7 @@ struct SettingsView: View {
                 await newVM.load()
             }
         }
+        .trackScreen("Settings")
     }
 }
 
@@ -522,6 +523,35 @@ private struct SettingsContentView: View {
             .padding(.vertical, PSSpacing.sm)
             .listRowBackground(Color.psNavy)
 
+            // Share anonymous usage
+            HStack {
+                Image(systemName: "chart.bar.fill")
+                    .foregroundStyle(Color.psAccent)
+                    .font(.system(size: 18))
+                    .frame(width: 28)
+                VStack(alignment: .leading, spacing: 2) {
+                    Text("Share anonymous usage")
+                        .font(PSFont.label(size: 16))
+                        .foregroundStyle(Color.psWhite)
+                    Text("Helps improve Pulse. Never includes your health data or verses.")
+                        .font(PSFont.label(size: 12))
+                        .foregroundStyle(Color.psGrayMuted)
+                }
+                Spacer()
+                Toggle("", isOn: $vm.analyticsEnabled)
+                    .tint(Color.psAccent)
+                    .labelsHidden()
+                    .onChange(of: vm.analyticsEnabled) { _, newValue in
+                        Analytics.shared.setEnabled(newValue)
+                        vm.save()
+                        if newValue {
+                            Analytics.shared.track(.settingChanged(setting: "analytics"))
+                        }
+                    }
+            }
+            .frame(minHeight: 44)
+            .listRowBackground(Color.psNavy)
+
             // Clear verse history
             Button {
                 vm.showClearHistoryAlert = true
@@ -549,6 +579,25 @@ private struct SettingsContentView: View {
 
     private var aboutSection: some View {
         Section {
+            #if DEBUG
+            // DEBUG-only: Analytics event inspector
+            NavigationLink {
+                AnalyticsInspectorView()
+            } label: {
+                HStack {
+                    Image(systemName: "dot.radiowaves.right")
+                        .foregroundStyle(Color.psAccent)
+                        .font(.system(size: 18))
+                        .frame(width: 28)
+                    Text("Analytics Inspector")
+                        .font(PSFont.label(size: 16))
+                        .foregroundStyle(Color.psWhite)
+                }
+                .frame(minHeight: 44)
+            }
+            .listRowBackground(Color.psNavy)
+            #endif
+
             // Version
             HStack {
                 Image(systemName: "info.circle.fill")

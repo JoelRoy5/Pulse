@@ -99,5 +99,9 @@ struct PermissionsView: View {
                 .background(Color.psDeepNavy)
             }
         }
+        .onAppear {
+            Analytics.shared.track(.onboardingStepViewed(step: "permissions"))
+        }
+        .trackScreen("Onboarding_Permissions")
     }
 }

@@ -300,6 +300,22 @@ final class ScriptureEngine {
         cache.saveDelivery(delivery)
         currentDelivery = delivery
 
+        // Analytics: record delivery method (votd / manual / auto). No state/emotion.
+        let deliveryMethod: String
+        if delivery.deliveryMethod == "votd" {
+            deliveryMethod = "votd"
+        } else if suppressNotification {
+            deliveryMethod = "manual"
+        } else {
+            deliveryMethod = "auto"
+        }
+        Analytics.shared.track(.verseDelivered(method: deliveryMethod))
+
+        // Analytics: record offline/fallback usage when applicable.
+        if delivery.isOfflineFallback {
+            Analytics.shared.track(.apiFallbackUsed)
+        }
+
         // Notify Watch (Task 11 hook)
         onDelivery?(delivery)
 

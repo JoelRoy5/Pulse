@@ -134,6 +134,7 @@ final class NotificationService: NSObject {
     // MARK: - Reaction Handling
 
     /// Updates `VerseDelivery.userReaction` in SwiftData for the given delivery ID and action.
+    @MainActor
     func handleAction(_ actionIdentifier: String, deliveryID: UUID, context: ModelContext) {
         let reaction: VerseReaction?
         switch actionIdentifier {
@@ -144,6 +145,13 @@ final class NotificationService: NSObject {
         }
 
         guard let reaction else { return }
+
+        // Analytics: record the specific notification action taken.
+        switch actionIdentifier {
+        case "LOVE_VERSE": Analytics.shared.track(.notificationAction(action: "love"))
+        case "SAVE_VERSE":  Analytics.shared.track(.notificationAction(action: "save"))
+        default: break
+        }
 
         let descriptor = FetchDescriptor<VerseDelivery>(
             predicate: #Predicate { $0.id == deliveryID }
@@ -193,6 +201,11 @@ extension NotificationService: UNUserNotificationCenterDelegate {
         logger.info("Notification action '\(actionIdentifier, privacy: .public)' for delivery \(deliveryID, privacy: .public)")
 
         Task { @MainActor in
+            // Analytics: notification open (default tap) or named action.
+            if actionIdentifier == UNNotificationDefaultActionIdentifier {
+                Analytics.shared.track(.notificationOpened())
+            }
+
             // Build a temporary context for the reaction update.
             // AppDelegate wires the shared container; we use it here.
             if let container = try? ModelContainer.makePulseContainer() {

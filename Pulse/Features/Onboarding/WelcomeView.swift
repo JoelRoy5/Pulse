@@ -59,6 +59,7 @@ struct WelcomeView: View {
             }
         }
         .onAppear {
+            Analytics.shared.track(.onboardingStepViewed(step: "welcome"))
             if reduceMotion {
                 // Collapse stagger: all items appear immediately, no offsets
                 showTagline = true
@@ -72,6 +73,7 @@ struct WelcomeView: View {
                 withAnimation(.easeOut(duration: 0.5).delay(0.7)) { showRow3 = true }
             }
         }
+        .trackScreen("Onboarding_Welcome")
     }
 
     private func featureRow(icon: String, text: String, visible: Bool) -> some View {

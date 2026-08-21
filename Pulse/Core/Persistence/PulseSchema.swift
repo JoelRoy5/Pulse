@@ -190,6 +190,9 @@ final class UserPreferences {
     var includeVerseOfDay: Bool = true
     var preferredThemes: [String] = []
 
+    // Analytics
+    var analyticsEnabled: Bool = true
+
     // Health metric toggles
     var useHeartRate: Bool = true
     var useHRV: Bool = true

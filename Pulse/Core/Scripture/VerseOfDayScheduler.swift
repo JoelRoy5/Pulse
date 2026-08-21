@@ -137,6 +137,13 @@ final class VerseOfDayScheduler {
         delivery.emotionRaw = BiometricState.morningAwakening.defaultEmotion.rawValue
         cache.saveDelivery(delivery)
         cache.store(verse)
+
+        // Track analytics
+        Analytics.shared.track(.verseDelivered(method: "votd"))
+        if isOffline {
+            Analytics.shared.track(.apiFallbackUsed)
+        }
+
         logger.info("VOTD persisted: \(verse.reference, privacy: .public) offline=\(isOffline, privacy: .public)")
     }
 

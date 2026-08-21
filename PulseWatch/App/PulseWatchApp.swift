@@ -13,6 +13,9 @@ struct PulseWatchApp: App {
                 .environment(WatchSessionManager.shared.watchState)
                 .onAppear {
                     WatchSessionManager.shared.activate()
+                    Task { @MainActor in
+                        WatchAnalytics.shared.track(.watchOpened())
+                    }
                 }
         }
     }
