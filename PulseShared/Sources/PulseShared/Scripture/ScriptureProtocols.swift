@@ -6,6 +6,9 @@ import Foundation
 /// No raw health numbers (heart rate, HRV, bpm, etc.) are included.
 public struct VerseSelectionContext: Sendable {
     public var state: BiometricState
+    /// The user-facing emotion this delivery represents. The on-device library
+    /// keys its verse pools on this. Defaults to `state.defaultEmotion`.
+    public var emotion: Emotion
     public var timeOfDay: TimeOfDay
     public var confidence: Double
     public var recentStates: [BiometricState]
@@ -24,9 +27,11 @@ public struct VerseSelectionContext: Sendable {
         recentStates: [BiometricState] = [],
         translationAbbreviation: String = DefaultBible.abbreviation,
         preferredThemes: [String] = [],
-        avoidRepeats: [String] = []
+        avoidRepeats: [String] = [],
+        emotion: Emotion? = nil
     ) {
         self.state = state
+        self.emotion = emotion ?? state.defaultEmotion
         self.timeOfDay = timeOfDay
         self.confidence = confidence
         self.recentStates = recentStates

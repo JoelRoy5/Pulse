@@ -52,8 +52,6 @@ targets:
           - com.joelroy.pulse.health-check
           - com.joelroy.pulse.verse-refresh
         UIBackgroundModes: [fetch, processing]
-        GlooClientID: $(GLOO_CLIENT_ID)
-        GlooClientSecret: $(GLOO_CLIENT_SECRET)
         YouVersionAppKey: $(YOUVERSION_APP_KEY)
         PostHogKey: $(POSTHOG_KEY)
         PostHogHost: $(POSTHOG_HOST)

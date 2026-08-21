@@ -161,7 +161,8 @@ final class ScriptureEngine {
             recentStates: [],
             translationAbbreviation: preferredBibleAbbreviation,
             preferredThemes: prefs.preferredThemes,
-            avoidRepeats: avoidRefs
+            avoidRepeats: avoidRefs,
+            emotion: result.emotion
         )
         return try await verseSelector.selectVerse(for: context)
     }
