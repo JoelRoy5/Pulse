@@ -41,7 +41,7 @@ struct PulseApp: App {
         let youVersionClient: YouVersionClient?
         if AppConfig.isConfigured && !AppConfig.forceOffline {
             let yvc = YouVersionClient(appKey: AppConfig.youVersionAppKey)
-            selector = GlooAIClient(clientID: AppConfig.glooClientID, clientSecret: AppConfig.glooClientSecret)
+            selector = LibraryVerseSelector()
             fetcher = yvc
             youVersionClient = yvc
         } else {

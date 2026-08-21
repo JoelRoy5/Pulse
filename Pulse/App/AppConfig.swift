@@ -9,28 +9,17 @@ enum AppConfig {
 
     // MARK: - Credential Keys
 
-    static var glooClientID: String {
-        Bundle.main.object(forInfoDictionaryKey: "GlooClientID") as? String ?? ""
-    }
-
-    static var glooClientSecret: String {
-        Bundle.main.object(forInfoDictionaryKey: "GlooClientSecret") as? String ?? ""
-    }
-
     static var youVersionAppKey: String {
         Bundle.main.object(forInfoDictionaryKey: "YouVersionAppKey") as? String ?? ""
     }
 
     // MARK: - Configuration State
 
-    /// `true` when all three credentials are present and don't contain a
-    /// `your_…_here` placeholder (indicating the developer hasn't wired up
-    /// their API keys yet).
+    /// `true` when the YouVersion key is present and not a `your_…_here`
+    /// placeholder. Verse *selection* is on-device (always available); only
+    /// text fetching needs this key.
     static var isConfigured: Bool {
-        let values = [glooClientID, glooClientSecret, youVersionAppKey]
-        return values.allSatisfy { value in
-            !value.isEmpty && !value.contains("your_")
-        }
+        !youVersionAppKey.isEmpty && !youVersionAppKey.contains("your_")
     }
 
     // MARK: - Debug / Testing Overrides

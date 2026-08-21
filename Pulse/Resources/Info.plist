@@ -34,10 +34,6 @@
 	</array>
 	<key>CFBundleVersion</key>
 	<string>$(CURRENT_PROJECT_VERSION)</string>
-	<key>GlooClientID</key>
-	<string>$(GLOO_CLIENT_ID)</string>
-	<key>GlooClientSecret</key>
-	<string>$(GLOO_CLIENT_SECRET)</string>
 	<key>ITSAppUsesNonExemptEncryption</key>
 	<false/>
 	<key>NSHealthShareUsageDescription</key>
