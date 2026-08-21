@@ -15,11 +15,9 @@
 - Isaiah 41:10
 - Psalm 55:22
 - 1 Peter 5:7
-- Psalm 3:5
 - Psalm 91:1-2
 - Psalm 34:17
 - Isaiah 40:28
-- Galatians 6:9
 - 2 Corinthians 4:16
 - Psalm 73:26
 - Deuteronomy 33:12
@@ -35,7 +33,6 @@
 - Psalm 4:8
 - Psalm 23:1
 - Isaiah 58:11
-- Psalm 18:1-2
 - Nehemiah 8:10
 - Psalm 28:7
 - 2 Thessalonians 3:16
@@ -43,12 +40,15 @@
 - Lamentations 3:22-23
 - Psalm 138:3
 - Isaiah 30:15
-- Revelation 14:13
 - Psalm 31:24
 - Romans 8:26
 - Psalm 121:3-4
-- Matthew 26:41
 - Psalm 29:11
+- 1 Kings 19:5
+- Jeremiah 6:16
+- Psalm 131:2
+- Isaiah 57:15
+- Psalm 62:5
 
 ## Restful — Evening Rest  (`restful` → `evening_rest`)
 
@@ -78,7 +78,6 @@
 - Isaiah 26:3
 - Psalm 46:10
 - Psalm 55:17
-- 1 Kings 19:5
 - Psalm 139:11-12
 - Psalm 91:11
 - Zephaniah 3:17
@@ -88,7 +87,6 @@
 - Psalm 16:9
 - Psalm 57:1
 - Isaiah 40:29-31
-- Psalm 48:14
 - Numbers 6:24-26
 - Psalm 107:29
 - Psalm 18:28
@@ -113,7 +111,6 @@
 - Psalm 92:1-2
 - Isaiah 33:2
 - Psalm 59:16
-- Psalm 88:13
 - Psalm 63:1
 - Mark 1:35
 - Psalm 108:2
@@ -189,8 +186,6 @@
 - Psalm 27:13-14
 - Lamentations 3:22-23
 - Psalm 116:1-2
-- Romans 5:3-4
-- James 1:2-4
 - Psalm 46:10
 - 2 Corinthians 12:9
 - Zephaniah 3:17
@@ -199,6 +194,7 @@
 - Psalm 56:3
 - 1 Peter 4:12-13
 - Psalm 121:1-2
+- Psalm 88:13
 
 ## Steady — Abiding Presence  (`steady` → `abiding_presence`)
 
@@ -249,6 +245,7 @@
 - Revelation 3:20
 - Psalm 9:10
 - Romans 8:26
+- Psalm 18:1-2
 
 ## Grateful — Gratitude & Praise  (`grateful` → `gratitude_praise`)
 
@@ -276,7 +273,6 @@
 - Psalm 28:7
 - Psalm 118:24
 - Psalm 136:1
-- Romans 1:21
 - Psalm 22:3
 - Hebrews 13:15
 - Psalm 47:1
@@ -353,14 +349,12 @@
 ## Driven — Purpose & Calling  (`driven` → `purpose_calling`)
 
 - Colossians 3:23-24
-- Jeremiah 29:11
 - Philippians 3:14
 - Proverbs 16:3
 - Ephesians 2:10
 - 1 Corinthians 15:58
 - Joshua 1:9
 - Galatians 6:9
-- Philippians 4:13
 - Colossians 3:17
 - 1 Corinthians 10:31
 - 2 Timothy 1:9
@@ -449,6 +443,7 @@
 - Psalm 144:1
 - Job 17:9
 - Psalm 27:14
+- James 1:2-4
 
 ## Unwell — Healing & Trust  (`unwell` → `healing_trust`)
 
@@ -467,7 +462,6 @@
 - Jeremiah 30:17
 - Matthew 8:17
 - Psalm 73:26
-- 3 John 1:2
 - Psalm 91:10
 - Psalm 121:1-2
 - Isaiah 40:31
@@ -498,4 +492,4 @@
 - Psalm 107:19-20
 - Revelation 21:4
 - Psalm 9:9
-- 2 Chronicles 7:14
+
