@@ -159,4 +159,74 @@ final class YouVersionClientTests: XCTestCase {
         XCTAssertEqual(DefaultBible.abbreviation, "BSB")
         XCTAssertFalse(DefaultBible.title.isEmpty)
     }
+
+    // MARK: - Retry on Transient Failures
+
+    /// Counts how many times the stub handler is invoked (URLProtocol runs off the
+    /// test's actor, so a locked reference box keeps the shared count safe).
+    private final class CallCounter: @unchecked Sendable {
+        private let lock = NSLock()
+        private var value = 0
+        func increment() { lock.lock(); value += 1; lock.unlock() }
+        var count: Int { lock.lock(); defer { lock.unlock() }; return value }
+    }
+
+    private func passageJSON() -> Data {
+        """
+        {"id":"COL.3.23-24","content":"Whatever you do, work at it with your whole being.","reference":"Colossians 3:23-24"}
+        """.data(using: .utf8)!
+    }
+
+    func testFetchVerseRetriesTransientFailureThenSucceeds() async throws {
+        let counter = CallCounter()
+        StubURLProtocol.requestHandler = { [passageJSON] request in
+            counter.increment()
+            if counter.count == 1 {
+                throw URLError(.networkConnectionLost)   // transient: first attempt drops
+            }
+            return (makeHTTPResponse(url: request.url!, status: 200), passageJSON())
+        }
+
+        // retryBaseDelay: 0 keeps the test fast (no real backoff sleep)
+        let client = YouVersionClient(appKey: "k", session: stubbedSession(), retryBaseDelay: 0)
+        let verse = try await client.fetchVerse(reference: "Colossians 3:23-24", bibleID: 3034, abbreviation: "BSB")
+
+        XCTAssertEqual(verse.reference, "Colossians 3:23-24")
+        XCTAssertEqual(counter.count, 2, "should have retried once after the transient failure")
+    }
+
+    func testFetchVerseDoesNotRetryNonTransientError() async {
+        let counter = CallCounter()
+        StubURLProtocol.requestHandler = { request in
+            counter.increment()
+            return (makeHTTPResponse(url: request.url!, status: 404), Data("{}".utf8))
+        }
+
+        let client = YouVersionClient(appKey: "k", session: stubbedSession(), retryBaseDelay: 0)
+        do {
+            _ = try await client.fetchVerse(reference: "Colossians 3:23-24", bibleID: 3034, abbreviation: "BSB")
+            XCTFail("expected a 404 to throw")
+        } catch {
+            XCTAssertEqual(error as? ScriptureAPIError, .requestFailed(status: 404))
+        }
+        XCTAssertEqual(counter.count, 1, "a 404 is permanent and must not be retried")
+    }
+
+    func testFetchVerseExhaustsRetriesOnPersistentServerError() async {
+        let counter = CallCounter()
+        StubURLProtocol.requestHandler = { request in
+            counter.increment()
+            return (makeHTTPResponse(url: request.url!, status: 503), Data("{}".utf8))
+        }
+
+        // maxAttempts: 3 → one initial attempt plus two retries, then give up.
+        let client = YouVersionClient(appKey: "k", session: stubbedSession(), maxAttempts: 3, retryBaseDelay: 0)
+        do {
+            _ = try await client.fetchVerse(reference: "Colossians 3:23-24", bibleID: 3034, abbreviation: "BSB")
+            XCTFail("expected a persistent 503 to throw after exhausting retries")
+        } catch {
+            XCTAssertEqual(error as? ScriptureAPIError, .requestFailed(status: 503))
+        }
+        XCTAssertEqual(counter.count, 3, "should attempt exactly maxAttempts times")
+    }
 }

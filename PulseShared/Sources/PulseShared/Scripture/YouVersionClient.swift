@@ -70,13 +70,28 @@ public struct YouVersionClient: VerseFetching {
 
     private let appKey: String
     private let session: URLSession
+    private let maxAttempts: Int
+    private let retryBaseDelay: Double
 
     private static let baseURL = URL(string: "https://api.youversion.com")!
     private static let appKeyHeader = "X-YVP-App-Key"
 
-    public init(appKey: String, session: URLSession = .shared) {
+    /// - Parameters:
+    ///   - maxAttempts: Total attempts for a passage fetch, including the first (default 3).
+    ///     Transient failures (timeouts, dropped connections, 429/5xx) are retried with
+    ///     exponential backoff so a momentary hiccup doesn't surface as an offline fallback.
+    ///   - retryBaseDelay: Base backoff in seconds; attempt N waits `retryBaseDelay * 2^N`.
+    ///     Tests pass 0 to avoid real sleeps.
+    public init(
+        appKey: String,
+        session: URLSession = .shared,
+        maxAttempts: Int = 3,
+        retryBaseDelay: Double = 0.4
+    ) {
         self.appKey = appKey
         self.session = session
+        self.maxAttempts = max(1, maxAttempts)
+        self.retryBaseDelay = max(0, retryBaseDelay)
     }
 
     // MARK: - VerseFetching
@@ -139,8 +154,7 @@ public struct YouVersionClient: VerseFetching {
         request.setValue(appKey, forHTTPHeaderField: Self.appKeyHeader)
         request.setValue("application/json", forHTTPHeaderField: "Accept")
 
-        let (data, response) = try await performRequest(request)
-        try checkResponse(data: data, response: response)
+        let (data, _) = try await performWithRetry(request)
 
         let passage = try decode(YouVersionPassageResponse.self, from: data)
 
@@ -205,6 +219,55 @@ public struct YouVersionClient: VerseFetching {
             }
             throw urlError
         }
+    }
+
+    /// Performs the request and validates the response, retrying transient failures
+    /// (timeouts, dropped connections, 429/5xx) up to `maxAttempts` with exponential
+    /// backoff. Non-transient errors (auth, 4xx, decode) fail fast without retrying.
+    private func performWithRetry(_ request: URLRequest) async throws -> (Data, URLResponse) {
+        var lastError: Error = ScriptureAPIError.requestFailed(status: 0)
+        for attempt in 0..<maxAttempts {
+            do {
+                let (data, response) = try await performRequest(request)
+                try checkResponse(data: data, response: response)
+                return (data, response)
+            } catch let error where Self.isRetriable(error) {
+                lastError = error
+                let isLastAttempt = attempt == maxAttempts - 1
+                if isLastAttempt { break }
+                if retryBaseDelay > 0 {
+                    let seconds = retryBaseDelay * pow(2.0, Double(attempt))
+                    try? await Task.sleep(nanoseconds: UInt64(seconds * 1_000_000_000))
+                }
+            }
+        }
+        throw lastError
+    }
+
+    /// Transient errors worth retrying. Auth failures, 4xx (other than 429), and
+    /// decode errors are permanent and must fail fast.
+    private static func isRetriable(_ error: Error) -> Bool {
+        if let apiError = error as? ScriptureAPIError {
+            switch apiError {
+            case .timedOut:
+                return true
+            case .requestFailed(let status):
+                return status == 0 || status == 429 || (500...599).contains(status)
+            case .authFailed, .decodingFailed, .notConfigured:
+                return false
+            }
+        }
+        if let urlError = error as? URLError {
+            switch urlError.code {
+            case .timedOut, .networkConnectionLost, .cannotConnectToHost,
+                 .cannotFindHost, .dnsLookupFailed, .notConnectedToInternet,
+                 .resourceUnavailable, .badServerResponse:
+                return true
+            default:
+                return false
+            }
+        }
+        return false
     }
 
     private func checkResponse(data: Data, response: URLResponse) throws {
