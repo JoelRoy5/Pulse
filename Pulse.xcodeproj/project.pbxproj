@@ -9,6 +9,7 @@
 /* Begin PBXBuildFile section */
 		09904D0B793C26A791F1066F /* AnalyticsDebugLog.swift in Sources */ = {isa = PBXBuildFile; fileRef = 63DDBE64E7EAD873B8DDE288 /* AnalyticsDebugLog.swift */; };
 		0D21DAC89D867E3EB6E74DFD /* PSCard.swift in Sources */ = {isa = PBXBuildFile; fileRef = 14C9095CC4988578C90F000C /* PSCard.swift */; };
+		0D4D9A53CA30B6CB47A8F6A2 /* ClassificationRecorder.swift in Sources */ = {isa = PBXBuildFile; fileRef = FD527EA5A7F124F6C8076D82 /* ClassificationRecorder.swift */; };
 		113795907BD175BAC4367575 /* ClassificationRecord.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4ADCB789160B220B1A4C783E /* ClassificationRecord.swift */; };
 		14B0F60B45F2D68848F511EF /* WatchSessionManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = D781730BCEDD3158AB713975 /* WatchSessionManager.swift */; };
 		15A8DDEC3C62DF529C4ED72E /* PulseWatchWidgets.appex in Embed Foundation Extensions */ = {isa = PBXBuildFile; fileRef = 0405A3882AE55FA28CB4FEA7 /* PulseWatchWidgets.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
@@ -216,6 +217,7 @@
 		F04A156A8D42D420EE2280ED /* AnalyticsConfig.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AnalyticsConfig.swift; sourceTree = "<group>"; };
 		F291FC09025C994B654834B3 /* PersonalizationStore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PersonalizationStore.swift; sourceTree = "<group>"; };
 		F76E0B0971A3D5FFE79D25DD /* PulseWatchApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PulseWatchApp.swift; sourceTree = "<group>"; };
+		FD527EA5A7F124F6C8076D82 /* ClassificationRecorder.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ClassificationRecorder.swift; sourceTree = "<group>"; };
 		FF94ABC9A97854F7CC080CE4 /* ModelContainer+Setup.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "ModelContainer+Setup.swift"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -334,6 +336,7 @@
 		33832105E669CEFFA78A1B73 /* Health */ = {
 			isa = PBXGroup;
 			children = (
+				FD527EA5A7F124F6C8076D82 /* ClassificationRecorder.swift */,
 				25C9B0047CCEBB272191C917 /* HealthDataProviding.swift */,
 				5FCEE7A5CD3B4DDFF21B1DEF /* HealthEngine.swift */,
 				894578127626DAF4E24944F4 /* MetricCollector.swift */,
@@ -761,6 +764,7 @@
 				84A2F60B3521417E25F1CEB8 /* AppConfig.swift in Sources */,
 				9E7FC8D4372D7D6477B1E1CE /* AppDelegate.swift in Sources */,
 				113795907BD175BAC4367575 /* ClassificationRecord.swift in Sources */,
+				0D4D9A53CA30B6CB47A8F6A2 /* ClassificationRecorder.swift in Sources */,
 				CF6B745A25EAC8BE8B7F7D6A /* CurrentVerseCard.swift in Sources */,
 				89EB9B5CEBE088D6A8B2C6E5 /* DataMigrations.swift in Sources */,
 				8040CE25D98384C6828816C2 /* DeliveryScheduler.swift in Sources */,
