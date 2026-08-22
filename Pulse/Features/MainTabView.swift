@@ -21,7 +21,7 @@ struct MainTabView: View {
         return false
     }()
 
-    enum Tab: String { case home, history, settings }
+    enum Tab: String { case home, insights, settings }
 
     /// Read once at launch — avoids re-evaluating ProcessInfo on every body call.
     private let showDebugHome: Bool = {
@@ -45,9 +45,9 @@ struct MainTabView: View {
             .tabItem { Label("Today", systemImage: "heart.fill") }
             .tag(Tab.home)
 
-            HistoryView()
-                .tabItem { Label("Journey", systemImage: "book.closed.fill") }
-                .tag(Tab.history)
+            InsightsView()
+                .tabItem { Label("Insights", systemImage: "chart.xyaxis.line") }
+                .tag(Tab.insights)
 
             SettingsView()
                 .tabItem { Label("Settings", systemImage: "slider.horizontal.3") }
@@ -79,7 +79,7 @@ struct MainTabView: View {
            idx + 1 < args.count {
             let raw = args[idx + 1].lowercased()
             switch raw {
-            case "journey": return .history
+            case "insights", "journey": return .insights
             case "settings": return .settings
             default: return .home
             }
