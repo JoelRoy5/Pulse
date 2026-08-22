@@ -199,7 +199,7 @@ final class UserPreferences {
     var useSleep: Bool = true
     var useOxygen: Bool = true
     var useRespiration: Bool = true
-    var useBodyTemp: Bool = false
+    var useBodyTemp: Bool = true
     var useActivity: Bool = true
     var useVO2Max: Bool = true
     var useMindfulness: Bool = true

@@ -296,7 +296,7 @@ private struct SettingsContentView: View {
             metricToggle("Respiratory Rate", icon: "lungs.fill", binding: $vm.useRespiration,
                          caption: "Breaths per minute")
             metricToggle("Body Temperature", icon: "thermometer.medium", binding: $vm.useBodyTemp,
-                         caption: "Wrist skin temp — experimental")
+                         caption: "Wrist skin temp")
             metricToggle("Activity & Steps", icon: "figure.walk", binding: $vm.useActivity,
                          caption: "Steps, energy, stand hours")
             metricToggle("VO₂ Max", icon: "wind", binding: $vm.useVO2Max,
