@@ -9,6 +9,7 @@
 /* Begin PBXBuildFile section */
 		09904D0B793C26A791F1066F /* AnalyticsDebugLog.swift in Sources */ = {isa = PBXBuildFile; fileRef = 63DDBE64E7EAD873B8DDE288 /* AnalyticsDebugLog.swift */; };
 		0D21DAC89D867E3EB6E74DFD /* PSCard.swift in Sources */ = {isa = PBXBuildFile; fileRef = 14C9095CC4988578C90F000C /* PSCard.swift */; };
+		113795907BD175BAC4367575 /* ClassificationRecord.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4ADCB789160B220B1A4C783E /* ClassificationRecord.swift */; };
 		14B0F60B45F2D68848F511EF /* WatchSessionManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = D781730BCEDD3158AB713975 /* WatchSessionManager.swift */; };
 		15A8DDEC3C62DF529C4ED72E /* PulseWatchWidgets.appex in Embed Foundation Extensions */ = {isa = PBXBuildFile; fileRef = 0405A3882AE55FA28CB4FEA7 /* PulseWatchWidgets.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
 		16875E44B5FDDBFB8155C6FC /* TranslationSettingsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 074A54C7F7A0F3C9C3C50423 /* TranslationSettingsView.swift */; };
@@ -157,6 +158,7 @@
 		493413F5EAA2B428D2611FE4 /* Analytics.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Analytics.swift; sourceTree = "<group>"; };
 		49CAB3507692A5788EDD021C /* MainView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MainView.swift; sourceTree = "<group>"; };
 		4AA54FFD5368F70522460346 /* HistoryRowView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HistoryRowView.swift; sourceTree = "<group>"; };
+		4ADCB789160B220B1A4C783E /* ClassificationRecord.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ClassificationRecord.swift; sourceTree = "<group>"; };
 		4BDC583C372415D61AC4D617 /* StreakWidget.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StreakWidget.swift; sourceTree = "<group>"; };
 		53E8ABE4D8C80C4EF0D9E1A3 /* DataMigrations.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DataMigrations.swift; sourceTree = "<group>"; };
 		5414380F98EE676E0E738DBC /* OnboardingFlow.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OnboardingFlow.swift; sourceTree = "<group>"; };
@@ -321,6 +323,7 @@
 		2FAB7FD1C04A37EC2B7D16E4 /* Persistence */ = {
 			isa = PBXGroup;
 			children = (
+				4ADCB789160B220B1A4C783E /* ClassificationRecord.swift */,
 				53E8ABE4D8C80C4EF0D9E1A3 /* DataMigrations.swift */,
 				FF94ABC9A97854F7CC080CE4 /* ModelContainer+Setup.swift */,
 				935401AC9AF178CA8A14AB97 /* PulseSchema.swift */,
@@ -757,6 +760,7 @@
 				76C1F5A9AB2C618817066650 /* AnalyticsInspectorView.swift in Sources */,
 				84A2F60B3521417E25F1CEB8 /* AppConfig.swift in Sources */,
 				9E7FC8D4372D7D6477B1E1CE /* AppDelegate.swift in Sources */,
+				113795907BD175BAC4367575 /* ClassificationRecord.swift in Sources */,
 				CF6B745A25EAC8BE8B7F7D6A /* CurrentVerseCard.swift in Sources */,
 				89EB9B5CEBE088D6A8B2C6E5 /* DataMigrations.swift in Sources */,
 				8040CE25D98384C6828816C2 /* DeliveryScheduler.swift in Sources */,
