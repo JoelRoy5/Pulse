@@ -16,7 +16,8 @@ struct MetricToggles: Sendable {
     var useSleep:       Bool = true
     var useOxygen:      Bool = true
     var useRespiration: Bool = true
-    var useBodyTemp:    Bool = false
+    var useBodyTemp:    Bool = true
+    var useContextSignals: Bool = true   // Time in Daylight, HR recovery
     var useActivity:    Bool = true
     var useVO2Max:      Bool = true
     var useMindfulness: Bool = true
@@ -76,6 +77,10 @@ final class MetricCollector: HealthDataProviding, @unchecked Sendable {
         HKCategoryType(.mindfulSession),
         // Workout
         HKObjectType.workoutType(),
+        // Context signals (iOS 17+)
+        HKQuantityType(.appleSleepingWristTemperature),
+        HKQuantityType(.timeInDaylight),
+        HKQuantityType(.heartRateRecoveryOneMinute),
     ]
 
     static let writeTypes: Set<HKSampleType> = [
@@ -124,6 +129,9 @@ final class MetricCollector: HealthDataProviding, @unchecked Sendable {
         async let mindfulMinutes    = t.useMindfulness ? fetchMindfulMinutes()   : nil as Double?
         async let sleepData         = t.useSleep       ? fetchSleepData()         : nil as SleepBreakdown?
         async let workout           = t.useActivity    ? fetchLastWorkout()       : nil as WorkoutInfo?
+        async let wristTemp         = t.useBodyTemp       ? fetchSleepingWristTemperature() : nil as Double?
+        async let daylight          = t.useContextSignals ? fetchTimeInDaylight()           : nil as Double?
+        async let hrRecovery        = t.useContextSignals ? fetchHeartRateRecovery()        : nil as Double?
 
         let hrValue          = await heartRate
         let hrvValue         = await hrv
@@ -143,6 +151,9 @@ final class MetricCollector: HealthDataProviding, @unchecked Sendable {
         let mindfulValue     = await mindfulMinutes
         let sleep            = await sleepData
         let workoutData      = await workout
+        let wristTempValue   = await wristTemp
+        let daylightValue    = await daylight
+        let hrRecoveryValue  = await hrRecovery
 
         var snapshot = HealthSnapshot(
             heartRate: hrValue,
@@ -174,7 +185,10 @@ final class MetricCollector: HealthDataProviding, @unchecked Sendable {
             lastWorkoutEndedMinutesAgo: workoutData?.endedMinutesAgo,
             lastWorkoutDurationMinutes: workoutData?.durationMinutes,
             lastWorkoutCalories: workoutData?.calories,
-            lastWorkoutHRAvg: workoutData?.hrAvg
+            lastWorkoutHRAvg: workoutData?.hrAvg,
+            sleepingWristTemperature: wristTempValue,
+            timeInDaylightMinutes: daylightValue,
+            heartRateRecoveryBPM: hrRecoveryValue
         )
         snapshot.computeCompleteness()
         return snapshot
@@ -471,6 +485,33 @@ final class MetricCollector: HealthDataProviding, @unchecked Sendable {
             }
             healthStore.execute(query)
         }
+    }
+
+    // Sleeping Wrist Temperature — most recent nightly sample in last 3 days
+    private func fetchSleepingWristTemperature() async -> Double? {
+        let type = HKQuantityType(.appleSleepingWristTemperature)
+        let start = Date().addingTimeInterval(-3 * 24 * 60 * 60)
+        return await fetchMostRecentSample(type: type, start: start, end: .now, unit: .degreeCelsius())
+    }
+
+    // Time in Daylight — cumulative minutes today
+    private func fetchTimeInDaylight() async -> Double? {
+        let type = HKQuantityType(.timeInDaylight)
+        let start = Calendar.current.startOfDay(for: .now)
+        return await fetchQuantityStatistics(
+            type: type, start: start, end: .now,
+            options: .cumulativeSum, unit: .minute()
+        )
+    }
+
+    // Heart Rate Recovery (1 min) — most recent sample in last 24 hours
+    private func fetchHeartRateRecovery() async -> Double? {
+        let type = HKQuantityType(.heartRateRecoveryOneMinute)
+        let start = Date().addingTimeInterval(-24 * 60 * 60)
+        return await fetchMostRecentSample(
+            type: type, start: start, end: .now,
+            unit: HKUnit.count().unitDivided(by: .minute())
+        )
     }
 
     // MARK: - Generic Query Helpers
