@@ -20,6 +20,7 @@ enum DataMigrations {
     static func runOnLaunch(_ context: ModelContext) {
         backfillLovedAt(context)
         backfillEmotionRaw(context)
+        enableTemperatureDefault(context)
     }
 
     /// Love state used to live in the shared `userReactionRaw` field; it now has
@@ -38,6 +39,22 @@ enum DataMigrations {
         }
         try? context.save()
         logger.info("Backfilled lovedAt for \(stale.count, privacy: .public) deliveries")
+    }
+
+    /// One-time migration: enables wrist body-temperature collection for existing testers
+    /// whose persisted `UserPreferences` row was created when the schema defaulted to `false`.
+    /// Guard: runs exactly once; a `UserDefaults` flag is set after the first successful run
+    /// so the row is never force-overridden again (a user who later disables temperature
+    /// is not affected on subsequent launches).
+    @MainActor
+    private static func enableTemperatureDefault(_ context: ModelContext) {
+        let flagKey = "migration.enableTemperatureDefault.v1"
+        guard !UserDefaults.standard.bool(forKey: flagKey) else { return }
+        let prefs = UserPreferences.current(in: context)
+        prefs.useBodyTemp = true
+        try? context.save()
+        UserDefaults.standard.set(true, forKey: flagKey)
+        logger.info("Migration enableTemperatureDefault.v1: set useBodyTemp = true")
     }
 
     /// Backfills `emotionRaw` for deliveries created before the field existed.

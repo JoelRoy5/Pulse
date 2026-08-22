@@ -9,6 +9,7 @@ public struct HealthSnapshot: Codable, Sendable {
     public var respiratoryRate: Double?
     public var oxygenSaturation: Double?
     public var bodyTemperature: Double?
+    public var sleepingWristTemperature: Double?   // °C, Apple Watch nightly
     public var walkingHeartRateAverage: Double?
     public var vo2Max: Double?
 
@@ -31,6 +32,8 @@ public struct HealthSnapshot: Codable, Sendable {
     public var standHours: Int?
     public var distanceWalkingRunning: Double?
     public var flightsClimbed: Int?
+    public var timeInDaylightMinutes: Double?
+    public var heartRateRecoveryBPM: Double?
 
     // MARK: - Mindfulness
     public var mindfulMinutes: Double?
@@ -110,6 +113,9 @@ public struct HealthSnapshot: Codable, Sendable {
         lastWorkoutDurationMinutes: Double? = nil,
         lastWorkoutCalories: Double? = nil,
         lastWorkoutHRAvg: Double? = nil,
+        sleepingWristTemperature: Double? = nil,
+        timeInDaylightMinutes: Double? = nil,
+        heartRateRecoveryBPM: Double? = nil,
         timestamp: Date = .now,
         dataCompleteness: Double = 0.0
     ) {
@@ -119,6 +125,7 @@ public struct HealthSnapshot: Codable, Sendable {
         self.respiratoryRate = respiratoryRate
         self.oxygenSaturation = oxygenSaturation
         self.bodyTemperature = bodyTemperature
+        self.sleepingWristTemperature = sleepingWristTemperature
         self.walkingHeartRateAverage = walkingHeartRateAverage
         self.vo2Max = vo2Max
         self.sleepEfficiency = sleepEfficiency
@@ -137,6 +144,8 @@ public struct HealthSnapshot: Codable, Sendable {
         self.standHours = standHours
         self.distanceWalkingRunning = distanceWalkingRunning
         self.flightsClimbed = flightsClimbed
+        self.timeInDaylightMinutes = timeInDaylightMinutes
+        self.heartRateRecoveryBPM = heartRateRecoveryBPM
         self.mindfulMinutes = mindfulMinutes
         self.lastWorkoutType = lastWorkoutType
         self.lastWorkoutEndedMinutesAgo = lastWorkoutEndedMinutesAgo

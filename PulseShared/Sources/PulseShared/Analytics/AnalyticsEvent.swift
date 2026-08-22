@@ -148,6 +148,10 @@ public struct AnalyticsEvent: Sendable {
         AnalyticsEvent(name: "watch_feeling_requested")
     }
 
+    // MARK: - Insights Events
+
+    public static let insightsSelfReportTapped = AnalyticsEvent(name: "insights_self_report_tapped")
+
     // MARK: - PostHog Payload
 
     private static let iso8601 = ISO8601DateFormatter()

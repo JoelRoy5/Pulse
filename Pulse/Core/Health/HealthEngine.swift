@@ -29,6 +29,11 @@ final class HealthEngine {
     /// Set by Task 10's ScriptureEngine to receive classification updates.
     var onClassification: ((ClassificationResult) async -> Void)?
 
+    // MARK: - Recorder
+
+    /// Injected from PulseApp; records every classification result on-device.
+    var recorder: ClassificationRecorder?
+
     // MARK: - Private
 
     private let provider: any HealthDataProviding
@@ -77,12 +82,14 @@ final class HealthEngine {
     func refresh() async {
         do {
             let snapshot = try await provider.fetchSnapshot()
-            let result = classifier.classify(snapshot)
+            let baseline = await recorder?.wristTempBaseline()
+            let result = classifier.classify(snapshot, wristTempBaseline: baseline)
             currentSnapshot = snapshot
             currentClassification = result
             logger.info(
                 "Classified: \(result.state.rawValue, privacy: .public) @ \(String(format: "%.2f", result.confidence), privacy: .public)"
             )
+            await recorder?.record(result, snapshot: snapshot)
             if let callback = onClassification {
                 await callback(result)
             }

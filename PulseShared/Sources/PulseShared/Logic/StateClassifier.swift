@@ -14,9 +14,11 @@ public struct StateClassifier {
     public func classify(
         _ snapshot: HealthSnapshot,
         at date: Date = .now,
-        calendar: Calendar = .current
+        calendar: Calendar = .current,
+        wristTempBaseline: (mean: Double, count: Int)? = nil
     ) -> ClassificationResult {
         let scores = computeSubScores(snapshot, at: date, calendar: calendar)
+        let fever = feverScore(snapshot, wristTempBaseline: wristTempBaseline)
 
         let candidates: [(BiometricState, Double)] = [
             (.energizedPostWorkout, victoryLapConfidence(snapshot, scores)),
@@ -28,7 +30,7 @@ public struct StateClassifier {
             (.eveningWindingDown,   eveningConfidence(snapshot, scores)),
             (.activeEngaged,        activeConfidence(snapshot, scores)),
             (.sadWithdrawn,         sadConfidence(snapshot, scores)),
-            (.sickUnwell,           sickConfidence(snapshot, scores)),
+            (.sickUnwell,           sickConfidence(snapshot, scores, feverScore: fever)),
             (.peakPerformance,      peakConfidence(snapshot, scores)),
             (.spiritualAlert,       watchmanConfidence(snapshot, scores)),
         ]
@@ -285,14 +287,40 @@ public struct StateClassifier {
     /// Requires both restingHeartRate AND respiratoryRate to be present; else returns 0.
     private func sickConfidence(
         _ snapshot: HealthSnapshot,
-        _ scores: BiometricSubScores
+        _ scores: BiometricSubScores,
+        feverScore: Double?
     ) -> Double {
         guard snapshot.restingHeartRate != nil,
               snapshot.respiratoryRate != nil else { return 0.0 }
-        let raw = (1.0 - scores.respiratoryStress) * 0.4
-                + (1.0 - scores.oxygenLevel)        * 0.4
-                + (1.0 - scores.hrvRecovery)         * 0.2
+        let base = (1.0 - scores.respiratoryStress) * 0.4
+                 + (1.0 - scores.oxygenLevel)        * 0.4
+                 + (1.0 - scores.hrvRecovery)         * 0.2
+        let raw: Double
+        if let fever = feverScore, fever > 0 {
+            raw = base * 0.75 + fever * 0.25
+        } else {
+            raw = base
+        }
         return min(1.0, raw * 1.15)
+    }
+
+    /// Optional fever score in [0,1]; nil when no temperature signal is present.
+    /// Body temp uses an absolute fever threshold; wrist temp uses deviation from a
+    /// rolling baseline (needs ≥ 3 nights). Returns the max of available sources.
+    private func feverScore(
+        _ snapshot: HealthSnapshot,
+        wristTempBaseline: (mean: Double, count: Int)?
+    ) -> Double? {
+        var scores: [Double] = []
+        if let bodyTemp = snapshot.bodyTemperature {
+            scores.append(max(0, min(1, (bodyTemp - 37.5) / 1.5)))
+        }
+        if let wrist = snapshot.sleepingWristTemperature,
+           let base = wristTempBaseline, base.count >= 3 {
+            let dev = wrist - base.mean
+            scores.append(max(0, min(1, (dev - 0.5) / 1.0)))
+        }
+        return scores.max()
     }
 
     /// peakPerformance — Mountain Top.
@@ -317,5 +345,15 @@ public struct StateClassifier {
         case .evening:               return .eveningWindingDown
         case .night:                 return .peacefulSteady
         }
+    }
+
+    // MARK: - Test Shims
+
+    // Test shims (internal) — expose the private helpers to the test target.
+    func feverScoreForTest(_ s: HealthSnapshot, wristTempBaseline: (mean: Double, count: Int)?) -> Double? {
+        feverScore(s, wristTempBaseline: wristTempBaseline)
+    }
+    func sickConfidenceForTest(_ s: HealthSnapshot, _ scores: BiometricSubScores, feverScore: Double?) -> Double {
+        sickConfidence(s, scores, feverScore: feverScore)
     }
 }

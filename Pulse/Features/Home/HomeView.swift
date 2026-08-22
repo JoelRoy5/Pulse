@@ -13,6 +13,9 @@ struct HomeView: View {
     // Last 5 deliveries for recent verses row
     @Query(sort: \VerseDelivery.deliveredAt, order: .reverse) private var allDeliveries: [VerseDelivery]
 
+    // Latest classification records (used for low-data self-report prompt)
+    @Query(sort: \ClassificationRecord.timestamp, order: .reverse) private var recentClassifications: [ClassificationRecord]
+
     // VOTD deliveries today (deliveryMethod == "votd", delivered since startOfDay)
     // Note: SwiftData @Query does not support Date.now in #Predicate at compile time,
     // so we filter from all "votd" deliveries sorted descending and pick today's.
@@ -87,6 +90,12 @@ struct HomeView: View {
             ?? currentDelivery?.biometricState
     }
 
+    private var shouldPromptSelfReport: Bool {
+        ClassificationSignals.shouldPromptSelfReport(
+            latestInsufficientData: recentClassifications.first?.insufficientData
+        )
+    }
+
     // MARK: - Body
 
     var body: some View {
@@ -115,6 +124,26 @@ struct HomeView: View {
                             snapshot: healthEngine.currentSnapshot,
                             emotion: currentDelivery?.emotion ?? state.defaultEmotion
                         )
+                    }
+
+                    // 1b. Low-data self-report prompt
+                    if shouldPromptSelfReport {
+                        Button {
+                            Analytics.shared.track(.insightsSelfReportTapped)
+                            showFeelingPicker = true
+                        } label: {
+                            VStack(alignment: .leading, spacing: 4) {
+                                Text("How are you feeling?")
+                                    .font(.system(size: 15, weight: .semibold, design: .rounded))
+                                Text("We can't read enough right now — tap to tell us.")
+                                    .font(.system(size: 13))
+                                    .foregroundStyle(.secondary)
+                            }
+                            .frame(maxWidth: .infinity, alignment: .leading)
+                            .padding()
+                            .background(Color.psNavy, in: RoundedRectangle(cornerRadius: 14))
+                        }
+                        .buttonStyle(.plain)
                     }
 
                     // 2. Verse Card (skeleton / empty / current)

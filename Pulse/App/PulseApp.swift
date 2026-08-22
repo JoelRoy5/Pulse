@@ -149,6 +149,8 @@ struct PulseApp: App {
                 }
                 // Attach on-device personalization store (mood bias + verse avoid-list)
                 scriptureEngine.personalization = PersonalizationStore(context: container.mainContext)
+                // Attach classification recorder (on-device tuning log)
+                healthEngine.recorder = ClassificationRecorder(context: container.mainContext)
                 // Register AppBridge so AppDelegate can trigger refresh
                 AppBridge.shared.healthEngine = healthEngine
                 AppBridge.shared.scriptureEngine = scriptureEngine

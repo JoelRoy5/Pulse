@@ -9,6 +9,8 @@
 /* Begin PBXBuildFile section */
 		09904D0B793C26A791F1066F /* AnalyticsDebugLog.swift in Sources */ = {isa = PBXBuildFile; fileRef = 63DDBE64E7EAD873B8DDE288 /* AnalyticsDebugLog.swift */; };
 		0D21DAC89D867E3EB6E74DFD /* PSCard.swift in Sources */ = {isa = PBXBuildFile; fileRef = 14C9095CC4988578C90F000C /* PSCard.swift */; };
+		0D4D9A53CA30B6CB47A8F6A2 /* ClassificationRecorder.swift in Sources */ = {isa = PBXBuildFile; fileRef = FD527EA5A7F124F6C8076D82 /* ClassificationRecorder.swift */; };
+		113795907BD175BAC4367575 /* ClassificationRecord.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4ADCB789160B220B1A4C783E /* ClassificationRecord.swift */; };
 		14B0F60B45F2D68848F511EF /* WatchSessionManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = D781730BCEDD3158AB713975 /* WatchSessionManager.swift */; };
 		15A8DDEC3C62DF529C4ED72E /* PulseWatchWidgets.appex in Embed Foundation Extensions */ = {isa = PBXBuildFile; fileRef = 0405A3882AE55FA28CB4FEA7 /* PulseWatchWidgets.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
 		16875E44B5FDDBFB8155C6FC /* TranslationSettingsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 074A54C7F7A0F3C9C3C50423 /* TranslationSettingsView.swift */; };
@@ -19,6 +21,7 @@
 		2B6434E400F64A228DE923EB /* HomeViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 69DBD08C32085CC637A1F35C /* HomeViewModel.swift */; };
 		2BB8FB662D6A18239FCAE2C6 /* TrackScreen.swift in Sources */ = {isa = PBXBuildFile; fileRef = 11C198F2586FF0D4891718A5 /* TrackScreen.swift */; };
 		2E13F6007A8F7449A8CFCC89 /* VerseView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3EABAF7E9F79AF4B72252E40 /* VerseView.swift */; };
+		32AADAAF3DCEF952975EECC3 /* InsightsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3A53EACB75C15E1E1797737D /* InsightsView.swift */; };
 		3486367464537B6192F7C2AF /* PulseApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0AEE9CD05DD0A6FAA15E6014 /* PulseApp.swift */; };
 		3A8F65C6B42C3D6AE0118D32 /* PulseWatchApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = F76E0B0971A3D5FFE79D25DD /* PulseWatchApp.swift */; };
 		3ADA9E9BB62E2F868A936DC4 /* HomeView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C0D1390EE653F2D9B57F24AA /* HomeView.swift */; };
@@ -150,6 +153,7 @@
 		29FA64B0180D4CDBFC838B54 /* VerseDetailSheet.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VerseDetailSheet.swift; sourceTree = "<group>"; };
 		3074BD3D3564A521779E8B8A /* WatchHealthEngine.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WatchHealthEngine.swift; sourceTree = "<group>"; };
 		36104FAC6C30543319AEF429 /* PrayerTimeView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PrayerTimeView.swift; sourceTree = "<group>"; };
+		3A53EACB75C15E1E1797737D /* InsightsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InsightsView.swift; sourceTree = "<group>"; };
 		3B4BD7C0BE5264687FB60510 /* AnalyticsInspectorView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AnalyticsInspectorView.swift; sourceTree = "<group>"; };
 		3E451C341D0BF1CEB115F0D7 /* RecentVersesRow.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RecentVersesRow.swift; sourceTree = "<group>"; };
 		3EABAF7E9F79AF4B72252E40 /* VerseView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VerseView.swift; sourceTree = "<group>"; };
@@ -157,6 +161,7 @@
 		493413F5EAA2B428D2611FE4 /* Analytics.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Analytics.swift; sourceTree = "<group>"; };
 		49CAB3507692A5788EDD021C /* MainView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MainView.swift; sourceTree = "<group>"; };
 		4AA54FFD5368F70522460346 /* HistoryRowView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HistoryRowView.swift; sourceTree = "<group>"; };
+		4ADCB789160B220B1A4C783E /* ClassificationRecord.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ClassificationRecord.swift; sourceTree = "<group>"; };
 		4BDC583C372415D61AC4D617 /* StreakWidget.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StreakWidget.swift; sourceTree = "<group>"; };
 		53E8ABE4D8C80C4EF0D9E1A3 /* DataMigrations.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DataMigrations.swift; sourceTree = "<group>"; };
 		5414380F98EE676E0E738DBC /* OnboardingFlow.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OnboardingFlow.swift; sourceTree = "<group>"; };
@@ -214,6 +219,7 @@
 		F04A156A8D42D420EE2280ED /* AnalyticsConfig.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AnalyticsConfig.swift; sourceTree = "<group>"; };
 		F291FC09025C994B654834B3 /* PersonalizationStore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PersonalizationStore.swift; sourceTree = "<group>"; };
 		F76E0B0971A3D5FFE79D25DD /* PulseWatchApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PulseWatchApp.swift; sourceTree = "<group>"; };
+		FD527EA5A7F124F6C8076D82 /* ClassificationRecorder.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ClassificationRecorder.swift; sourceTree = "<group>"; };
 		FF94ABC9A97854F7CC080CE4 /* ModelContainer+Setup.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "ModelContainer+Setup.swift"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -321,6 +327,7 @@
 		2FAB7FD1C04A37EC2B7D16E4 /* Persistence */ = {
 			isa = PBXGroup;
 			children = (
+				4ADCB789160B220B1A4C783E /* ClassificationRecord.swift */,
 				53E8ABE4D8C80C4EF0D9E1A3 /* DataMigrations.swift */,
 				FF94ABC9A97854F7CC080CE4 /* ModelContainer+Setup.swift */,
 				935401AC9AF178CA8A14AB97 /* PulseSchema.swift */,
@@ -331,6 +338,7 @@
 		33832105E669CEFFA78A1B73 /* Health */ = {
 			isa = PBXGroup;
 			children = (
+				FD527EA5A7F124F6C8076D82 /* ClassificationRecorder.swift */,
 				25C9B0047CCEBB272191C917 /* HealthDataProviding.swift */,
 				5FCEE7A5CD3B4DDFF21B1DEF /* HealthEngine.swift */,
 				894578127626DAF4E24944F4 /* MetricCollector.swift */,
@@ -435,12 +443,21 @@
 				0CF03F38EFF412C054E6B429 /* MainTabView.swift */,
 				4EFBF291883E32FE79333AE6 /* History */,
 				EB05EB971523B38E8F3FCE6A /* Home */,
+				732F40E18A01338204E2E3EA /* Insights */,
 				0517CBCF4CD018979D20882E /* Onboarding */,
 				8A7C294BFB009278CD23B2A9 /* Settings */,
 				62E7EA0E7BFAA1FF2A406453 /* Share */,
 				F4391FF7C87279746E0EF7F0 /* Today */,
 			);
 			path = Features;
+			sourceTree = "<group>";
+		};
+		732F40E18A01338204E2E3EA /* Insights */ = {
+			isa = PBXGroup;
+			children = (
+				3A53EACB75C15E1E1797737D /* InsightsView.swift */,
+			);
+			path = Insights;
 			sourceTree = "<group>";
 		};
 		7A87E3B4AE2E59047EFB8F61 = {
@@ -757,6 +774,8 @@
 				76C1F5A9AB2C618817066650 /* AnalyticsInspectorView.swift in Sources */,
 				84A2F60B3521417E25F1CEB8 /* AppConfig.swift in Sources */,
 				9E7FC8D4372D7D6477B1E1CE /* AppDelegate.swift in Sources */,
+				113795907BD175BAC4367575 /* ClassificationRecord.swift in Sources */,
+				0D4D9A53CA30B6CB47A8F6A2 /* ClassificationRecorder.swift in Sources */,
 				CF6B745A25EAC8BE8B7F7D6A /* CurrentVerseCard.swift in Sources */,
 				89EB9B5CEBE088D6A8B2C6E5 /* DataMigrations.swift in Sources */,
 				8040CE25D98384C6828816C2 /* DeliveryScheduler.swift in Sources */,
@@ -769,6 +788,7 @@
 				94B8EC034C1765D77212F1DC /* HistoryViewModel.swift in Sources */,
 				3ADA9E9BB62E2F868A936DC4 /* HomeView.swift in Sources */,
 				2B6434E400F64A228DE923EB /* HomeViewModel.swift in Sources */,
+				32AADAAF3DCEF952975EECC3 /* InsightsView.swift in Sources */,
 				DCD3C029872EAFAAAFDBFB13 /* MainTabView.swift in Sources */,
 				F022C85557F91AB1142744FE /* MetricCollector.swift in Sources */,
 				1DAED3A7021E31C6A63E2693 /* MetricTile.swift in Sources */,
